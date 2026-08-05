@@ -6,7 +6,7 @@
 
 - [x] 创建 GitHub 仓库并连接本地目录
 - [x] 建立仿真实验说明文档
-- [ ] 实现最小化数据生成机制（sanity check）
+- [x] 实现最小化数据生成机制（sanity check）
 - [ ] 加入统计噪声并重复 Monte Carlo 实验
 - [ ] 实现目标方法和基线方法
 - [ ] 完成主实验、消融实验和敏感性分析
@@ -42,6 +42,24 @@
 - 对可拒绝方法同时报告接受率、拒绝率和接受预测上的误差；
 - 每完成一个阶段，更新本 README 和对应实验记录，并提交到 GitHub。
 
+## 已实现：最小化数据生成机制
+
+第一阶段的实现位于 [`src/causal_atlas_sim/dgp.py`](src/causal_atlas_sim/dgp.py)。它生成 archive experiments、一个 held-out target 以及每个实验的单位级记录、AIPW 效应估计和不确定性证书。
+
+该实现将 target 机制构造为 archive 机制的凸组合，用于验证机制空间、真实效应、支持残差和误差证书的基础链路；构造权重只作为 oracle sanity check 元数据保存，后续方法不可访问。
+
+生成器满足论文 Assumption 3.1--3.5 的方式如下：
+
+| 假设 | 最小实现中的保证 |
+| --- | --- |
+| 3.1 可识别性 | 独立单位、已知 Bernoulli 随机化、\(\pi=0.5\)、一致性生成规则和真值 nuisance functions。 |
+| 3.2 设计兼容性 | 所有实验使用同一个 `DesignProfile` 和共同的标准化 ATE 尺度。 |
+| 3.3 局部平滑性 | \(\mathcal M=[-1,1]^4\)；使用论文的平滑非线性 \(\mu\)，并记录 \(L=2.61\)、\(H=1.80\) 的保守解析界。 |
+| 3.4 不确定性证书 | 通过已知随机化的 AIPW score 生成 \(\hat\tau=\tau+\xi+0\)，并为每个实验记录 \(s_i^2=v_i/n_i\)。 |
+| 3.5 隐藏调节变量证书 | 公开有界噪声的 \(h\) 代理，保留真实 \(h\) 仅作 oracle 评价，并按 \(R_{\mathrm{hid}}=L_h(\delta_*+\sum_j\alpha_j\delta_j)\) 生成证书。 |
+
+更完整的数学构造、边界来源和运行方式见 [`docs/minimal_dgp.md`](docs/minimal_dgp.md)。自动校验位于 [`tests/test_dgp.py`](tests/test_dgp.py)，快速运行入口为 [`scripts/run_sanity_check.py`](scripts/run_sanity_check.py)。
+
 ## 下一步
 
-下一阶段将实现一个不含复杂噪声的最小化数据生成机制，用来检查真实效应计算、archive/target 划分和误差评价是否正确。该阶段通过后，再加入统计噪声和完整方法。
+下一阶段将把这个已认证的单次数据生成器扩展为可重复的 Monte Carlo 运行框架：固定配置、独立随机重复、结果汇总和不确定性报告；仍不实现完整 Causal ATLAS 权重优化。
