@@ -1,5 +1,8 @@
 # Causal ATLAS 仿真实验
 
+仓库中每个文件的职责与生成关系见 docs/repository_file_map.md。新增、删除、
+移动文件或改变既有文件职责时，必须在同一提交中同步更新该对照表。
+
 本仓库用于逐步实现和记录重点论文 **Rejectable Causal Atlas** 的仿真实验。
 
 ## 当前进度
