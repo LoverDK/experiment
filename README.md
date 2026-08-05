@@ -66,6 +66,25 @@
 
 本阶段同时报告只含统计噪声的区间，以及加入 Assumption 3.3 曲率项和 Assumption 3.5 隐藏调节变量证书后的保守区间。详细说明见 [`docs/monte_carlo.md`](docs/monte_carlo.md)，运行入口为 [`scripts/run_monte_carlo.py`](scripts/run_monte_carlo.py)。
 
+## 已实现：可拒绝 Causal ATLAS 与基线比较
+
+第三阶段实现位于 src/causal_atlas_sim/methods.py 和
+src/causal_atlas_sim/comparison.py，包含：
+
+1. 语义候选检索和设计兼容性过滤；
+2. 单纯形约束下的投影梯度权重优化；
+3. 可分解的传输证书，以及基于科学容忍度的接受或拒绝；
+4. 使用相同权重的 no-rejection 消融；
+5. semantic_forced、nearest_semantic 和 global_mean 三种基线；
+6. 使用相同独立子随机种子的公平 Monte Carlo 方法比较。
+
+所有估计器只读取观测表示、设计档案、历史效应估计和不确定性
+证书。目标真值、真实机制和 oracle 权重仅在评价层使用，不能泄漏给
+方法。数学构造、信息边界、输出指标和当前 200 次重复的结果见
+docs/method_comparison.md。
+
 ## 下一步
 
-下一阶段将实现完整 Causal ATLAS 的候选集合、权重选择、支持检验和拒绝规则，并在相同 Monte Carlo 重复数据上加入语义基线和 no-rejection ablation。
+下一阶段将建立主实验协议：系统改变语义失配、隐藏调节变量不确定性、
+样本量和科学容忍度，固定随机种子生成结果表和图，并据此开展消融和
+敏感性分析。

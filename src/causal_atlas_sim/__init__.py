@@ -17,6 +17,28 @@ from .dgp import (
     minimal_assumption_report,
 )
 from .monte_carlo import MonteCarloConfig, MonteCarloRecord, MonteCarloResult, run_monte_carlo
+from .methods import (
+    METHODS,
+    AtlasConfig,
+    AtlasResult,
+    Certificate,
+    compute_certificate,
+    design_compatible,
+    fit_causal_atlas,
+    fit_global_mean,
+    fit_method,
+    fit_nearest_semantic_neighbor,
+    fit_no_rejection_atlas,
+    fit_semantic_forced_composition,
+    optimize_support_weights,
+    retrieve_semantic_candidates,
+)
+from .comparison import (
+    MethodComparisonConfig,
+    MethodComparisonRecord,
+    MethodComparisonResult,
+    run_method_comparison,
+)
 
 __all__ = [
     "EFFECT_CURVATURE_BOUND",
@@ -37,4 +59,22 @@ __all__ = [
     "MonteCarloRecord",
     "MonteCarloResult",
     "run_monte_carlo",
+    "METHODS",
+    "AtlasConfig",
+    "AtlasResult",
+    "Certificate",
+    "compute_certificate",
+    "design_compatible",
+    "fit_causal_atlas",
+    "fit_global_mean",
+    "fit_method",
+    "fit_nearest_semantic_neighbor",
+    "fit_no_rejection_atlas",
+    "fit_semantic_forced_composition",
+    "optimize_support_weights",
+    "retrieve_semantic_candidates",
+    "MethodComparisonConfig",
+    "MethodComparisonRecord",
+    "MethodComparisonResult",
+    "run_method_comparison",
 ]

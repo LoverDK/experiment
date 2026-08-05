@@ -1,0 +1,487 @@
+"""Causal ATLAS transport and transparent comparison baselines.
+
+The estimators in this module only consume the information an applied method
+would receive: observed representations, design profiles, effect estimates,
+and uncertainty certificates.  True mechanisms and true effects remain in
+the DGP object solely for evaluation.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from math import inf, log, sqrt
+from typing import Sequence
+
+import numpy as np
+
+from .dgp import (
+    EFFECT_CURVATURE_BOUND,
+    EFFECT_LIPSCHITZ_BOUND,
+    HIDDEN_MODERATOR_LIPSCHITZ_BOUND,
+    COMMON_DESIGN,
+    DesignProfile,
+    ExperimentData,
+)
+
+
+@dataclass(frozen=True)
+class AtlasConfig:
+    """Tuning and certification constants for the transport estimators."""
+
+    max_candidates: int | None = None
+    semantic_radius: float | None = None
+    lambda_sigma: float = 1.0
+    lambda_hidden: float = 1.0
+    effect_lipschitz_bound: float = EFFECT_LIPSCHITZ_BOUND
+    effect_curvature_bound: float = EFFECT_CURVATURE_BOUND
+    hidden_moderator_lipschitz_bound: float = HIDDEN_MODERATOR_LIPSCHITZ_BOUND
+    zeta: float = 0.05
+    # This illustrative threshold intentionally yields both accepted and
+    # rejected draws; users should set it from their scientific decision rule.
+    scientific_tolerance: float = 1.65
+    max_iterations: int = 800
+    learning_rate: float = 0.25
+    convergence_tolerance: float = 1e-10
+
+    def __post_init__(self) -> None:
+        if self.max_candidates is not None and self.max_candidates < 1:
+            raise ValueError("max_candidates must be positive when supplied.")
+        if self.semantic_radius is not None and self.semantic_radius < 0.0:
+            raise ValueError("semantic_radius must be nonnegative.")
+        if self.lambda_sigma < 0.0 or self.lambda_hidden < 0.0:
+            raise ValueError("regularization strengths must be nonnegative.")
+        if self.effect_lipschitz_bound <= 0.0 or self.effect_curvature_bound <= 0.0:
+            raise ValueError("smoothness bounds must be positive.")
+        if self.hidden_moderator_lipschitz_bound < 0.0:
+            raise ValueError("hidden moderator bound must be nonnegative.")
+        if not 0.0 < self.zeta < 1.0:
+            raise ValueError("zeta must lie in (0, 1).")
+        if self.scientific_tolerance < 0.0:
+            raise ValueError("scientific_tolerance must be nonnegative.")
+        if self.max_iterations < 1 or self.learning_rate <= 0.0:
+            raise ValueError("optimization controls must be positive.")
+
+
+@dataclass(frozen=True)
+class Certificate:
+    """Decomposed finite-sample transport certificate."""
+
+    radius: float
+    representation_term: float
+    curvature_term: float
+    hidden_moderator_term: float
+    bias_term: float
+    statistical_term: float
+
+    @property
+    def interval_half_width(self) -> float:
+        return self.radius
+
+
+@dataclass(frozen=True)
+class AtlasResult:
+    """One method's prediction and certificate for one held-out target."""
+
+    method: str
+    candidate_indices: tuple[int, ...]
+    candidate_distances: tuple[float, ...]
+    weights: np.ndarray
+    raw_point_estimate: float | None
+    point_estimate: float | None
+    accepted: bool
+    rejection_reason: str | None
+    certificate: Certificate
+    interval_lower: float
+    interval_upper: float
+    objective_value: float | None
+
+    @property
+    def rejected(self) -> bool:
+        return not self.accepted
+
+    @property
+    def interval(self) -> tuple[float, float]:
+        return (self.interval_lower, self.interval_upper)
+
+
+def design_compatible(source: ExperimentData, target: ExperimentData) -> bool:
+    """Apply the recorded design and estimand compatibility filter."""
+
+    return source.design == target.design == COMMON_DESIGN
+
+
+def retrieve_semantic_candidates(
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    *,
+    max_candidates: int | None = None,
+    semantic_radius: float | None = None,
+) -> tuple[int, ...]:
+    """Return compatible archive indices ordered by observed semantic distance."""
+
+    scored = [
+        (
+            float(np.linalg.norm(source.observed_representation - target.observed_representation)),
+            index,
+        )
+        for index, source in enumerate(archive)
+        if design_compatible(source, target)
+    ]
+    scored.sort(key=lambda item: (item[0], item[1]))
+    if semantic_radius is not None:
+        scored = [item for item in scored if item[0] <= semantic_radius + 1e-12]
+    if max_candidates is not None:
+        scored = scored[:max_candidates]
+    return tuple(index for _, index in scored)
+
+
+def _project_to_simplex(values: np.ndarray) -> np.ndarray:
+    """Euclidean projection onto {w >= 0, sum(w) = 1}."""
+
+    values = np.asarray(values, dtype=float)
+    if values.ndim != 1 or values.size == 0:
+        raise ValueError("Simplex projection expects a nonempty vector.")
+    sorted_values = np.sort(values)[::-1]
+    cumulative = np.cumsum(sorted_values)
+    eligible = sorted_values - (cumulative - 1.0) / (np.arange(values.size) + 1) > 0
+    if not np.any(eligible):
+        return np.full(values.size, 1.0 / values.size)
+    rho = int(np.flatnonzero(eligible)[-1])
+    threshold = (cumulative[rho] - 1.0) / (rho + 1)
+    return np.maximum(values - threshold, 0.0)
+
+
+def optimize_support_weights(
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    candidate_indices: Sequence[int],
+    config: AtlasConfig | None = None,
+) -> tuple[np.ndarray, float]:
+    """Solve the regularized support program on a candidate simplex."""
+
+    config = config or AtlasConfig()
+    indices = tuple(candidate_indices)
+    if not indices:
+        raise ValueError("At least one candidate is required.")
+    representations = np.vstack([archive[index].observed_representation for index in indices])
+    target_representation = target.observed_representation
+    standard_error_squares = np.array(
+        [archive[index].standard_error_certificate**2 for index in indices], dtype=float
+    )
+    hidden_radii = np.array(
+        [archive[index].moderator_sensitivity_radius for index in indices], dtype=float
+    )
+    # The hidden target radius is constant in alpha; the archive contribution
+    # is linear, so it enters the gradient as a fixed vector.
+    hidden_gradient = (
+        config.lambda_hidden
+        * config.hidden_moderator_lipschitz_bound
+        * hidden_radii
+    )
+
+    def objective(weights: np.ndarray) -> float:
+        residual = target_representation - weights @ representations
+        return float(
+            residual @ residual
+            + config.lambda_sigma * np.sum(weights**2 * standard_error_squares)
+            + hidden_gradient @ weights
+        )
+
+    def gradient(weights: np.ndarray) -> np.ndarray:
+        residual = weights @ representations - target_representation
+        return (
+            2.0 * representations @ residual
+            + 2.0 * config.lambda_sigma * weights * standard_error_squares
+            + hidden_gradient
+        )
+
+    weights = np.full(len(indices), 1.0 / len(indices))
+    step = config.learning_rate
+    current = objective(weights)
+    for _ in range(config.max_iterations):
+        proposal = _project_to_simplex(weights - step * gradient(weights))
+        proposed_value = objective(proposal)
+        if proposed_value <= current + 1e-14:
+            change = float(np.linalg.norm(proposal - weights))
+            weights, current = proposal, proposed_value
+            step = min(step * 1.05, 1.0)
+            if change <= config.convergence_tolerance:
+                break
+        else:
+            step *= 0.5
+            if step < 1e-12:
+                break
+    full_weights = np.zeros(len(archive), dtype=float)
+    full_weights[list(indices)] = weights
+    return full_weights, float(current)
+
+
+def compute_certificate(
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    weights: np.ndarray,
+    config: AtlasConfig | None = None,
+) -> Certificate:
+    """Compute the observable, curvature, hidden, bias, and statistical terms."""
+
+    config = config or AtlasConfig()
+    weights = np.asarray(weights, dtype=float)
+    if weights.shape != (len(archive),) or np.any(weights < -1e-10):
+        raise ValueError("weights must have one nonnegative entry per archive experiment.")
+    if not np.isclose(weights.sum(), 1.0):
+        raise ValueError("weights must sum to one.")
+    representations = np.vstack([experiment.observed_representation for experiment in archive])
+    weighted_representation = weights @ representations
+    representation_term = float(
+        config.effect_lipschitz_bound
+        * np.linalg.norm(target.observed_representation - weighted_representation)
+    )
+    dispersion = float(
+        sum(
+            weight * np.linalg.norm(experiment.observed_representation - weighted_representation) ** 2
+            for weight, experiment in zip(weights, archive, strict=True)
+        )
+    )
+    curvature_term = float(config.effect_curvature_bound * dispersion / 2.0)
+    archive_radii = np.array(
+        [experiment.moderator_sensitivity_radius for experiment in archive], dtype=float
+    )
+    hidden_moderator_term = float(
+        config.hidden_moderator_lipschitz_bound
+        * (target.moderator_sensitivity_radius + weights @ archive_radii)
+    )
+    bias_term = float(
+        sum(weight * experiment.nuisance_bias_bound for weight, experiment in zip(weights, archive, strict=True))
+    )
+    statistical_term = float(
+        sqrt(
+            2.0
+            * log(2.0 / config.zeta)
+            * sum(
+                weight**2 * experiment.standard_error_certificate**2
+                for weight, experiment in zip(weights, archive, strict=True)
+            )
+        )
+    )
+    return Certificate(
+        radius=representation_term
+        + curvature_term
+        + hidden_moderator_term
+        + bias_term
+        + statistical_term,
+        representation_term=representation_term,
+        curvature_term=curvature_term,
+        hidden_moderator_term=hidden_moderator_term,
+        bias_term=bias_term,
+        statistical_term=statistical_term,
+    )
+
+
+def fit_causal_atlas(
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    config: AtlasConfig | None = None,
+) -> AtlasResult:
+    """Fit rejectable Causal ATLAS transport for one target experiment."""
+
+    config = config or AtlasConfig()
+    candidates = retrieve_semantic_candidates(
+        archive,
+        target,
+        max_candidates=config.max_candidates,
+        semantic_radius=config.semantic_radius,
+    )
+    if not candidates:
+        empty = Certificate(inf, inf, inf, inf, inf, inf)
+        return AtlasResult(
+            method="atlas",
+            candidate_indices=(),
+            candidate_distances=(),
+            weights=np.zeros(len(archive), dtype=float),
+            raw_point_estimate=None,
+            point_estimate=None,
+            accepted=False,
+            rejection_reason="no design-compatible semantic candidates",
+            certificate=empty,
+            interval_lower=float("nan"),
+            interval_upper=float("nan"),
+            objective_value=None,
+        )
+    weights, objective_value = optimize_support_weights(archive, target, candidates, config)
+    certificate = compute_certificate(archive, target, weights, config)
+    raw = float(sum(weight * experiment.estimated_effect for weight, experiment in zip(weights, archive, strict=True)))
+    accepted = bool(certificate.radius <= config.scientific_tolerance + 1e-12)
+    distances = tuple(
+        float(np.linalg.norm(archive[index].observed_representation - target.observed_representation))
+        for index in candidates
+    )
+    return AtlasResult(
+        method="atlas",
+        candidate_indices=candidates,
+        candidate_distances=distances,
+        weights=weights,
+        raw_point_estimate=raw,
+        point_estimate=raw if accepted else None,
+        accepted=accepted,
+        rejection_reason=None if accepted else "certificate exceeds scientific tolerance",
+        certificate=certificate,
+        interval_lower=raw - certificate.radius,
+        interval_upper=raw + certificate.radius,
+        objective_value=objective_value,
+    )
+
+
+def fit_no_rejection_atlas(
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    config: AtlasConfig | None = None,
+) -> AtlasResult:
+    """Ablation using the same learned weights and certificate, but no rejection."""
+
+    result = fit_causal_atlas(archive, target, config)
+    return AtlasResult(
+        method="atlas_no_rejection",
+        candidate_indices=result.candidate_indices,
+        candidate_distances=result.candidate_distances,
+        weights=result.weights,
+        raw_point_estimate=result.raw_point_estimate,
+        point_estimate=result.raw_point_estimate,
+        accepted=result.raw_point_estimate is not None,
+        rejection_reason=None,
+        certificate=result.certificate,
+        interval_lower=result.interval_lower,
+        interval_upper=result.interval_upper,
+        objective_value=result.objective_value,
+    )
+
+
+def _uniform_result(
+    method: str,
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    indices: Sequence[int],
+    config: AtlasConfig,
+) -> AtlasResult:
+    if not indices:
+        raise ValueError("Baseline requires at least one design-compatible archive experiment.")
+    weights = np.zeros(len(archive), dtype=float)
+    weights[list(indices)] = 1.0 / len(indices)
+    return _result_from_weights(method, archive, target, indices, weights, config)
+
+
+def _result_from_weights(
+    method: str,
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    indices: Sequence[int],
+    weights: np.ndarray,
+    config: AtlasConfig,
+) -> AtlasResult:
+    certificate = compute_certificate(archive, target, weights, config)
+    raw = float(sum(weight * experiment.estimated_effect for weight, experiment in zip(weights, archive, strict=True)))
+    distances = tuple(
+        float(np.linalg.norm(archive[index].observed_representation - target.observed_representation))
+        for index in indices
+    )
+    return AtlasResult(
+        method=method,
+        candidate_indices=tuple(indices),
+        candidate_distances=distances,
+        weights=weights,
+        raw_point_estimate=raw,
+        point_estimate=raw,
+        accepted=True,
+        rejection_reason=None,
+        certificate=certificate,
+        interval_lower=raw - certificate.radius,
+        interval_upper=raw + certificate.radius,
+        objective_value=None,
+    )
+
+
+def fit_semantic_forced_composition(
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    config: AtlasConfig | None = None,
+) -> AtlasResult:
+    """Force a semantic composition using inverse-distance similarity weights."""
+
+    config = config or AtlasConfig()
+    indices = retrieve_semantic_candidates(
+        archive, target, max_candidates=config.max_candidates, semantic_radius=config.semantic_radius
+    )
+    if not indices:
+        indices = tuple(
+            index for index, source in enumerate(archive) if design_compatible(source, target)
+        )
+    distances = np.array(
+        [
+            np.linalg.norm(
+                archive[index].observed_representation - target.observed_representation
+            )
+            for index in indices
+        ],
+        dtype=float,
+    )
+    similarities = 1.0 / np.maximum(distances, 1e-8)
+    weights = np.zeros(len(archive), dtype=float)
+    weights[list(indices)] = similarities / similarities.sum()
+    return _result_from_weights("semantic_forced", archive, target, indices, weights, config)
+
+
+def fit_nearest_semantic_neighbor(
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    config: AtlasConfig | None = None,
+) -> AtlasResult:
+    """Use the single closest design-compatible semantic neighbor."""
+
+    config = config or AtlasConfig()
+    indices = retrieve_semantic_candidates(archive, target)
+    if not indices:
+        raise ValueError("No design-compatible semantic neighbor exists.")
+    return _uniform_result("nearest_semantic", archive, target, indices[:1], config)
+
+
+def fit_global_mean(
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    config: AtlasConfig | None = None,
+) -> AtlasResult:
+    """Use the mean effect estimate over all design-compatible archive studies."""
+
+    config = config or AtlasConfig()
+    indices = tuple(
+        index for index, source in enumerate(archive) if design_compatible(source, target)
+    )
+    return _uniform_result("global_mean", archive, target, indices, config)
+
+
+METHODS = (
+    "atlas",
+    "atlas_no_rejection",
+    "semantic_forced",
+    "nearest_semantic",
+    "global_mean",
+)
+
+
+def fit_method(
+    method: str,
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    config: AtlasConfig | None = None,
+) -> AtlasResult:
+    """Dispatch one named estimator."""
+
+    if method == "atlas":
+        return fit_causal_atlas(archive, target, config)
+    if method == "atlas_no_rejection":
+        return fit_no_rejection_atlas(archive, target, config)
+    if method == "semantic_forced":
+        return fit_semantic_forced_composition(archive, target, config)
+    if method == "nearest_semantic":
+        return fit_nearest_semantic_neighbor(archive, target, config)
+    if method == "global_mean":
+        return fit_global_mean(archive, target, config)
+    raise ValueError(f"Unknown method: {method}")
