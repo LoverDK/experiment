@@ -18,6 +18,7 @@ from causal_atlas_sim import (
     effect_hessian,
     generate_minimal_archive,
     minimal_assumption_report,
+    SimulationConfig,
 )
 
 
@@ -61,6 +62,18 @@ class MinimalDGPTests(unittest.TestCase):
         self.assertLessEqual(
             self.generated.proxy_gap_discrepancy(),
             self.generated.hidden_moderator_certificate(),
+        )
+
+    def test_heterogeneous_archive_moderator_radii_remain_certified(self) -> None:
+        generated = generate_minimal_archive(
+            SimulationConfig(archive_moderator_radius_spread=0.40),
+            seed=92,
+        )
+        radii = [experiment.moderator_sensitivity_radius for experiment in generated.archive]
+        self.assertAlmostEqual(min(radii), 0.20)
+        self.assertAlmostEqual(max(radii), 0.60)
+        self.assertTrue(
+            all(item["satisfied"] for item in minimal_assumption_report(generated).values())
         )
 
 

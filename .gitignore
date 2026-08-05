@@ -19,6 +19,9 @@ logs/
 !results/formal_experiment_summary.csv
 !results/formal_experiment_seed_summary.csv
 !results/formal_experiment_metadata.json
+!results/calibration_experiment_summary.csv
+!results/calibration_experiment_seed_summary.csv
+!results/calibration_experiment_metadata.json
 !results/figures/
 !results/figures/*.png
 !results/tables/

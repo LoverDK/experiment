@@ -60,6 +60,17 @@ from .formal_experiment import (
     run_formal_experiment,
     wilson_interval,
 )
+from .calibration_experiment import (
+    CalibrationExperimentConfig,
+    CalibrationExperimentResult,
+    CalibrationPolicy,
+    CalibrationRecord,
+    CalibrationScenario,
+    CalibrationSummaryRow,
+    default_calibration_policies,
+    default_calibration_scenarios,
+    run_calibration_experiment,
+)
 
 __all__ = [
     "EFFECT_CURVATURE_BOUND",
@@ -115,4 +126,13 @@ __all__ = [
     "default_formal_scenarios",
     "run_formal_experiment",
     "wilson_interval",
+    "CalibrationExperimentConfig",
+    "CalibrationExperimentResult",
+    "CalibrationPolicy",
+    "CalibrationRecord",
+    "CalibrationScenario",
+    "CalibrationSummaryRow",
+    "default_calibration_policies",
+    "default_calibration_scenarios",
+    "run_calibration_experiment",
 ]

@@ -77,6 +77,7 @@ class SimulationConfig:
     outcome_noise_sd: float = 1.0
     moderator_sensitivity_radius: float = 0.20
     moderator_proxy_half_width: float = 0.10
+    archive_moderator_radius_spread: float = 0.0
     target_shift_fraction: float = 0.0
     target_shift_anchor: tuple[float, float, float, float] = (1.0, -1.0, 1.0, -1.0)
 
@@ -95,6 +96,8 @@ class SimulationConfig:
             raise ValueError("moderator_sensitivity_radius must be nonnegative.")
         if self.moderator_proxy_half_width < 0.0:
             raise ValueError("moderator_proxy_half_width must be nonnegative.")
+        if self.archive_moderator_radius_spread < 0.0:
+            raise ValueError("archive_moderator_radius_spread must be nonnegative.")
         if 2.0 * self.moderator_proxy_half_width > self.moderator_sensitivity_radius:
             raise ValueError(
                 "The sensitivity radius must cover the diameter of the proxy-compatible h set."
@@ -275,6 +278,10 @@ def generate_minimal_archive(
             n_units=config.n_units_per_experiment,
             config=config,
             rng=np.random.default_rng(child_seeds[index + 2]),
+            moderator_sensitivity_radius=(
+                config.moderator_sensitivity_radius
+                + config.archive_moderator_radius_spread * index / (config.n_archive - 1)
+            ),
         )
         for index, mechanism in enumerate(archive_mechanisms)
     )
@@ -284,6 +291,7 @@ def generate_minimal_archive(
         n_units=config.n_units_target,
         config=config,
         rng=np.random.default_rng(child_seeds[-1]),
+        moderator_sensitivity_radius=config.moderator_sensitivity_radius,
     )
     generated = GeneratedArchive(
         archive=archive,
@@ -407,9 +415,19 @@ def _generate_experiment(
     n_units: int,
     config: SimulationConfig,
     rng: np.random.Generator,
+    moderator_sensitivity_radius: float | None = None,
 ) -> ExperimentData:
     """Create one randomized, unit-level experiment with a known AIPW certificate."""
 
+    moderator_sensitivity_radius = (
+        config.moderator_sensitivity_radius
+        if moderator_sensitivity_radius is None
+        else moderator_sensitivity_radius
+    )
+    if 2.0 * config.moderator_proxy_half_width > moderator_sensitivity_radius:
+        raise ValueError(
+            "Each experiment's sensitivity radius must cover its proxy-compatible h set."
+        )
     true_effect = effect_surface(mechanism)
     covariates = rng.normal(loc=0.0, scale=1.0, size=(n_units, 2))
     baseline_outcome = 0.50 * covariates[:, 0] - 0.30 * covariates[:, 1]
@@ -464,7 +482,7 @@ def _generate_experiment(
         standard_error_certificate=float(sqrt(variance_proxy / n_units)),
         nuisance_bias_bound=0.0,
         known_propensity=config.propensity,
-        moderator_sensitivity_radius=config.moderator_sensitivity_radius,
+        moderator_sensitivity_radius=float(moderator_sensitivity_radius),
     )
 
 

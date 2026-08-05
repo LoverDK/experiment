@@ -15,6 +15,7 @@
     "outcome_noise_sd": 1.0,
     "moderator_sensitivity_radius": 0.2,
     "moderator_proxy_half_width": 0.1,
+    "archive_moderator_radius_spread": 0.0,
     "target_shift_fraction": 0.0,
     "target_shift_anchor": [
       1.0,
