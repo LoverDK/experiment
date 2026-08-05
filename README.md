@@ -136,3 +136,14 @@ results/tables/final_summary_tables.md，所有结果文件、图表和文档的
 至此，当前合成数据下的最小 DGP、方法比较、主扫描、正式多种子实验、
 消融、证书校准和失效边界实验均已完成。后续工作应由导师审核结果后，
 决定是否扩展到新的 DGP、异质设计档案或真实数据应用。
+
+## 已实现：论文图表与写作包
+
+第八阶段通过 src/causal_atlas_sim/paper_artifacts.py 和
+scripts/build_paper_artifacts.py 从已保存的 CSV 生成中文论文结果写作稿、
+可直接输入论文的 LaTeX 表格，并把新增产物写入 SHA-256 清单。该阶段不重跑
+仿真，不改变任何结果数值。
+
+写作稿位于 docs/paper_results_section.md，其中链接主扫描、正式多种子比较和
+证书校准三张图；表格位于 results/tables/paper_results_tables.tex。运行
+python scripts/build_paper_artifacts.py 可重新生成两者及产物清单。

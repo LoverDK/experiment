@@ -78,6 +78,10 @@ from .reporting import (
     render_final_report,
     render_final_summary_tables,
 )
+from .paper_artifacts import (
+    render_paper_results_section,
+    render_paper_results_tables,
+)
 
 __all__ = [
     "EFFECT_CURVATURE_BOUND",
@@ -147,4 +151,6 @@ __all__ = [
     "load_result_bundle",
     "render_final_report",
     "render_final_summary_tables",
+    "render_paper_results_section",
+    "render_paper_results_tables",
 ]

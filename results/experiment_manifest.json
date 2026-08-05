@@ -82,9 +82,19 @@
       "sha256": "1b813d3b4008bc1f4ecef3bf10bd3863deaf2de671ddd4a2306068ba3db846a6"
     },
     {
+      "path": "results/tables/paper_results_tables.tex",
+      "bytes": 1642,
+      "sha256": "72910b8387f590ac220ff6cdd980359e219e6b8a1187f4da35595983434ecde9"
+    },
+    {
       "path": "docs/final_experiment_report.md",
       "bytes": 4794,
       "sha256": "1218a14e44de76d1db5200ba1a4ddcdc1827823ce5199f4c074592b25a15dc6a"
+    },
+    {
+      "path": "docs/paper_results_section.md",
+      "bytes": 2998,
+      "sha256": "e36be945b9bff19a2fe861699ba861ae062464692cbad5611234a68ce6cfdcab"
     }
   ],
   "verification_commands": [

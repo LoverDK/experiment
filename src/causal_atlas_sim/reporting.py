@@ -315,7 +315,15 @@ def build_artifact_manifest(project_root: Path) -> dict[str, Any]:
         ),
         *sorted((project_root / "results" / "figures").glob("*.png")),
         *sorted((project_root / "results" / "tables").glob("*.md")),
-        project_root / "docs" / "final_experiment_report.md",
+        *sorted((project_root / "results" / "tables").glob("*.tex")),
+        *[
+            path
+            for path in (
+                project_root / "docs" / "final_experiment_report.md",
+                project_root / "docs" / "paper_results_section.md",
+            )
+            if path.exists()
+        ],
     ]
     artifacts = []
     for path in included:
