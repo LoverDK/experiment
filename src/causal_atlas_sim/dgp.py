@@ -77,6 +77,8 @@ class SimulationConfig:
     outcome_noise_sd: float = 1.0
     moderator_sensitivity_radius: float = 0.20
     moderator_proxy_half_width: float = 0.10
+    target_shift_fraction: float = 0.0
+    target_shift_anchor: tuple[float, float, float, float] = (1.0, -1.0, 1.0, -1.0)
 
     def __post_init__(self) -> None:
         if self.n_archive < 2:
@@ -97,6 +99,13 @@ class SimulationConfig:
             raise ValueError(
                 "The sensitivity radius must cover the diameter of the proxy-compatible h set."
             )
+        if not 0.0 <= self.target_shift_fraction <= 1.0:
+            raise ValueError("target_shift_fraction must lie in [0, 1].")
+        if len(self.target_shift_anchor) != 4 or not all(
+            MECHANISM_LOWER_BOUND <= value <= MECHANISM_UPPER_BOUND
+            for value in self.target_shift_anchor
+        ):
+            raise ValueError("target_shift_anchor must be a four-vector in [-1, 1].")
 
 
 @dataclass(frozen=True)
@@ -249,8 +258,14 @@ def generate_minimal_archive(
         for _ in range(config.n_archive)
     ]
     target_support_weights = weight_rng.dirichlet(np.ones(config.n_archive))
+    supported_target = target_support_weights @ np.vstack(
+        [mechanism.as_array() for mechanism in archive_mechanisms]
+    )
+    # A convex move towards an in-domain anchor creates controlled semantic
+    # mismatch without leaving the compact mechanism space of Assumption 3.3.
     target_mechanism = Mechanism.from_array(
-        target_support_weights @ np.vstack([mechanism.as_array() for mechanism in archive_mechanisms])
+        (1.0 - config.target_shift_fraction) * supported_target
+        + config.target_shift_fraction * np.asarray(config.target_shift_anchor, dtype=float)
     )
 
     archive = tuple(

@@ -39,6 +39,15 @@ from .comparison import (
     MethodComparisonResult,
     run_method_comparison,
 )
+from .experiments import (
+    ExperimentSummaryRow,
+    MainExperimentConfig,
+    MainExperimentResult,
+    SweepDefinition,
+    default_sweeps,
+    rows_as_dicts,
+    run_main_experiment,
+)
 
 __all__ = [
     "EFFECT_CURVATURE_BOUND",
@@ -77,4 +86,11 @@ __all__ = [
     "MethodComparisonRecord",
     "MethodComparisonResult",
     "run_method_comparison",
+    "ExperimentSummaryRow",
+    "MainExperimentConfig",
+    "MainExperimentResult",
+    "SweepDefinition",
+    "default_sweeps",
+    "rows_as_dicts",
+    "run_main_experiment",
 ]

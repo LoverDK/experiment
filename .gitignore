@@ -11,3 +11,10 @@ logs/
 *.csv
 *.parquet
 *.pkl
+
+# Keep the fixed-seed main experiment artifacts under version control.
+!results/
+!results/main_experiment_summary.csv
+!results/main_experiment_metadata.json
+!results/figures/
+!results/figures/*.png

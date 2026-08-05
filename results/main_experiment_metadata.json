@@ -1,0 +1,49 @@
+{
+  "repetitions": 200,
+  "base_seed": 20260806,
+  "methods": [
+    "atlas",
+    "atlas_no_rejection",
+    "semantic_forced",
+    "nearest_semantic",
+    "global_mean"
+  ],
+  "sweeps": [
+    {
+      "key": "semantic_shift_fraction",
+      "label": "semantic mismatch fraction",
+      "values": [
+        0.0,
+        0.1,
+        0.25
+      ]
+    },
+    {
+      "key": "moderator_sensitivity_radius",
+      "label": "hidden moderator sensitivity radius",
+      "values": [
+        0.2,
+        0.4,
+        0.6
+      ]
+    },
+    {
+      "key": "sample_size",
+      "label": "units per experiment",
+      "values": [
+        100.0,
+        400.0,
+        1000.0
+      ]
+    },
+    {
+      "key": "scientific_tolerance",
+      "label": "scientific tolerance",
+      "values": [
+        1.25,
+        1.65,
+        2.05
+      ]
+    }
+  ]
+}
