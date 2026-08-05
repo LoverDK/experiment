@@ -7,7 +7,7 @@
 - [x] 创建 GitHub 仓库并连接本地目录
 - [x] 建立仿真实验说明文档
 - [x] 实现最小化数据生成机制（sanity check）
-- [ ] 加入统计噪声并重复 Monte Carlo 实验
+- [x] 加入统计噪声并重复 Monte Carlo 实验
 - [ ] 实现目标方法和基线方法
 - [ ] 完成主实验、消融实验和敏感性分析
 
@@ -60,6 +60,12 @@
 
 更完整的数学构造、边界来源和运行方式见 [`docs/minimal_dgp.md`](docs/minimal_dgp.md)。自动校验位于 [`tests/test_dgp.py`](tests/test_dgp.py)，快速运行入口为 [`scripts/run_sanity_check.py`](scripts/run_sanity_check.py)。
 
+## 已实现：Monte Carlo 重复运行框架
+
+第二阶段位于 [`src/causal_atlas_sim/monte_carlo.py`](src/causal_atlas_sim/monte_carlo.py)。它使用独立子随机种子重复最小 DGP，并以真实支持权重组合构造一个 oracle 参考结果，检查误差、偏差、方向准确率和区间覆盖率。该 oracle 只用于验证重复运行和理论误差分解，不能当作完整 Causal ATLAS 方法的性能结果。
+
+本阶段同时报告只含统计噪声的区间，以及加入 Assumption 3.3 曲率项和 Assumption 3.5 隐藏调节变量证书后的保守区间。详细说明见 [`docs/monte_carlo.md`](docs/monte_carlo.md)，运行入口为 [`scripts/run_monte_carlo.py`](scripts/run_monte_carlo.py)。
+
 ## 下一步
 
-下一阶段将把这个已认证的单次数据生成器扩展为可重复的 Monte Carlo 运行框架：固定配置、独立随机重复、结果汇总和不确定性报告；仍不实现完整 Causal ATLAS 权重优化。
+下一阶段将实现完整 Causal ATLAS 的候选集合、权重选择、支持检验和拒绝规则，并在相同 Monte Carlo 重复数据上加入语义基线和 no-rejection ablation。

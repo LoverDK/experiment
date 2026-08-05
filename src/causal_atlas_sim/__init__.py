@@ -16,6 +16,7 @@ from .dgp import (
     generate_minimal_archive,
     minimal_assumption_report,
 )
+from .monte_carlo import MonteCarloConfig, MonteCarloRecord, MonteCarloResult, run_monte_carlo
 
 __all__ = [
     "EFFECT_CURVATURE_BOUND",
@@ -32,4 +33,8 @@ __all__ = [
     "effect_surface",
     "generate_minimal_archive",
     "minimal_assumption_report",
+    "MonteCarloConfig",
+    "MonteCarloRecord",
+    "MonteCarloResult",
+    "run_monte_carlo",
 ]
