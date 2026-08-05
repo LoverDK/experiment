@@ -1,0 +1,134 @@
+{
+  "repetitions_per_seed": 100,
+  "base_seeds": [
+    20260811,
+    20260812,
+    20260813
+  ],
+  "z_value": 1.96,
+  "dgp_config": {
+    "n_archive": 8,
+    "n_units_per_experiment": 400,
+    "n_units_target": 400,
+    "propensity": 0.5,
+    "overlap_lower_bound": 0.1,
+    "outcome_noise_sd": 1.0,
+    "moderator_sensitivity_radius": 0.2,
+    "moderator_proxy_half_width": 0.1,
+    "target_shift_fraction": 0.0,
+    "target_shift_anchor": [
+      1.0,
+      -1.0,
+      1.0,
+      -1.0
+    ]
+  },
+  "atlas_config": {
+    "max_candidates": null,
+    "semantic_radius": null,
+    "lambda_sigma": 1.0,
+    "lambda_hidden": 1.0,
+    "effect_lipschitz_bound": 2.61,
+    "effect_curvature_bound": 1.8,
+    "hidden_moderator_lipschitz_bound": 1.55,
+    "zeta": 0.05,
+    "scientific_tolerance": 1.65,
+    "max_iterations": 800,
+    "learning_rate": 0.25,
+    "convergence_tolerance": 1e-10
+  },
+  "scenarios": [
+    {
+      "key": "nominal",
+      "label": "nominal setting",
+      "semantic_shift_fraction": 0.0,
+      "moderator_sensitivity_radius": 0.2,
+      "sample_size": 400,
+      "scientific_tolerance": 1.65
+    },
+    {
+      "key": "semantic_mismatch_010",
+      "label": "mild semantic mismatch",
+      "semantic_shift_fraction": 0.1,
+      "moderator_sensitivity_radius": 0.2,
+      "sample_size": 400,
+      "scientific_tolerance": 1.65
+    },
+    {
+      "key": "semantic_mismatch_025",
+      "label": "severe semantic mismatch",
+      "semantic_shift_fraction": 0.25,
+      "moderator_sensitivity_radius": 0.2,
+      "sample_size": 400,
+      "scientific_tolerance": 1.65
+    },
+    {
+      "key": "hidden_radius_040",
+      "label": "larger hidden-moderator uncertainty",
+      "semantic_shift_fraction": 0.0,
+      "moderator_sensitivity_radius": 0.4,
+      "sample_size": 400,
+      "scientific_tolerance": 1.65
+    },
+    {
+      "key": "sample_size_100",
+      "label": "small experiments",
+      "semantic_shift_fraction": 0.0,
+      "moderator_sensitivity_radius": 0.2,
+      "sample_size": 100,
+      "scientific_tolerance": 1.65
+    },
+    {
+      "key": "sample_size_1000",
+      "label": "large experiments",
+      "semantic_shift_fraction": 0.0,
+      "moderator_sensitivity_radius": 0.2,
+      "sample_size": 1000,
+      "scientific_tolerance": 1.65
+    }
+  ],
+  "estimators": [
+    {
+      "key": "atlas",
+      "method": "atlas",
+      "lambda_sigma": null,
+      "max_candidates": null
+    },
+    {
+      "key": "atlas_no_rejection",
+      "method": "atlas_no_rejection",
+      "lambda_sigma": null,
+      "max_candidates": null
+    },
+    {
+      "key": "atlas_no_variance_penalty",
+      "method": "atlas",
+      "lambda_sigma": 0.0,
+      "max_candidates": null
+    },
+    {
+      "key": "atlas_top4_candidates",
+      "method": "atlas",
+      "lambda_sigma": null,
+      "max_candidates": 4
+    },
+    {
+      "key": "semantic_forced",
+      "method": "semantic_forced",
+      "lambda_sigma": null,
+      "max_candidates": null
+    },
+    {
+      "key": "nearest_semantic",
+      "method": "nearest_semantic",
+      "lambda_sigma": null,
+      "max_candidates": null
+    },
+    {
+      "key": "global_mean",
+      "method": "global_mean",
+      "lambda_sigma": null,
+      "max_candidates": null
+    }
+  ]
+}

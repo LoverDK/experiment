@@ -48,6 +48,18 @@ from .experiments import (
     rows_as_dicts,
     run_main_experiment,
 )
+from .formal_experiment import (
+    FormalEstimator,
+    FormalExperimentConfig,
+    FormalExperimentResult,
+    FormalRecord,
+    FormalScenario,
+    FormalSummaryRow,
+    default_formal_estimators,
+    default_formal_scenarios,
+    run_formal_experiment,
+    wilson_interval,
+)
 
 __all__ = [
     "EFFECT_CURVATURE_BOUND",
@@ -93,4 +105,14 @@ __all__ = [
     "default_sweeps",
     "rows_as_dicts",
     "run_main_experiment",
+    "FormalEstimator",
+    "FormalExperimentConfig",
+    "FormalExperimentResult",
+    "FormalRecord",
+    "FormalScenario",
+    "FormalSummaryRow",
+    "default_formal_estimators",
+    "default_formal_scenarios",
+    "run_formal_experiment",
+    "wilson_interval",
 ]

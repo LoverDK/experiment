@@ -95,5 +95,18 @@ scripts/run_main_experiment.py 实现。它按固定随机种子逐一扫描语�
 docs/main_experiment.md。
 
 本阶段结果是对仿真协议和拒绝机制的筛查，不是对真实数据性能的结论。
-下一阶段将审核这些扫描结果，确定正式实验网格，并增加多随机种子、
-消融实验和最终论文表格。
+
+## 已实现：多随机种子正式实验与消融
+
+第五阶段位于 src/causal_atlas_sim/formal_experiment.py 和
+scripts/run_formal_experiment.py。正式协议包含 6 个场景、3 个独立基准
+种子和每种子 100 次重复，并在同一目标数据上公平比较完整 ATLAS、
+no-rejection、无方差正则、top-4 候选消融及三种基线。
+
+本阶段保存了 42 行合并结果、126 行逐种子结果、配置元数据、三张
+论文式 Markdown 表和一张总览图。完整设置、统计不确定性和结果解释见
+docs/formal_experiment.md，所有产物位于 results/。
+
+下一阶段将专门检验证书校准与失效边界：引入异质隐藏半径、平滑性界
+误设和更强语义失配，确认什么时候覆盖率下降、什么时候拒绝机制能够
+阻止不可靠的点预测。

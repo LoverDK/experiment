@@ -16,5 +16,10 @@ logs/
 !results/
 !results/main_experiment_summary.csv
 !results/main_experiment_metadata.json
+!results/formal_experiment_summary.csv
+!results/formal_experiment_seed_summary.csv
+!results/formal_experiment_metadata.json
 !results/figures/
 !results/figures/*.png
+!results/tables/
+!results/tables/*.md
