@@ -71,6 +71,13 @@ from .calibration_experiment import (
     default_calibration_scenarios,
     run_calibration_experiment,
 )
+from .reporting import (
+    ResultBundle,
+    build_artifact_manifest,
+    load_result_bundle,
+    render_final_report,
+    render_final_summary_tables,
+)
 
 __all__ = [
     "EFFECT_CURVATURE_BOUND",
@@ -135,4 +142,9 @@ __all__ = [
     "default_calibration_policies",
     "default_calibration_scenarios",
     "run_calibration_experiment",
+    "ResultBundle",
+    "build_artifact_manifest",
+    "load_result_bundle",
+    "render_final_report",
+    "render_final_summary_tables",
 ]

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "result_row_counts": {
+    "main_experiment_summary.csv": 60,
+    "formal_experiment_summary.csv": 42,
+    "calibration_experiment_summary.csv": 12
+  },
+  "artifacts": [
+    {
+      "path": "results/calibration_experiment_seed_summary.csv",
+      "bytes": 7503,
+      "sha256": "1a8d85b7bd85bffc0a0101fa61949a67ada222dfd263b65147a6120cebf4485e"
+    },
+    {
+      "path": "results/calibration_experiment_summary.csv",
+      "bytes": 2900,
+      "sha256": "cd30b5174f1aa754d783b230a71512532d31da152779c29e8417915f1e804ee5"
+    },
+    {
+      "path": "results/formal_experiment_seed_summary.csv",
+      "bytes": 30884,
+      "sha256": "59c7064a3e99907b484b8ecaacfdcd5dc5e1b92fb3d39c72533c8f206e501680"
+    },
+    {
+      "path": "results/formal_experiment_summary.csv",
+      "bytes": 11767,
+      "sha256": "528e252c489e752a76306482c196034f3927d76f7265771ca5c4ce6ae17799df"
+    },
+    {
+      "path": "results/main_experiment_summary.csv",
+      "bytes": 14911,
+      "sha256": "2fc75939c6b4b4b714cccbcaeba3fb0ff844a9b44c32cb21dcf95d4a941bed06"
+    },
+    {
+      "path": "results/calibration_experiment_metadata.json",
+      "bytes": 2503,
+      "sha256": "9862c036e630b913eb0d91ea6c5498e7b35584b3b928f24d2bc81cd55a0eebb0"
+    },
+    {
+      "path": "results/formal_experiment_metadata.json",
+      "bytes": 3419,
+      "sha256": "bab01525223bea491fdef71b20d1525cb58f3187984d3a7dc43b7b1933ab512a"
+    },
+    {
+      "path": "results/main_experiment_metadata.json",
+      "bytes": 887,
+      "sha256": "61556726ea8f6b39fc8c2dc80949f1e4f86bafe814726611add728e438da1d2d"
+    },
+    {
+      "path": "results/figures/calibration_experiment_overview.png",
+      "bytes": 27820,
+      "sha256": "2b484fb5f0c7d36b65e7fab8a06266ae80bb11482a679b8e7c5cf67427e1cb7b"
+    },
+    {
+      "path": "results/figures/formal_experiment_overview.png",
+      "bytes": 29083,
+      "sha256": "5e12c37f274b33494a0ff3154e040ad9b9a747529bb09d34082aa2d7a0790842"
+    },
+    {
+      "path": "results/figures/main_experiment_acceptance.png",
+      "bytes": 39384,
+      "sha256": "ea1490c9c96b6a03b6bb4572225293b60754721da9395120fd0d5ea2ccd5c001"
+    },
+    {
+      "path": "results/figures/main_experiment_mae.png",
+      "bytes": 44022,
+      "sha256": "f2ed8b8a5c86d73df096e9351d24ab40cde4de52c9936c8bad9612d1e6d7fa98"
+    },
+    {
+      "path": "results/tables/calibration_experiment_tables.md",
+      "bytes": 1968,
+      "sha256": "0479d1501f7f1a629d42f3601461a4019a3bd86446d338424ba361885af88213"
+    },
+    {
+      "path": "results/tables/final_summary_tables.md",
+      "bytes": 1318,
+      "sha256": "75ea2ddaa2d90bd9243e175c255ea7efd7570c5a4f43cd1edaeda2d9c557240f"
+    },
+    {
+      "path": "results/tables/formal_experiment_tables.md",
+      "bytes": 2036,
+      "sha256": "1b813d3b4008bc1f4ecef3bf10bd3863deaf2de671ddd4a2306068ba3db846a6"
+    },
+    {
+      "path": "docs/final_experiment_report.md",
+      "bytes": 4794,
+      "sha256": "1218a14e44de76d1db5200ba1a4ddcdc1827823ce5199f4c074592b25a15dc6a"
+    }
+  ],
+  "verification_commands": [
+    "python -m unittest discover -s tests -v",
+    "python scripts/build_final_report.py"
+  ]
+}

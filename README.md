@@ -122,5 +122,17 @@ scripts/run_calibration_experiment.py 实现。它在异质隐藏半径、强语
 完整设置、指标定义和三张结果表见 docs/calibration_experiment.md，产物
 已保存到 results/。
 
-下一阶段将汇总全部实验的可复现清单与论文叙事：统一描述数据生成、
-方法、主结果、消融和失效边界，并输出最终实验报告。
+## 已实现：最终报告与可复现清单
+
+第七阶段使用 src/causal_atlas_sim/reporting.py 和
+scripts/build_final_report.py 自动读取三张结果 CSV，验证其行数和关键
+唯一键，并生成最终中文实验报告、统一摘要表和 SHA-256 产物清单。
+
+最终报告位于 docs/final_experiment_report.md，摘要表位于
+results/tables/final_summary_tables.md，所有结果文件、图表和文档的
+校验值位于 results/experiment_manifest.json。该生成步骤不会重新抽样，
+因此报告中的每个数值可追溯到已保存的原始结果表。
+
+至此，当前合成数据下的最小 DGP、方法比较、主扫描、正式多种子实验、
+消融、证书校准和失效边界实验均已完成。后续工作应由导师审核结果后，
+决定是否扩展到新的 DGP、异质设计档案或真实数据应用。
