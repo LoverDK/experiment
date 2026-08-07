@@ -108,6 +108,18 @@ from .minimax_experiment import (
     minimax_parameters,
     run_minimax_experiment,
 )
+from .bridge_experiment import (
+    BridgeCandidate,
+    BridgeExperimentConfig,
+    BridgeExperimentResult,
+    BridgePolicy,
+    BridgeRecord,
+    BridgeScenario,
+    BridgeSummaryRow,
+    default_bridge_policies,
+    default_bridge_scenarios,
+    run_bridge_experiment,
+)
 
 __all__ = [
     "EFFECT_ABSOLUTE_BOUND",
@@ -201,4 +213,14 @@ __all__ = [
     "geometric_surface_value",
     "minimax_parameters",
     "run_minimax_experiment",
+    "BridgeCandidate",
+    "BridgeExperimentConfig",
+    "BridgeExperimentResult",
+    "BridgePolicy",
+    "BridgeRecord",
+    "BridgeScenario",
+    "BridgeSummaryRow",
+    "default_bridge_policies",
+    "default_bridge_scenarios",
+    "run_bridge_experiment",
 ]

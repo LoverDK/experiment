@@ -14,7 +14,7 @@
 - [x] 实现目标方法和基线方法
 - [x] 完成主实验、消融实验和敏感性分析
 - [x] 完成论文写作产物、部分识别和 minimax 下界实验
-- [ ] 实现 bridge design 实验
+- [x] 实现 bridge design 实验
 - [ ] 实现 NSW 真实数据实验
 
 ## 仿真实验总流程
@@ -182,5 +182,22 @@ mean 的经验最坏 MAE 均高于构造下界，并与解析高斯风险接近�
 python scripts/run_minimax_experiment.py。本阶段是定理证明子模型的数值说明，
 不是对 minimax 定理的数值证明，也不声称该代表性估计器达到全局 minimax 最优。
 
-下一阶段将实现 bridge design 实验，研究新增桥接实验如何降低 target 到
-archive 支持集的距离及理论风险界。
+## 已实现：bridge experiment design
+
+第十一阶段对应论文 Definition 5.2、Algorithm 1 和 Theorem 5.6。实验把桥接
+价值定义为部分识别证书直径的缩减，并比较使用完整公开机制表示的
+causal-support greedy、只使用 `(s1,s2)` 的 semantic-only greedy 和 random
+bridge。候选选择不读取 target 真值或真实机制；这些 oracle 量只用于事后评估。
+
+正式协议包含 4 个支持场景、12 个桥接候选、预算 4、3 个独立种子和每种子
+100 次重复，共生成 3,600 条策略路径。causal greedy 在全部场景取得最小最终
+直径。严重失配时，平均证书直径从 7.0338 降至 1.7817，缩减 74.67%；semantic
+和 random 的缩减分别为 68.99% 和 67.15%。
+
+完整目标函数、候选库、结果与 Theorem 5.6 的适用边界见
+docs/bridge_experiment.md，运行入口为 python scripts/run_bridge_experiment.py。
+本阶段比较桥接策略，但没有把经验结果解释为对 weak submodularity 或理论近似
+系数的证明。
+
+下一阶段将实现 NSW 真实数据实验，构造 job-training local-contrast archive，
+并比较 held-out reconstruction、coverage、interval width 和 rejection。

@@ -28,6 +28,9 @@ logs/
 !results/minimax_experiment_summary.csv
 !results/minimax_experiment_seed_summary.csv
 !results/minimax_experiment_metadata.json
+!results/bridge_experiment_summary.csv
+!results/bridge_experiment_seed_summary.csv
+!results/bridge_experiment_metadata.json
 !results/figures/
 !results/figures/*.png
 !results/tables/

@@ -1,0 +1,72 @@
+{
+  "repetitions_per_seed": 100,
+  "base_seeds": [
+    20261111,
+    20261112,
+    20261113
+  ],
+  "dgp_config": {
+    "n_archive": 8,
+    "n_units_per_experiment": 400,
+    "n_units_target": 400,
+    "propensity": 0.5,
+    "overlap_lower_bound": 0.1,
+    "outcome_noise_sd": 1.0,
+    "moderator_sensitivity_radius": 0.2,
+    "moderator_proxy_half_width": 0.1,
+    "archive_moderator_radius_spread": 0.0,
+    "target_shift_fraction": 0.0,
+    "target_shift_anchor": [
+      1.0,
+      -1.0,
+      1.0,
+      -1.0
+    ]
+  },
+  "scenarios": [
+    {
+      "key": "supported",
+      "label": "supported target",
+      "target_shift_fraction": 0.0
+    },
+    {
+      "key": "moderate",
+      "label": "moderate mismatch",
+      "target_shift_fraction": 0.25
+    },
+    {
+      "key": "strong",
+      "label": "strong mismatch",
+      "target_shift_fraction": 0.6
+    },
+    {
+      "key": "severe",
+      "label": "severe mismatch",
+      "target_shift_fraction": 0.8
+    }
+  ],
+  "policies": {
+    "causal_greedy": "full observed mechanism representation",
+    "semantic_greedy": "semantic coordinates (s1, s2) only",
+    "random": "uniform random candidate without marginal optimization"
+  },
+  "bridge_budget": 4,
+  "bridge_standard_error": 0.1,
+  "selection_error_bound": 0.01,
+  "zeta": 0.05,
+  "variance_penalty": 0.25,
+  "max_weight_iterations": 80,
+  "weight_tolerance": 1e-11,
+  "theorem": "Theorem 5.6",
+  "definition": "Definition 5.2 bridge value of information",
+  "certificate_constants": {
+    "effect_lipschitz_bound": 2.61,
+    "effect_curvature_bound": 1.8,
+    "hidden_moderator_lipschitz_bound": 1.55,
+    "effect_absolute_bound": 3.88
+  },
+  "objective": "expected shrinkage of a support-diameter certificate; the pre-outcome width uses the known bridge standard error",
+  "marginal_estimator": "rank each unmeasured candidate by its observable singleton certificate, then recompute the full archive certificate after selection",
+  "oracle_evaluation": "true mechanism hull distance and bridge measurement error are evaluation-only quantities",
+  "theorem_scope": "Theorem 5.6 is conditional on monotonicity and weak submodularity; this simulation reports policy shrinkage and does not assume or prove those properties"
+}

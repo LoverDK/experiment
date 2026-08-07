@@ -5,9 +5,20 @@
     "formal_experiment_summary.csv": 42,
     "calibration_experiment_summary.csv": 12,
     "partial_identification_summary.csv": 4,
-    "minimax_experiment_summary.csv": 8
+    "minimax_experiment_summary.csv": 8,
+    "bridge_experiment_summary.csv": 12
   },
   "artifacts": [
+    {
+      "path": "results/bridge_experiment_seed_summary.csv",
+      "bytes": 8537,
+      "sha256": "9ab377073ac0295588c287dcbf473562a9361f58924c19b212e257c24c565a18"
+    },
+    {
+      "path": "results/bridge_experiment_summary.csv",
+      "bytes": 3161,
+      "sha256": "1bc1a205e602c5ac7b9e0142df7da657e1e77d8f3a1d827190aaa44a3c03a0ee"
+    },
     {
       "path": "results/calibration_experiment_seed_summary.csv",
       "bytes": 7503,
@@ -54,6 +65,11 @@
       "sha256": "b24f20db01c452f549e7521d2cad98f1268f5b0069d1e867512b4f5b8984595f"
     },
     {
+      "path": "results/bridge_experiment_metadata.json",
+      "bytes": 2310,
+      "sha256": "755b87cb2c9e9480a967c3c8b0a70e011f4882cc907f9fa01953ff7298808416"
+    },
+    {
       "path": "results/calibration_experiment_metadata.json",
       "bytes": 2503,
       "sha256": "9862c036e630b913eb0d91ea6c5498e7b35584b3b928f24d2bc81cd55a0eebb0"
@@ -77,6 +93,11 @@
       "path": "results/partial_identification_metadata.json",
       "bytes": 1679,
       "sha256": "e7201cec494e2563d7a737ea2a4d52b6a63416ac1bc373c3b53cfa096731f291"
+    },
+    {
+      "path": "results/figures/bridge_experiment_overview.png",
+      "bytes": 36581,
+      "sha256": "dc0599dcb1043e5d0b7e357e0483258fc4d4c40a9fb7c6b7a0f1e9ffa277d554"
     },
     {
       "path": "results/figures/calibration_experiment_overview.png",
@@ -107,6 +128,11 @@
       "path": "results/figures/partial_identification_overview.png",
       "bytes": 31277,
       "sha256": "94c80775136383a651c104fd2f464be96ae7ed4956334f6f847e769758cf3579"
+    },
+    {
+      "path": "results/tables/bridge_experiment_tables.md",
+      "bytes": 2230,
+      "sha256": "049fbfec7ac833c5683a5310d4bc737855500230098dc584e37ba08334b22c75"
     },
     {
       "path": "results/tables/calibration_experiment_tables.md",
@@ -153,6 +179,7 @@
     "python -m unittest discover -s tests -v",
     "python scripts/run_partial_identification_experiment.py",
     "python scripts/run_minimax_experiment.py",
+    "python scripts/run_bridge_experiment.py",
     "python scripts/build_final_report.py"
   ]
 }
