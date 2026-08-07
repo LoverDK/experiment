@@ -1,6 +1,7 @@
 """Synthetic data generators for Causal ATLAS experiments."""
 
 from .dgp import (
+    EFFECT_ABSOLUTE_BOUND,
     EFFECT_CURVATURE_BOUND,
     EFFECT_LIPSCHITZ_BOUND,
     HIDDEN_MODERATOR_LIPSCHITZ_BOUND,
@@ -82,8 +83,22 @@ from .paper_artifacts import (
     render_paper_results_section,
     render_paper_results_tables,
 )
+from .partial_identification import (
+    PartialIdentificationExperimentConfig,
+    PartialIdentificationExperimentResult,
+    PartialIdentificationInterval,
+    PartialIdentificationRecord,
+    PartialIdentificationScenario,
+    PartialIdentificationSummaryRow,
+    RejectOrIdentifyResult,
+    default_partial_identification_scenarios,
+    fit_reject_or_identify,
+    oracle_hull_distance,
+    run_partial_identification_experiment,
+)
 
 __all__ = [
+    "EFFECT_ABSOLUTE_BOUND",
     "EFFECT_CURVATURE_BOUND",
     "EFFECT_LIPSCHITZ_BOUND",
     "HIDDEN_MODERATOR_LIPSCHITZ_BOUND",
@@ -153,4 +168,15 @@ __all__ = [
     "render_final_summary_tables",
     "render_paper_results_section",
     "render_paper_results_tables",
+    "PartialIdentificationExperimentConfig",
+    "PartialIdentificationExperimentResult",
+    "PartialIdentificationInterval",
+    "PartialIdentificationRecord",
+    "PartialIdentificationScenario",
+    "PartialIdentificationSummaryRow",
+    "RejectOrIdentifyResult",
+    "default_partial_identification_scenarios",
+    "fit_reject_or_identify",
+    "oracle_hull_distance",
+    "run_partial_identification_experiment",
 ]

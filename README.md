@@ -150,3 +150,17 @@ scripts/build_paper_artifacts.py 从已保存的 CSV 生成中文论文结果写
 写作稿位于 docs/paper_results_section.md，其中链接主扫描、正式多种子比较和
 证书校准三张图；表格位于 results/tables/paper_results_tables.tex。运行
 python scripts/build_paper_artifacts.py 可重新生成两者及产物清单。
+
+## 已实现：失败组合后的部分识别
+
+第九阶段实现论文 Theorem 5.4。点组合被拒绝后，方法对 support-optimized、
+compatible-uniform 和四个最近设计兼容语义邻居分别构造同时有效的证书区间，
+再返回这些区间的交集，而不是强行发布点估计。
+
+正式协议包含 4 个支持强度场景、3 个独立种子和每种子 100 次重复，共 1,200
+个 target。所有部分识别交集均非空且覆盖真值；shift 从 0 增至 0.80 时，
+拒绝率从 0.5167 增至 0.9900，拒绝点的平均交集宽度从 3.6462 增至
+7.0770。完整说明见 docs/partial_identification_experiment.md，运行入口为
+python scripts/run_partial_identification_experiment.py。
+
+下一阶段将实现 Theorem 5.5 的 unsupported-target minimax 下界实验。

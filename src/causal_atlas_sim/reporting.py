@@ -341,10 +341,12 @@ def build_artifact_manifest(project_root: Path) -> dict[str, Any]:
             "main_experiment_summary.csv": 60,
             "formal_experiment_summary.csv": 42,
             "calibration_experiment_summary.csv": 12,
+            "partial_identification_summary.csv": 4,
         },
         "artifacts": artifacts,
         "verification_commands": [
             "python -m unittest discover -s tests -v",
+            "python scripts/run_partial_identification_experiment.py",
             "python scripts/build_final_report.py",
         ],
     }

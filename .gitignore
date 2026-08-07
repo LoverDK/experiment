@@ -22,6 +22,9 @@ logs/
 !results/calibration_experiment_summary.csv
 !results/calibration_experiment_seed_summary.csv
 !results/calibration_experiment_metadata.json
+!results/partial_identification_summary.csv
+!results/partial_identification_seed_summary.csv
+!results/partial_identification_metadata.json
 !results/figures/
 !results/figures/*.png
 !results/tables/

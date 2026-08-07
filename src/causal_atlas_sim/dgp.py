@@ -26,6 +26,8 @@ MECHANISM_UPPER_BOUND = 1.0
 EFFECT_LIPSCHITZ_BOUND = 2.61
 EFFECT_CURVATURE_BOUND = 1.80
 HIDDEN_MODERATOR_LIPSCHITZ_BOUND = 1.55
+# Triangle-inequality envelope for the nonlinear effect surface on [-1, 1]^4.
+EFFECT_ABSOLUTE_BOUND = 3.88
 
 
 @dataclass(frozen=True)
