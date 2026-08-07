@@ -11,8 +11,11 @@
 - [x] 建立仿真实验说明文档
 - [x] 实现最小化数据生成机制（sanity check）
 - [x] 加入统计噪声并重复 Monte Carlo 实验
-- [ ] 实现目标方法和基线方法
-- [ ] 完成主实验、消融实验和敏感性分析
+- [x] 实现目标方法和基线方法
+- [x] 完成主实验、消融实验和敏感性分析
+- [x] 完成论文写作产物、部分识别和 minimax 下界实验
+- [ ] 实现 bridge design 实验
+- [ ] 实现 NSW 真实数据实验
 
 ## 仿真实验总流程
 
@@ -163,4 +166,21 @@ compatible-uniform 和四个最近设计兼容语义邻居分别构造同时有�
 7.0770。完整说明见 docs/partial_identification_experiment.md，运行入口为
 python scripts/run_partial_identification_experiment.py。
 
-下一阶段将实现 Theorem 5.5 的 unsupported-target minimax 下界实验。
+## 已实现：unsupported-target minimax 下界
+
+第十阶段直接实例化论文 Theorem 5.5 证明中的两个高斯二点子模型。几何构造让
+两条有界 Lipschitz 效应曲面在所有 archive 机制处完全相同、在 target 处相差
+`2 × (1/4)min(Ld*, M)`；统计构造使用常数曲面 `±δ`，并由
+`I=Σs_j^-2` 计算 Pinsker/Le Cam 下界。
+
+正式协议交叉 4 个 hull distance 和 2 个 archive 噪声档，使用 3 个独立种子、
+每种子 100 次重复，共 2,400 次。全部 8 个场景中，inverse-variance archive
+mean 的经验最坏 MAE 均高于构造下界，并与解析高斯风险接近。`d*=0` 时有限
+信息量项主导；`d*≥0.25` 时当前设置下几何不可识别项主导。
+
+完整构造、常数、结果与限制见 docs/minimax_experiment.md，运行入口为
+python scripts/run_minimax_experiment.py。本阶段是定理证明子模型的数值说明，
+不是对 minimax 定理的数值证明，也不声称该代表性估计器达到全局 minimax 最优。
+
+下一阶段将实现 bridge design 实验，研究新增桥接实验如何降低 target 到
+archive 支持集的距离及理论风险界。

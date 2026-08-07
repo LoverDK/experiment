@@ -4,7 +4,8 @@
     "main_experiment_summary.csv": 60,
     "formal_experiment_summary.csv": 42,
     "calibration_experiment_summary.csv": 12,
-    "partial_identification_summary.csv": 4
+    "partial_identification_summary.csv": 4,
+    "minimax_experiment_summary.csv": 8
   },
   "artifacts": [
     {
@@ -33,6 +34,16 @@
       "sha256": "2fc75939c6b4b4b714cccbcaeba3fb0ff844a9b44c32cb21dcf95d4a941bed06"
     },
     {
+      "path": "results/minimax_experiment_seed_summary.csv",
+      "bytes": 8357,
+      "sha256": "44934bf73dab8e8e26d2e33233bb0caf5198485ceaff53a4c1af6db8b67f7ad2"
+    },
+    {
+      "path": "results/minimax_experiment_summary.csv",
+      "bytes": 3176,
+      "sha256": "ae96192b1db53565be7a7a7a75acd972058d4cacec8a806675d7b5b76c7783cb"
+    },
+    {
       "path": "results/partial_identification_seed_summary.csv",
       "bytes": 3182,
       "sha256": "52326f6141a02761c81c3bc5fe6cb841d3db289ffbe941ae6769435caa79e21a"
@@ -56,6 +67,11 @@
       "path": "results/main_experiment_metadata.json",
       "bytes": 887,
       "sha256": "61556726ea8f6b39fc8c2dc80949f1e4f86bafe814726611add728e438da1d2d"
+    },
+    {
+      "path": "results/minimax_experiment_metadata.json",
+      "bytes": 2035,
+      "sha256": "1f5e5ff99ad28bb11bf6d3a5dfc52c31c6ff092ef64c08560f2b8b18205b7700"
     },
     {
       "path": "results/partial_identification_metadata.json",
@@ -83,6 +99,11 @@
       "sha256": "f2ed8b8a5c86d73df096e9351d24ab40cde4de52c9936c8bad9612d1e6d7fa98"
     },
     {
+      "path": "results/figures/minimax_experiment_overview.png",
+      "bytes": 33773,
+      "sha256": "c6e1df5d1e9d6dd946287b87f3891ca354f3a0f937dd09a59379518c398eee11"
+    },
+    {
       "path": "results/figures/partial_identification_overview.png",
       "bytes": 31277,
       "sha256": "94c80775136383a651c104fd2f464be96ae7ed4956334f6f847e769758cf3579"
@@ -101,6 +122,11 @@
       "path": "results/tables/formal_experiment_tables.md",
       "bytes": 2036,
       "sha256": "1b813d3b4008bc1f4ecef3bf10bd3863deaf2de671ddd4a2306068ba3db846a6"
+    },
+    {
+      "path": "results/tables/minimax_experiment_tables.md",
+      "bytes": 2111,
+      "sha256": "c18001ed9b955636107be0829ca8b60b01ba93f048b4b929eb1df3ef675727a8"
     },
     {
       "path": "results/tables/partial_identification_tables.md",
@@ -126,6 +152,7 @@
   "verification_commands": [
     "python -m unittest discover -s tests -v",
     "python scripts/run_partial_identification_experiment.py",
+    "python scripts/run_minimax_experiment.py",
     "python scripts/build_final_report.py"
   ]
 }

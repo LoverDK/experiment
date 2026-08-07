@@ -1,0 +1,70 @@
+{
+  "repetitions_per_seed": 100,
+  "base_seeds": [
+    20261011,
+    20261012,
+    20261013
+  ],
+  "scenarios": [
+    {
+      "key": "d000_precise",
+      "label": "d_star = 0.00; precise archive (s = 0.35)",
+      "hull_distance": 0.0,
+      "archive_standard_error": 0.35
+    },
+    {
+      "key": "d000_noisy",
+      "label": "d_star = 0.00; noisy archive (s = 1.20)",
+      "hull_distance": 0.0,
+      "archive_standard_error": 1.2
+    },
+    {
+      "key": "d025_precise",
+      "label": "d_star = 0.25; precise archive (s = 0.35)",
+      "hull_distance": 0.25,
+      "archive_standard_error": 0.35
+    },
+    {
+      "key": "d025_noisy",
+      "label": "d_star = 0.25; noisy archive (s = 1.20)",
+      "hull_distance": 0.25,
+      "archive_standard_error": 1.2
+    },
+    {
+      "key": "d060_precise",
+      "label": "d_star = 0.60; precise archive (s = 0.35)",
+      "hull_distance": 0.6,
+      "archive_standard_error": 0.35
+    },
+    {
+      "key": "d060_noisy",
+      "label": "d_star = 0.60; noisy archive (s = 1.20)",
+      "hull_distance": 0.6,
+      "archive_standard_error": 1.2
+    },
+    {
+      "key": "d100_precise",
+      "label": "d_star = 1.00; precise archive (s = 0.35)",
+      "hull_distance": 1.0,
+      "archive_standard_error": 0.35
+    },
+    {
+      "key": "d100_noisy",
+      "label": "d_star = 1.00; noisy archive (s = 1.20)",
+      "hull_distance": 1.0,
+      "archive_standard_error": 1.2
+    }
+  ],
+  "archive_count": 8,
+  "effect_lipschitz_bound": 2.61,
+  "effect_absolute_bound": 3.88,
+  "le_cam_constant": 0.25,
+  "theorem": "Theorem 5.5",
+  "loss": "absolute error",
+  "representative_estimator": "inverse-variance archive mean",
+  "construction": {
+    "geometric_pair": "bounded Lipschitz ramps that agree at all archive mechanisms",
+    "statistical_pair": "constant Gaussian surfaces at plus/minus delta",
+    "interpretation": "Monte Carlo illustration of the proof submodels, not a proof of the minimax theorem"
+  }
+}

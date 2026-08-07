@@ -25,6 +25,9 @@ logs/
 !results/partial_identification_summary.csv
 !results/partial_identification_seed_summary.csv
 !results/partial_identification_metadata.json
+!results/minimax_experiment_summary.csv
+!results/minimax_experiment_seed_summary.csv
+!results/minimax_experiment_metadata.json
 !results/figures/
 !results/figures/*.png
 !results/tables/

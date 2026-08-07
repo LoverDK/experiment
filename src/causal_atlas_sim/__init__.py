@@ -96,6 +96,18 @@ from .partial_identification import (
     oracle_hull_distance,
     run_partial_identification_experiment,
 )
+from .minimax_experiment import (
+    MinimaxExperimentConfig,
+    MinimaxExperimentResult,
+    MinimaxParameters,
+    MinimaxRecord,
+    MinimaxScenario,
+    MinimaxSummaryRow,
+    default_minimax_scenarios,
+    geometric_surface_value,
+    minimax_parameters,
+    run_minimax_experiment,
+)
 
 __all__ = [
     "EFFECT_ABSOLUTE_BOUND",
@@ -179,4 +191,14 @@ __all__ = [
     "fit_reject_or_identify",
     "oracle_hull_distance",
     "run_partial_identification_experiment",
+    "MinimaxExperimentConfig",
+    "MinimaxExperimentResult",
+    "MinimaxParameters",
+    "MinimaxRecord",
+    "MinimaxScenario",
+    "MinimaxSummaryRow",
+    "default_minimax_scenarios",
+    "geometric_surface_value",
+    "minimax_parameters",
+    "run_minimax_experiment",
 ]
