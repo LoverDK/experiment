@@ -120,6 +120,23 @@ from .bridge_experiment import (
     default_bridge_scenarios,
     run_bridge_experiment,
 )
+from .nsw_experiment import (
+    NSW_COVARIATES,
+    NSW_METHODS,
+    NSW_SEMANTIC_COVARIATES,
+    NSW_SOURCE_SHA256,
+    NSW_SOURCE_URL,
+    NswArchive,
+    NswExperimentConfig,
+    NswExperimentResult,
+    NswLocalContrast,
+    NswPrediction,
+    NswRecord,
+    NswSummaryRow,
+    build_nsw_local_archive,
+    fit_nsw_method,
+    run_nsw_experiment,
+)
 
 __all__ = [
     "EFFECT_ABSOLUTE_BOUND",
@@ -223,4 +240,19 @@ __all__ = [
     "default_bridge_policies",
     "default_bridge_scenarios",
     "run_bridge_experiment",
+    "NSW_COVARIATES",
+    "NSW_METHODS",
+    "NSW_SEMANTIC_COVARIATES",
+    "NSW_SOURCE_SHA256",
+    "NSW_SOURCE_URL",
+    "NswArchive",
+    "NswExperimentConfig",
+    "NswExperimentResult",
+    "NswLocalContrast",
+    "NswPrediction",
+    "NswRecord",
+    "NswSummaryRow",
+    "build_nsw_local_archive",
+    "fit_nsw_method",
+    "run_nsw_experiment",
 ]

@@ -31,6 +31,9 @@ logs/
 !results/bridge_experiment_summary.csv
 !results/bridge_experiment_seed_summary.csv
 !results/bridge_experiment_metadata.json
+!results/nsw_experiment_summary.csv
+!results/nsw_experiment_seed_summary.csv
+!results/nsw_experiment_metadata.json
 !results/figures/
 !results/figures/*.png
 !results/tables/

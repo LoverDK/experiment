@@ -307,6 +307,7 @@ def build_artifact_manifest(project_root: Path) -> dict[str, Any]:
     """Build stable sizes and SHA-256 hashes for final report artifacts."""
 
     included = [
+        *sorted((project_root / "data").glob("*.dta")),
         *sorted((project_root / "results").glob("*.csv")),
         *sorted(
             path
@@ -321,6 +322,7 @@ def build_artifact_manifest(project_root: Path) -> dict[str, Any]:
             for path in (
                 project_root / "docs" / "final_experiment_report.md",
                 project_root / "docs" / "paper_results_section.md",
+                project_root / "docs" / "nsw_experiment.md",
             )
             if path.exists()
         ],
@@ -344,6 +346,7 @@ def build_artifact_manifest(project_root: Path) -> dict[str, Any]:
             "partial_identification_summary.csv": 4,
             "minimax_experiment_summary.csv": 8,
             "bridge_experiment_summary.csv": 12,
+            "nsw_experiment_summary.csv": 5,
         },
         "artifacts": artifacts,
         "verification_commands": [
@@ -351,6 +354,7 @@ def build_artifact_manifest(project_root: Path) -> dict[str, Any]:
             "python scripts/run_partial_identification_experiment.py",
             "python scripts/run_minimax_experiment.py",
             "python scripts/run_bridge_experiment.py",
+            "python scripts/run_nsw_experiment.py",
             "python scripts/build_final_report.py",
         ],
     }

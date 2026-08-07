@@ -15,7 +15,7 @@
 - [x] 完成主实验、消融实验和敏感性分析
 - [x] 完成论文写作产物、部分识别和 minimax 下界实验
 - [x] 实现 bridge design 实验
-- [ ] 实现 NSW 真实数据实验
+- [x] 实现 NSW 真实数据实验
 
 ## 仿真实验总流程
 
@@ -199,5 +199,26 @@ docs/bridge_experiment.md，运行入口为 python scripts/run_bridge_experiment
 本阶段比较桥接策略，但没有把经验结果解释为对 weak submodularity 或理论近似
 系数的证明。
 
-下一阶段将实现 NSW 真实数据实验，构造 job-training local-contrast archive，
-并比较 held-out reconstruction、coverage、interval width 和 rejection。
+## 已实现：NSW 真实数据 local-contrast archive
+
+第十二阶段对应论文 Section 6.2 和 Appendix B。仓库保存 NBER 发布的
+Dehejia-Wahba NSW 随机实验数据快照；原始文件共有 445 人，其中 treatment
+185 人、control 260 人，SHA-256 为
+`d1bd2680a1c6f799f1c6d2455bf29633fdf19be01cb19490621c20a560b4e072`。
+
+实验在 8 个标准化协变量上构造 112 个局部对比对象，每个对象含 50 人，并保存
+treated-minus-control 的 1978 earnings 差、Welch 标准误、局部 overlap 和
+neighborhood radius。正式协议使用 3 个独立基准种子、每种子 20 次对象级拆分，
+每次留出 28 个 local objects；五种方法共享完全相同的 archive-target 拆分，共
+产生 8,400 条方法级评价记录。目标 effect 和 standard error 不进入预测方法，
+只作为带噪声的事后评价参考。
+
+ATLAS 的 holdout MAE 为 0.8615 千美元，低于 semantic forced 的 1.1688、
+nearest semantic 的 1.2422 和 global mean 的 1.6790；区间覆盖率为 0.9744，
+拒绝率为 0.2321。由于论文未公开邻域大小、锚点选择、coordinate split、随机
+种子和证书调参，本阶段复现的是论文实验结构，不声称逐数值复刻 Table 3；重叠
+局部邻域也使这些对象级指标属于描述性压力测试，而不是独立样本推断。
+
+完整数据来源、固定协议、公式、结果和限制见 docs/nsw_experiment.md，运行入口为
+python scripts/run_nsw_experiment.py。原始结果、逐种子汇总、元数据、Markdown
+表和总览图位于 results/。

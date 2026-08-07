@@ -1,0 +1,99 @@
+{
+  "n_neighbors": 50,
+  "n_local_objects": 112,
+  "holdout_count": 28,
+  "min_treated": 8,
+  "min_control": 8,
+  "center_norm_quantile": 0.95,
+  "radius_quantile": 0.95,
+  "max_candidates": 24,
+  "repetitions_per_seed": 20,
+  "base_seeds": [
+    20261201,
+    20261202,
+    20261203
+  ],
+  "z_value": 1.96,
+  "variance_penalty": 0.15,
+  "causal_effect_scale": 0.8,
+  "semantic_effect_scale": 0.35,
+  "nearest_effect_scale": 0.55,
+  "global_effect_scale": 0.35,
+  "dispersion_weight": 0.25,
+  "no_rejection_bias_fraction": 0.75,
+  "scientific_tolerance": 3.3,
+  "max_weight_iterations": 300,
+  "weight_tolerance": 1e-09,
+  "stage": 12,
+  "paper_section": "Section 6.2 and Appendix B: Real-Data NSW Archive",
+  "source": {
+    "source_url": "https://users.nber.org/~rdehejia/data/nsw_dw.dta",
+    "source_sha256": "d1bd2680a1c6f799f1c6d2455bf29633fdf19be01cb19490621c20a560b4e072",
+    "source_file": "data/nsw_dw.dta",
+    "source_format": "Stata .dta",
+    "dataset_rows": 445,
+    "treated_rows": 185,
+    "control_rows": 260,
+    "outcome": "1978 earnings in thousands of US dollars (re78 / 1000)",
+    "covariates": [
+      "age",
+      "education",
+      "black",
+      "hispanic",
+      "married",
+      "nodegree",
+      "re74",
+      "re75"
+    ],
+    "semantic_coordinates": [
+      "age",
+      "education",
+      "black",
+      "hispanic",
+      "married",
+      "nodegree"
+    ],
+    "causal_representation": [
+      "age",
+      "education",
+      "black",
+      "hispanic",
+      "married",
+      "nodegree",
+      "re74",
+      "re75",
+      "local_overlap_score",
+      "local_neighborhood_radius"
+    ],
+    "raw_candidate_count": 445,
+    "selected_local_object_count": 112
+  },
+  "local_object_protocol": {
+    "distance": "Euclidean distance in eight standardized covariates",
+    "anchor_filter": "exclude the top five percent of center norms and neighborhood radii, then deterministic farthest-point coverage",
+    "effect": "local randomized treated-minus-control difference in mean 1978 earnings, measured in thousands of dollars",
+    "standard_error": "Welch standard error for the two local arms",
+    "overlap_score": "4 * p_local * (1 - p_local)",
+    "radius": "root mean squared standardized distance to local context",
+    "object_count": 112,
+    "neighborhood_size": 50,
+    "treated_count_range": [
+      12,
+      31
+    ],
+    "control_count_range": [
+      19,
+      38
+    ]
+  },
+  "blind_evaluation": "held-out effect estimates and held-out standard errors are not read by any estimator; both are retained only as noisy evaluation references",
+  "method_protocol": {
+    "atlas": "semantic candidate retrieval followed by regularized convex composition in all covariates, overlap, and radius; reject when the observable certificate exceeds the fixed tolerance",
+    "atlas_no_rejection": "same point weights as ATLAS, forced publication, and a certificate with only the prespecified no-rejection bias fraction",
+    "semantic_forced": "inverse-distance weights on demographics only: age, education, race indicators, marital status, and no-degree status",
+    "nearest_semantic": "single closest demographic context",
+    "global_mean": "uniform mean of all remaining local effects"
+  },
+  "metric_scope": "MAE, sign, and coverage use the noisy held-out local contrast as the reference; they are not ground-truth subgroup-effect metrics",
+  "reproduction_scope": "the focal paper does not report neighborhood size, anchor selection, coordinate split, split seeds, or certificate tuning; this fixed protocol reproduces the experiment structure, not Table 3 values exactly"
+}

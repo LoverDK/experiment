@@ -6,9 +6,15 @@
     "calibration_experiment_summary.csv": 12,
     "partial_identification_summary.csv": 4,
     "minimax_experiment_summary.csv": 8,
-    "bridge_experiment_summary.csv": 12
+    "bridge_experiment_summary.csv": 12,
+    "nsw_experiment_summary.csv": 5
   },
   "artifacts": [
+    {
+      "path": "data/nsw_dw.dta",
+      "bytes": 28598,
+      "sha256": "d1bd2680a1c6f799f1c6d2455bf29633fdf19be01cb19490621c20a560b4e072"
+    },
     {
       "path": "results/bridge_experiment_seed_summary.csv",
       "bytes": 8537,
@@ -55,6 +61,16 @@
       "sha256": "ae96192b1db53565be7a7a7a75acd972058d4cacec8a806675d7b5b76c7783cb"
     },
     {
+      "path": "results/nsw_experiment_seed_summary.csv",
+      "bytes": 2496,
+      "sha256": "fd5a793b21b20c5b9e280ad556829334021238f32faa4376822291fa4f76cd0f"
+    },
+    {
+      "path": "results/nsw_experiment_summary.csv",
+      "bytes": 1053,
+      "sha256": "1913ebacaad93c4986a1aa1f76f8031f2116f75ddd6b638cfb2d2fe5e3624e60"
+    },
+    {
       "path": "results/partial_identification_seed_summary.csv",
       "bytes": 3182,
       "sha256": "52326f6141a02761c81c3bc5fe6cb841d3db289ffbe941ae6769435caa79e21a"
@@ -88,6 +104,11 @@
       "path": "results/minimax_experiment_metadata.json",
       "bytes": 2035,
       "sha256": "1f5e5ff99ad28bb11bf6d3a5dfc52c31c6ff092ef64c08560f2b8b18205b7700"
+    },
+    {
+      "path": "results/nsw_experiment_metadata.json",
+      "bytes": 3712,
+      "sha256": "36bb14d202548efa8aefe1cd27fa36bc867131b2f77597ad4e7ebb8215d5ce0a"
     },
     {
       "path": "results/partial_identification_metadata.json",
@@ -125,6 +146,11 @@
       "sha256": "c6e1df5d1e9d6dd946287b87f3891ca354f3a0f937dd09a59379518c398eee11"
     },
     {
+      "path": "results/figures/nsw_experiment_overview.png",
+      "bytes": 47577,
+      "sha256": "63fd893241071c9494123788f42068832b890446537974ee4baa06afd63ebce1"
+    },
+    {
       "path": "results/figures/partial_identification_overview.png",
       "bytes": 31277,
       "sha256": "94c80775136383a651c104fd2f464be96ae7ed4956334f6f847e769758cf3579"
@@ -155,6 +181,11 @@
       "sha256": "c18001ed9b955636107be0829ca8b60b01ba93f048b4b929eb1df3ef675727a8"
     },
     {
+      "path": "results/tables/nsw_experiment_tables.md",
+      "bytes": 1171,
+      "sha256": "78b21b3fc5a68f73556e4960e8c77b67db24efe18854f4dd5aedff7256ed0fc3"
+    },
+    {
       "path": "results/tables/partial_identification_tables.md",
       "bytes": 1295,
       "sha256": "385181a9daba5faecf905baf2ce008dc6ffdeee7af2a4ab67634e2f9b29801f6"
@@ -173,6 +204,11 @@
       "path": "docs/paper_results_section.md",
       "bytes": 2998,
       "sha256": "e36be945b9bff19a2fe861699ba861ae062464692cbad5611234a68ce6cfdcab"
+    },
+    {
+      "path": "docs/nsw_experiment.md",
+      "bytes": 6141,
+      "sha256": "9a837526a4fa439b7566007e378d18fd5085fb4d81d16d46bfad2c1985ac838a"
     }
   ],
   "verification_commands": [
@@ -180,6 +216,7 @@
     "python scripts/run_partial_identification_experiment.py",
     "python scripts/run_minimax_experiment.py",
     "python scripts/run_bridge_experiment.py",
+    "python scripts/run_nsw_experiment.py",
     "python scripts/build_final_report.py"
   ]
 }
