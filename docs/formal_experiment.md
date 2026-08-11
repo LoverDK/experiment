@@ -1,78 +1,70 @@
-# Stage 5: multi-seed formal benchmark and ablations
+# 阶段5：多种子正式基准实验与消融
 
-This stage replaces the single screening seed with a formal pooled protocol.
-Six scenarios are evaluated with three independent base seeds and 100
-repetitions per seed. Each scenario-estimator row therefore pools 300 targets,
-while the seed-level table preserves the three independent batch estimates.
+本阶段用正式的合并协议替代阶段4的单种子筛查。实验包含6个场景、3个独立基础
+种子，并在每个种子下重复100次。因此，每个“场景-估计器”汇总行包含300个
+target，同时保留3个种子批次各自的结果，用于检查跨种子稳定性。
 
-## Formal scenarios
+## 正式场景
 
-| key | changed factor |
+| 场景标识 | 改变的因素 |
 | --- | --- |
-| nominal | shift 0, hidden radius 0.20, n = 400, tolerance 1.65 |
-| semantic_mismatch_010 | semantic shift fraction 0.10 |
-| semantic_mismatch_025 | semantic shift fraction 0.25 |
-| hidden_radius_040 | hidden moderator radius 0.40 |
-| sample_size_100 | 100 units per experiment |
-| sample_size_1000 | 1000 units per experiment |
+| `nominal`（名义场景） | 失配为0、隐藏半径0.20、样本量400、容忍度1.65 |
+| `semantic_mismatch_010` | 语义失配比例0.10 |
+| `semantic_mismatch_025` | 语义失配比例0.25 |
+| `hidden_radius_040` | 隐藏调节变量半径0.40 |
+| `sample_size_100` | 每个实验100个单位 |
+| `sample_size_1000` | 每个实验1000个单位 |
 
-The same child seeds are reused across scenarios. This creates paired
-mechanism draws while changing only the scenario factor. Within every target
-draw, all estimators receive exactly the same archive and target records.
+不同场景重复使用相同的子随机种子，使机制抽样能够配对比较，而每次只改变指定的
+场景因素。在每个 target 抽样中，所有估计器接收完全相同的 archive 和 target 记录。
 
-## Methods and ablations
+## 方法与消融
 
-- atlas: the full rejectable method;
-- atlas_no_rejection: identical weights and certificate, but the point estimate
-  is always released;
-- atlas_no_variance_penalty: set lambda_sigma to zero in weight learning;
-- atlas_top4_candidates: restrict retrieval to the four closest compatible
-  experiments;
-- semantic_forced, nearest_semantic, and global_mean: comparison baselines.
+- `atlas`：完整的可拒绝 ATLAS；
+- `atlas_no_rejection`：权重和证书相同，但始终发布点预测；
+- `atlas_no_variance_penalty`：学习权重时把 `lambda_sigma` 设为0；
+- `atlas_top4_candidates`：只保留距离最近的4个设计兼容候选实验；
+- `semantic_forced`、`nearest_semantic` 和 `global_mean`：三种比较基线。
 
-A no-hidden-penalty weight ablation is intentionally omitted from this DGP.
-Every archive experiment currently has the same moderator radius, so the
-weighted hidden-radius term is constant on the simplex and removing it would
-be algebraically identical. A meaningful version requires heterogeneous
-archive-specific moderator radii and belongs in the next robustness stage.
+本数据生成机制有意省略了“取消隐藏变量惩罚”的消融，因为所有 archive 实验当前
+具有相同的调节变量敏感性半径。此时加权隐藏半径项在单纯形上是常数，删除它在
+代数上不会改变权重。要进行有意义的此类消融，必须让不同 archive 实验具有不同
+的敏感性半径，阶段6的稳健性实验会包含这种设置。
 
-## Reported uncertainty
+## 报告的统计不确定性
 
-The pooled table reports acceptance, a Wilson 95 percent Monte Carlo interval
-for the acceptance rate, accepted-point MAE and its Monte Carlo
-standard error, RMSE, bias, sign accuracy, interval coverage, interval width,
-and mean certificate radius. It also reports the standard deviation of
-acceptance and MAE across the three base-seed batches.
+合并结果表报告：接受率、接受率的 Wilson 95% 蒙特卡洛区间、接受点平均绝对误差、
+平均绝对误差的蒙特卡洛标准误、均方根误差、偏差、方向准确率、区间覆盖率、区间
+宽度和平均证书半径。结果还报告接受率与平均绝对误差在3个基础种子批次之间的
+标准差。
 
-## Current findings
+## 当前主要发现
 
-In the nominal setting, full ATLAS accepts 0.4567 of targets and has accepted
-MAE 0.1111. The no-rejection version has MAE 0.1388, while semantic forced,
-nearest semantic, and global mean have MAE 0.2241, 0.4557, and 0.2816.
+在名义场景中，完整 ATLAS 接受0.4567的 target，接受后的平均绝对误差为0.1111。
+不拒绝版本的平均绝对误差为0.1388；语义强制组合、最近语义邻居和全局均值分别为
+0.2241、0.4557和0.2816。
 
-Increasing semantic mismatch from 0 to 0.25 lowers ATLAS acceptance from
-0.4567 to 0.2767 and raises accepted MAE from 0.1111 to 0.1568. The hidden
-radius 0.40 scenario is completely rejected. Increasing sample size from 100
-to 1000 raises acceptance from 0.2300 to 0.4967.
+语义失配从0增加到0.25时，ATLAS 接受率从0.4567降到0.2767，接受后的平均绝对
+误差从0.1111升到0.1568。隐藏半径为0.40时，所有 target 都被拒绝。样本量从100
+增加到1000时，接受率从0.2300升到0.4967。
 
-Removing variance regularization has only a small effect in the nominal DGP:
-acceptance changes from 0.4567 to 0.4400 and accepted MAE from 0.1111 to
-0.1124. Restricting retrieval to four candidates is more consequential:
-acceptance falls to 0.3233 and accepted MAE rises to 0.1251.
+取消方差正则对名义场景的影响较小：接受率从0.4567变为0.4400，接受后的平均绝对
+误差从0.1111变为0.1124。只保留4个候选的影响更明显：接受率降到0.3233，接受后
+的平均绝对误差升到0.1251。
 
-All certified intervals cover the synthetic truth in these runs. This is
-consistent with conservative certificates, but it also motivates a dedicated
-calibration stress test rather than treating 1.000 coverage as automatically
-optimal.
+所有证书区间在这些实验中都覆盖了合成真值。这与证书较为保守一致，但也说明不能
+把1.000的覆盖率自动理解成最优结果，需要阶段6专门检验证书的校准和失效边界。
 
-## Reproducible outputs
+## 可复现产物
 
-- results/formal_experiment_summary.csv: pooled 42-row result table;
-- results/formal_experiment_seed_summary.csv: 126 seed-specific rows;
-- results/formal_experiment_metadata.json: exact protocol;
-- results/tables/formal_experiment_tables.md: three paper-facing tables;
-- results/figures/formal_experiment_overview.png: benchmark overview.
+- `results/formal_experiment_summary.csv`：42行合并结果表；
+- `results/formal_experiment_seed_summary.csv`：126行逐种子结果表；
+- `results/formal_experiment_metadata.json`：完整固定协议；
+- `results/tables/formal_experiment_tables.md`：三张面向论文的结果表；
+- `results/figures/formal_experiment_overview.png`：正式基准实验总览图。
 
-Run:
+运行命令：
 
-    python scripts/run_formal_experiment.py
+```powershell
+python scripts/run_formal_experiment.py
+```

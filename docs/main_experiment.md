@@ -1,61 +1,53 @@
-# Stage 4: fixed-seed main experiment protocol
+# 阶段4：固定种子的主实验筛查协议
 
-This stage turns the method comparison into a reproducible screening protocol.
-It changes one factor at a time and keeps the other DGP and estimator settings
-at their defaults. At every level, all methods receive the same archive-target
-draws and the same child seeds.
+本阶段把阶段3的方法比较扩展为可复现的主实验筛查。程序每次只改变一个因素，
+其余数据生成机制和估计器设置保持默认值。在每个因素水平内，所有方法使用完全相同
+的 archive-target 抽样和子随机种子，保证比较公平。
 
-## Controlled factors
+## 受控因素
 
-| factor | levels | implementation |
+| 因素 | 取值 | 实现方式 |
 | --- | --- | --- |
-| semantic mismatch fraction | 0, 0.10, 0.25 | move the target from the oracle archive mixture toward an in-domain anchor |
-| hidden moderator sensitivity radius | 0.20, 0.40, 0.60 | enlarge the declared compatible h set |
-| units per experiment | 100, 400, 1000 | set archive and target unit counts together |
-| scientific tolerance | 1.25, 1.65, 2.05 | change only the accept/reject threshold |
+| 语义失配比例 | 0、0.10、0.25 | 将 target 从 oracle 历史组合向机制空间内的固定锚点移动 |
+| 隐藏调节变量敏感性半径 | 0.20、0.40、0.60 | 扩大声明的隐藏变量兼容集合 |
+| 每个实验的单位数 | 100、400、1000 | 同时改变 archive 和 target 的样本量 |
+| 科学容忍度 | 1.25、1.65、2.05 | 只改变接受或拒绝的判断门槛 |
 
-The semantic mismatch move is a convex interpolation between the exact-support
-target and the fixed anchor (1, -1, 1, -1). The target therefore remains in
-the compact mechanism space [-1, 1]^4. It is a controlled violation of exact
-archive support, not a violation of the smoothness, randomization, design, or
-uncertainty assumptions.
+语义失配通过精确支持 target 与固定锚点 `(1, -1, 1, -1)` 之间的凸插值实现，
+因此 target 始终位于紧致机制空间 `[-1, 1]^4` 内。它只控制 target 偏离 archive
+精确支持的程度，不破坏平滑性、随机化、设计兼容性或不确定性假设。
 
-The hidden-radius sweep changes the certificate conservativeness. The proxy
-noise remains bounded by 0.10, so all levels continue to satisfy the declared
-proxy-compatible set condition.
+隐藏半径扫描改变证书的保守程度。代理变量噪声仍然被0.10的半宽限制，所以所有
+半径水平都继续覆盖声明的代理变量兼容集合。
 
-## Reproducibility
+## 可复现设置与文件产出
 
-The default run uses 200 repetitions and base seed 20260806. Each factor level
-uses a deterministic seed derived from the factor index; every method within a
-level sees exactly the same generated experiments.
+默认实验重复200次，基础随机种子为 `20260806`。每个因素水平使用根据因素编号
+确定性派生的种子；同一水平中的每种方法看到完全相同的生成实验。
 
-The script writes:
+脚本生成：
 
-- results/main_experiment_summary.csv: long-form method-by-factor table;
-- results/main_experiment_metadata.json: fixed configuration and levels;
-- results/figures/main_experiment_acceptance.png: ATLAS acceptance rates;
-- results/figures/main_experiment_mae.png: accepted-point MAE for all methods.
+- `results/main_experiment_summary.csv`：方法、因素和水平组成的60行长表；
+- `results/main_experiment_metadata.json`：固定配置和全部扫描水平；
+- `results/figures/main_experiment_acceptance.png`：ATLAS 接受率图；
+- `results/figures/main_experiment_mae.png`：所有方法的接受点平均绝对误差图。
 
-Run:
+运行命令：
 
-    python scripts/run_main_experiment.py
+```powershell
+python scripts/run_main_experiment.py
+```
 
-## Reading the current result
+## 当前结果怎样解读
 
-At the default tolerance 1.65, ATLAS acceptance falls from 0.515 to 0.300 as
-semantic mismatch increases from 0 to 0.25. Increasing the hidden sensitivity
-radius from 0.20 to 0.40 increases the hidden certificate term enough that the
-acceptance rate becomes 0. The sample-size sweep raises acceptance from 0.25 to
-0.605 because statistical uncertainty shrinks. Raising the tolerance from 1.25
-to 2.05 raises acceptance from 0.015 to 0.945.
+在默认科学容忍度1.65下，语义失配从0增加到0.25时，ATLAS 接受率从0.515降到
+0.300。隐藏调节变量敏感性半径从0.20增加到0.40后，隐藏证书项已经足以让接受率
+降为0。样本量从100增加到1000时，统计不确定性缩小，接受率从0.250升到0.605。
+科学容忍度从1.25提高到2.05时，接受率从0.015升到0.945。
 
-All reported certificate intervals cover the synthetic target truth in these
-screening runs. Empty accepted-MAE cells mean that ATLAS rejected every draw
-at that factor level; this is an intended decision outcome, not a missing
-calculation.
+筛查实验中的所有证书区间都覆盖了合成 target 真值。如果某个单元格的接受后平均
+绝对误差为空，表示 ATLAS 在该因素水平拒绝了全部重复，不是程序遗漏计算。
 
-These results are protocol checks for the certified synthetic setting. They are
-not yet claims about external or real-world performance. The next stage should
-pre-register the final grid, add multiple DGP seeds, and produce publication
-tables after reviewing this screening behavior.
+这些结果用于检查方法在受控合成环境中是否按照理论预期响应，不是外部或真实世界
+性能结论。阶段5将在审查这些筛查现象后固定正式场景，加入多个独立数据生成种子，
+并生成面向论文的正式结果表。

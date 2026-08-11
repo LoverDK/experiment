@@ -1,87 +1,88 @@
-# Stage 3: transport methods and baselines
+# 阶段3：迁移方法与基线比较
 
-This stage implements the first observable-only version of the Causal ATLAS
-transport decision. Each method receives only:
+本阶段实现第一个只使用可观察信息的 Causal ATLAS 迁移决策。每种方法只能读取：
 
-- observed_representation = (s1, s2, h_proxy, q);
-- the recorded DesignProfile;
-- an estimated archive effect;
-- its standard-error certificate, nuisance-bias bound, and moderator radius.
+- `observed_representation = (s1, s2, h_proxy, q)`：实验公开的机制表示；
+- 已记录的 `DesignProfile`：设计档案；
+- archive 历史实验的效应估计；
+- 历史实验的标准误证书、干扰函数偏差上界和调节变量敏感性半径。
 
-The target mechanism, target true effect, and oracle support weights are not
-read by any estimator. They are used only by the comparison layer to score the
-outputs after fitting.
+任何估计器都不能读取 target 目标实验的真实机制、真实效应以及生成数据时保存的
+oracle 支持权重。这些真值只在所有方法完成预测以后，由比较程序用于评价结果。
 
-## Candidate retrieval and compatibility
+## 候选检索与设计兼容性
 
-Archive experiments are sorted by Euclidean distance between their observed
-representations and the target representation. The recorded design profile is
-checked before an archive experiment can become a candidate. The retrieval
-function supports an optional maximum candidate count and semantic radius.
+程序首先计算每个 archive 历史实验的公开表示与 target 公开表示之间的欧氏距离，
+并按照距离从小到大排序。在一个历史实验进入候选集合以前，程序还会检查它与
+target 的设计档案是否兼容。
 
-## ATLAS weights
+候选检索支持两个可选限制：最大候选实验数量和最大语义距离。默认设置不限制
+候选数量和距离，因此当前最小数据生成机制中的8个设计兼容历史实验都会成为候选。
 
-For the retrieved candidate set, weights are constrained to the simplex and
-optimized with projected gradient descent:
+## ATLAS 权重
 
-    ||r_target - sum_j alpha_j r_j||^2
-      + lambda_sigma sum_j alpha_j^2 s_j^2
-      + lambda_hidden L_h sum_j alpha_j delta_j
+对于检索到的候选实验，权重必须位于单纯形上，即每个权重非负且所有权重之和为1。
+程序使用投影梯度下降最小化：
 
-The final full-length weight vector has zeros outside the candidate set. The
-optimizer uses no true mechanism values.
+\[
+\left\|r_\star-\sum_j\alpha_jr_j\right\|^2
++\lambda_\sigma\sum_j\alpha_j^2s_j^2
++\lambda_{\mathrm{hid}}L_h\sum_j\alpha_j\delta_j.
+\]
 
-## Certificate and decision
+第一项要求加权后的历史表示接近目标表示；第二项抑制统计方差过大的权重组合；
+第三项惩罚隐藏调节变量不确定性较大的历史实验。候选集合以外的实验权重统一为0。
+优化过程不使用真实机制值。
 
-The observable certificate is decomposed into:
+## 证书与接受或拒绝决策
 
-    L * representation_residual
-    + H/2 * weighted_representation_dispersion
-    + R_hidden
-    + weighted_nuisance_bias
-    + sqrt(2 log(2/zeta) * sum_j alpha_j^2 s_j^2)
+可观察的迁移证书被拆成以下五部分：
 
-The point estimate is the weighted archive effect estimate. It is returned
-only when the certificate radius is at most the configurable
-scientific_tolerance; otherwise the full ATLAS result is rejected while its
-interval is retained.
+\[
+L\times\text{表示残差}
++\frac{H}{2}\times\text{加权表示离散度}
++R_{\mathrm{hid}}
++\text{加权干扰函数偏差}
++\sqrt{2\log(2/\zeta)\sum_j\alpha_j^2s_j^2}.
+\]
 
-atlas_no_rejection is an ablation that uses exactly the same learned weights
-and interval but always exposes the point estimate.
+点预测是 archive 效应估计的加权平均。只有当证书半径不超过可配置的科学容忍度
+`scientific_tolerance` 时，完整 ATLAS 才会发布点预测；否则拒绝发布点预测，但仍然
+保留原始预测和证书区间。
 
-## Baselines
+`atlas_no_rejection` 是取消拒绝机制的消融方法。它使用与完整 ATLAS 完全相同的
+候选、学习权重和区间，但总是发布原始点预测。它用于单独检验拒绝机制的作用。
 
-- semantic_forced: inverse-distance composition over retrieved candidates,
-  without a rejection decision.
-- nearest_semantic: the closest design-compatible archive experiment.
-- global_mean: the uniform mean over all design-compatible archive
-  experiments.
+## 基线方法
 
-All baselines use the same uncertainty certificate implementation so interval
-coverage can be compared on the same scale.
+- `semantic_forced`（语义强制组合）：按照候选实验语义距离的倒数分配权重，不执行拒绝；
+- `nearest_semantic`（最近语义邻居）：只使用距离最近的一个设计兼容历史实验；
+- `global_mean`（全局均值）：对所有设计兼容历史实验使用相同权重。
 
-## Fair repeated comparison
+所有基线都调用相同的证书计算程序，使不同方法的区间覆盖率能够在同一尺度上比较。
 
-run_method_comparison.py generates one archive-target draw per replicate and
-passes that same draw to every method. The independent child seed is recorded,
-so comparisons do not mix different DGP realizations. The 200-repetition
-default reports acceptance/rejection, accepted-point error, sign accuracy,
-interval coverage, interval width, and certificate components.
+## 公平的重复比较
 
-With the current illustrative tolerance 1.65, the default run gives:
+`run_method_comparison.py` 每次重复只生成一套 archive-target 数据，然后把完全相同的
+数据交给所有方法。程序记录每次重复的独立子随机种子，避免不同方法在不同数据上
+比较。默认运行200次，报告接受率、拒绝率、接受点误差、方向准确率、区间覆盖率、
+区间宽度以及证书各组成部分。
 
-| method | acceptance | accepted MAE | interval coverage |
+当前演示性科学容忍度为1.65，默认结果如下：
+
+| 方法 | 接受率 | 接受后的平均绝对误差 | 区间覆盖率 |
 | --- | ---: | ---: | ---: |
-| atlas | 0.530 | 0.1184 | 1.000 |
-| atlas_no_rejection | 1.000 | 0.1372 | 1.000 |
-| semantic_forced | 1.000 | 0.2011 | 1.000 |
-| nearest_semantic | 1.000 | 0.4715 | 1.000 |
-| global_mean | 1.000 | 0.2614 | 1.000 |
+| 完整 ATLAS | 0.530 | 0.1184 | 1.000 |
+| 不拒绝 ATLAS | 1.000 | 0.1372 | 1.000 |
+| 语义强制组合 | 1.000 | 0.2011 | 1.000 |
+| 最近语义邻居 | 1.000 | 0.4715 | 1.000 |
+| 全局均值 | 1.000 | 0.2614 | 1.000 |
 
-These are implementation checks for the synthetic DGP, not claims about
-real-world performance. The tolerance is a scientific decision parameter and
-must be selected or sensitivity-analysed in the final experiment.
+这些结果只用于检查合成数据下的方法实现，不能解释为真实世界性能结论。科学容忍度
+是研究者的决策参数，正式实验必须预先确定或进行敏感性分析。
 
-Run:
+运行命令：
 
-    python scripts/run_method_comparison.py
+```powershell
+python scripts/run_method_comparison.py
+```
