@@ -1,150 +1,156 @@
-# Stage 11：Bridge experiment design
+# 阶段11：Bridge 实验设计
 
-## 理论目标
+## 在 Algorithm 1 中的位置
 
-本阶段对应论文 Definition 5.2、Algorithm 1 和 Theorem 5.6。拒绝点组合后，
-bridge 的价值不是文本新颖性，而是目标部分识别区域的期望直径缩减：
+本阶段严格对应 Algorithm 1 第 10--15 行、Definition 5.2 和 Theorem 5.6。
+`run_algorithm1(...)` 先执行阶段 3 的组合与拒绝判断；只有 Theorem 5.1 证书超过
+科学容忍度时，才构造阶段 9 的 Theorem 5.4 区间并启动 bridge。接受分支不会
+选择 bridge。
+
+阶段 11 为了专门检验拒绝分支，把 `support_tolerance` 固定为 0，确保所有模拟
+target 都进入 bridge 设计。这个设置是实验隔离手段，不是实际应用中建议的科学
+容忍度。
+
+## 第一步：得到当前部分识别区域
+
+程序先用当前 archive 构造
 
 \[
-\operatorname{VoI}_{\mathcal A}(b)
-=
-\operatorname{diam}\{\Theta_{\mathcal A}(e^\star)\}
--
-\mathbb E_b\!left[
-\operatorname{diam}\{\Theta_{\mathcal A\cup\{b\}}(e^\star)\}
+\widehat\Theta_A(e_\star)
+=\bigcap_{\alpha\in W_A(e_\star)}
+\left[
+\sum_j\alpha_j\widehat\tau_j-B(\alpha,\zeta_\alpha),
+\sum_j\alpha_j\widehat\tau_j+B(\alpha,\zeta_\alpha)
 \right].
 \]
 
-对候选集合 \(S\)，论文记
+这个交集的直径是 bridge 设计真正要缩小的对象，不再使用单候选距离或
+Theorem 5.1 半径代理。
+
+## 第二步：为未来 bridge 结果声明规划模型
+
+候选尚未运行时，它的未来效应估计未知，所以 Definition 5.2 要对未来结果取
+期望。本实验公开声明以下可复现规划模型：
+
+1. 用当前公开 archive 对候选的公开表示运行 ATLAS，得到候选效应的 plug-in
+   预测均值；
+2. 若候选支持不足而没有可用预测，就退回当前 archive 效应估计的均值；
+3. 令未来 bridge 估计服从以该预测为均值、候选设计标准误 0.10 为标准差的正态
+   分布；
+4. 使用 3 点 Gauss-Hermite 求积，对每个假想结果重建 Theorem 5.4 交集并计算
+   期望直径。
+
+这不是论文指定的唯一预测分布；论文定义了期望型 VoI，但没有给出本仿真的未来
+结果先验。因此正态 plug-in 模型是本项目明确公开的数值实例化，而不是隐藏调参。
+
+## 第三步：计算当前集合条件下的边际 VoI
+
+设已经选择并观测的 bridge 集合是 (S_{b-1})。对每个尚未选择的候选 (u)，程序
+计算
 
 \[
-F(S)=\operatorname{diam}\{\Theta_{\mathcal A}(e^\star)\}
--\mathbb E\!left[
-\operatorname{diam}\{\Theta_{\mathcal A\cup S}(e^\star)\}
+\widehat{\operatorname{VoI}}(u\mid S_{b-1})
+=\operatorname{diam}\widehat\Theta_{A\cup S_{b-1}}(e_\star)
+-\mathbb E_u\left[
+\operatorname{diam}
+\widehat\Theta_{A\cup S_{b-1}\cup\{u\}}(e_\star)
 \right].
 \]
 
-如果 \(F\) 单调、\(F(\varnothing)=0\)，并且是 \(\gamma\)-weakly submodular，
-同时 greedy 使用的边际价值误差统一不超过 \(\varepsilon_{\mathrm{est}}\)，则预算
-\(B\) 下 Theorem 5.6 给出
+选择边际值最大的候选以后，它的模拟 `observed_effect` 才进入 archive。下一轮会
+基于扩展后的 archive 重新预测剩余候选、重新积分和重新排序。因此第 2、3、4 个
+bridge 都条件于前面已经选择并观测的集合，不是预先排好的一张固定榜单。
 
-\[
-F(S_B)
-\ge
-(1-e^{-\gamma})F(S^\star)
--\frac{2B\varepsilon_{\mathrm{est}}}{\gamma}.
-\]
+选择时不读取 target 真值、target 真实机制、候选真实效应或候选真实机制。这些
+oracle 变量仅在策略结束后计算真实机制凸包距离和 bridge 测量误差。
 
-该定理是条件保证，不声明所有 bridge 目标天然满足 weak submodularity。本实验
-比较三种选择策略的直径缩减，不把数值结果当作上述条件或近似系数的证明。
+## 第四步：候选库与三种策略
 
-## 可计算的直径代理
+每个 target 附近生成 12 个候选：4 个四维都接近的 `causal_full`、4 个只在
+((s_1,s_2)) 上接近的 `semantic_trap`、4 个四维中等偏移的 `mixed`。
 
-在 bridge outcome 尚未观测时，完整的 \(\Theta_{\mathcal A\cup\{b\}}\) 依赖未知
-结果。本阶段使用一个可审计的 design-time support-diameter certificate：
-
-\[
-D_{\mathcal A}
-=2\min\left\{
-M,
-L\rho_\star(\alpha)
-+\frac{H}{2}\operatorname{Disp}(\alpha)
-+R_{\mathrm{hid}}(\alpha)
-+\sqrt{2\log(2/\zeta)\sum_j\alpha_j^2s_j^2}
-\right\}.
-\]
-
-它沿用 Theorem 5.1 的 support、curvature、hidden-moderator 和 statistical 四个
-证书分量，使用 \(L=2.61\)、\(H=1.80\)、\(M=3.88\) 和 \(\zeta=0.05\)。
-权重在单纯形上同时降低公开表示的 support residual 和方差集中度。
-
-候选尚未运行时，策略用该候选的公开表示、moderator radius 和已知设计标准误
-计算 singleton certificate，作为边际价值估计；候选选中后，再把它加入 archive，
-重新求完整权重和完整直径。边际估计额外加入绝对值不超过 0.01 的均匀误差，
-与 Theorem 5.6 的统一误差条件相对应。
-
-bridge effect 按论文附录的非线性曲面生成，并加入标准误为 0.10 的高斯测量误差。
-该 outcome 不进入选择策略；在设计时，它只通过已知标准误影响期望宽度。真实
-bridge effect、target 真值和真实机制只用于仿真评估。
-
-## 候选库与策略
-
-每个 target 的公开表示附近生成 12 个候选：
-
-1. 4 个 `causal_full`：在语义、隐藏调节代理和设计坐标上都接近 target；
-2. 4 个 `semantic_trap`：在 \((s_1,s_2)\) 上很近，但在隐藏调节和设计坐标上远；
-3. 4 个 `mixed`：在四个坐标上中等幅度变化。
-
-三种策略共享完全相同的 archive、target、候选和 bridge outcomes：
-
-| 策略 | 设计时允许读取的信息 | 选择规则 |
+| 策略 | 规划时使用的公开坐标 | 选择规则 |
 | --- | --- | --- |
-| causal-support greedy | 完整公开表示 \((s_1,s_2,h_{proxy},q)\) | 每步最大化估计直径缩减 |
-| semantic-only greedy | 仅 \((s_1,s_2)\) | 每步最大化语义空间直径缩减 |
-| random bridge | 候选索引 | 从剩余候选均匀随机选择 |
+| causal-support greedy | ((s_1,s_2,h_{proxy},q)) | 每轮最大化条件边际期望直径缩减 |
+| semantic-only greedy | 仅 ((s_1,s_2)) | 在纯语义表示下最大化同一个条件边际目标 |
+| random bridge | 不计算 VoI | 从剩余候选均匀随机选择 |
 
-最终评价对三种策略统一使用完整四维公开表示的证书直径。另报告真实机制到扩展
-archive 凸包的 oracle 距离，但该距离不参与选择。
+三种策略最终都用完整四维表示重算评价区间，保证结果处于同一尺度。边际值可加入
+绝对值不超过 0.01 的均匀误差，用来实例化 Theorem 5.6 的估计误差条件。
+
+## 第五步：处理空交集
+
+Lemma 5.1 规定：Theorem 5.4 交集为空，表示 archive 估计和声明证书在当前置信
+水平下相互不一致。空集的直径不是 0，不能当成“完美收缩”。实现把这种状态记为
+未定义直径并停止当前直径型规划，同时单独汇报：
+
+- `budget_completion_rate`：真正选满 4 个 bridge 的路径比例；
+- `mean_selected_bridge_count`：实际平均选择数；
+- `planning_inconsistency_rate`：规划表示下出现空交集的比例；
+- `evaluation_inconsistency_rate`：完整四维评价交集出现空集的比例。
+
+绘图时，提前停止路径在后续预算位置保持最后一个仍有定义的评价直径；它不会被
+补成 0，也不会被算作额外缩减。
 
 ## 固定实验协议
 
-- support 场景：shift fraction 为 0、0.25、0.60、0.80；
-- archive 数量：8；
-- bridge 候选数：12；
-- bridge 预算：4；
-- bridge 标准误：0.10；
-- 边际估计统一误差上界：0.01；
-- 独立基准种子：20261111、20261112、20261113；
+- support shift：0、0.25、0.60、0.80；
+- archive 数量：8；候选数量：12；预算：4；
+- bridge 标准误：0.10；Gauss-Hermite 节点：3；
+- 独立种子：20261111、20261112、20261113；
 - 每个种子、每个场景重复 100 次；
-- 总 target 重复数：4 × 3 × 100 = 1,200；
-- 总策略路径：1,200 × 3 = 3,600。
+- 1,200 个 target，3,600 条策略路径。
 
-## 结果
+## 正式结果
 
-| 场景 | 策略 | 初始直径 | 最终直径 | 缩减 | 缩减比例 | 初始 oracle 距离 | 最终 oracle 距离 |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| supported | causal greedy | 3.3559 | 2.5332 | 0.8228 | 0.2452 | 0.0000 | 0.0000 |
-| supported | semantic greedy | 3.3559 | 2.8771 | 0.4788 | 0.1427 | 0.0000 | 0.0000 |
-| supported | random | 3.3559 | 2.8250 | 0.5309 | 0.1582 | 0.0000 | 0.0000 |
-| moderate | causal greedy | 3.9344 | 2.0668 | 1.8676 | 0.4747 | 0.1246 | 0.0051 |
-| moderate | semantic greedy | 3.9344 | 2.7369 | 1.1975 | 0.3044 | 0.1246 | 0.0100 |
-| moderate | random | 3.9344 | 2.6335 | 1.3009 | 0.3307 | 0.1246 | 0.0062 |
-| strong | causal greedy | 6.1000 | 1.7765 | 4.3236 | 0.7088 | 0.6446 | 0.0148 |
-| strong | semantic greedy | 6.1000 | 2.4289 | 3.6711 | 0.6018 | 0.6446 | 0.0271 |
-| strong | random | 6.1000 | 2.3967 | 3.7033 | 0.6071 | 0.6446 | 0.0306 |
-| severe | causal greedy | 7.0338 | 1.7817 | 5.2521 | 0.7467 | 1.0015 | 0.0153 |
-| severe | semantic greedy | 7.0338 | 2.1808 | 4.8529 | 0.6899 | 1.0015 | 0.0155 |
-| severe | random | 7.0338 | 2.3104 | 4.7234 | 0.6715 | 1.0015 | 0.0389 |
+| 场景 | 策略 | 完成率 | 规划不一致率 | 初始直径 | 最终直径 | 缩减比例 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| supported | causal greedy | 1.0000 | 0.0000 | 3.3502 | 2.3093 | 0.3107 |
+| supported | semantic greedy | 0.9967 | 0.0067 | 3.3502 | 2.7790 | 0.1705 |
+| supported | random | 1.0000 | 0.0000 | 3.3502 | 2.6373 | 0.2128 |
+| moderate | causal greedy | 1.0000 | 0.0000 | 3.7867 | 2.0674 | 0.4540 |
+| moderate | semantic greedy | 0.9833 | 0.0200 | 3.7867 | 2.6577 | 0.2982 |
+| moderate | random | 1.0000 | 0.0000 | 3.7867 | 2.5285 | 0.3323 |
+| strong | causal greedy | 1.0000 | 0.0000 | 5.5042 | 1.8620 | 0.6617 |
+| strong | semantic greedy | 0.9433 | 0.0600 | 5.5042 | 2.4832 | 0.5489 |
+| strong | random | 1.0000 | 0.0000 | 5.5042 | 2.3848 | 0.5667 |
+| severe | causal greedy | 1.0000 | 0.0000 | 6.9423 | 1.8772 | 0.7296 |
+| severe | semantic greedy | 0.9667 | 0.0367 | 6.9423 | 2.3309 | 0.6642 |
+| severe | random | 1.0000 | 0.0000 | 6.9423 | 2.3167 | 0.6663 |
+
+所有策略的完整四维评价不一致率都是 0。causal greedy 在四个场景都取得最小
+平均最终直径，并且全部 1,200 条相应路径都选满预算。纯语义规划在 0.67%--6.00%
+的路径上出现规划证书不一致，这说明仅看语义坐标不仅可能选得较差，还可能使
+规划层的证书彼此冲突。
+
+严重失配时，causal greedy 把平均部分识别直径从 6.9423 降至 1.8772，缩减
+72.96%；其 oracle 凸包距离从 1.0015 降至 0.0316。oracle 距离不参与选择，只
+用于说明选中的 bridge 在真实机制空间确实补上了支持缺口。
 
 ![Bridge design 实验总览](../results/figures/bridge_experiment_overview.png)
 
-causal greedy 在全部四个场景中取得最小最终证书直径。支持缺口越大，bridge 的
-绝对价值越大：严重失配下平均缩减 5.2521，而 supported 场景缩减 0.8228。
-supported 场景的 oracle hull distance 已接近 0，但统计、曲率和隐藏调节证书仍
-非零，因此新实验仍能通过增加局部精度来缩短直径。
+## Theorem 5.6 的适用边界
 
-semantic greedy 在 strong 和 severe 场景中也能把若干候选的真实机制凸包扩展到
-target 附近，但这些候选在隐藏调节和设计坐标上分散，导致 curvature 和完整证书
-直径更大。因此，仅报告最终 oracle hull distance 会漏掉设计风险；bridge 必须按
-完整证书而不只是“能否几何到达 target”评价。
+Theorem 5.6 是条件保证：只有 (F) 单调且满足 (gamma)-弱次模条件时，greedy
+才有论文给出的近似界。本实验没有穷举全局最优集合，也没有估计 (gamma)，所以
+不能把 causal greedy 的经验优势解释成对弱次模性或近似系数的证明。候选库与
+正态规划模型也是受控仿真设定，不能直接外推到任意真实 bridge 库。
 
-## 限制
+## 复现与肉眼可见产出
 
-本阶段没有穷举预算 4 的全局最优候选集合，也没有估计 weak-submodularity 参数
-\(\gamma\)，所以不能验证理论近似比例。singleton marginal 是候选尚未测量时的
-可计算代理，不等于完整 outcome-dependent VoI。候选库由受控偏移构造，结果不能
-外推到任意真实科学候选库。
+快速查看一条完整 Algorithm 1 路径：
 
-下一阶段的 NSW 真实数据实验会把 bridge 设计留在合成部分，不会把真实数据的
-held-out local contrast 误称为无噪声 ground truth。
+```powershell
+python scripts/run_algorithm1.py
+```
 
-## 复现
+输出会直接显示分支、证书半径、初始部分识别区间、选择顺序、每步边际值、直径
+路径和最终区间。完整 3,600 路径协议运行较慢：
 
 ```powershell
 python scripts/run_bridge_experiment.py
-python -m unittest discover -s tests -v
 ```
 
-结果位于 `results/bridge_experiment_*.csv`、对应 metadata JSON、
-`results/tables/bridge_experiment_tables.md` 和
-`results/figures/bridge_experiment_overview.png`。
+它生成 `results/bridge_experiment_summary.csv`、逐种子 CSV、元数据 JSON、
+`results/tables/bridge_experiment_tables.md` 和总览 PNG。Algorithm 1 的逐行对应见
+`docs/algorithm1_alignment.md`。

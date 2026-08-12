@@ -1,5 +1,9 @@
 # Stage 10：unsupported-target minimax 下界实验
 
+本阶段对应 Theorem 5.5，是对 Algorithm 1 为什么在支持不足时拒绝外推的理论
+下界说明，不是 Algorithm 1 伪代码内部的一行，也不被 `run_algorithm1(...)`
+调用。
+
 ## 理论目标
 
 本阶段对应论文 Theorem 5.5。对绝对误差损失，定理给出的 minimax 风险尺度为

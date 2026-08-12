@@ -16,7 +16,6 @@ from causal_atlas_sim.bridge_experiment import (
     BridgeExperimentConfig,
     BridgeScenario,
     _build_bridge_library,
-    _certificate_diameter,
     default_bridge_policies,
     run_bridge_experiment,
 )
@@ -50,38 +49,25 @@ class BridgeExperimentTests(unittest.TestCase):
             [(0, 1, 2, 3), (0, 1), None],
         )
 
-    def test_exact_target_bridge_cannot_increase_the_certificate_proxy(self) -> None:
+    def test_policy_paths_use_the_algorithm1_partial_id_diameter(self) -> None:
         config = BridgeExperimentConfig(
             repetitions_per_seed=2,
             base_seeds=(3,),
             scenarios=(BridgeScenario("strong", "strong", 0.60),),
+            bridge_budget=1,
         )
-        generated = generate_minimal_archive(config.dgp_config, seed=503)
-        candidate = BridgeCandidate(
-            key="exact_target",
-            family="oracle_test_only",
-            mechanism=generated.target.mechanism,
-            observed_representation=generated.target.observed_representation.copy(),
-            standard_error=config.bridge_standard_error,
-            moderator_sensitivity_radius=generated.target.moderator_sensitivity_radius,
-            true_effect=generated.target.true_effect,
-            observed_effect=generated.target.true_effect,
+        result = run_bridge_experiment(config)
+        self.assertEqual(len(result.records), 6)
+        self.assertTrue(
+            all(len(record.evaluation_diameter_path) == 2 for record in result.records)
         )
-        initial = _certificate_diameter(
-            generated.target.observed_representation,
-            generated.archive,
-            generated.target.moderator_sensitivity_radius,
-            (0, 1, 2, 3),
-            config,
+        self.assertTrue(
+            all(
+                np.all(np.isfinite(record.evaluation_diameter_path))
+                for record in result.records
+            )
         )
-        after = _certificate_diameter(
-            generated.target.observed_representation,
-            (*generated.archive, candidate),
-            generated.target.moderator_sensitivity_radius,
-            (0, 1, 2, 3),
-            config,
-        )
-        self.assertLessEqual(after, initial + 1e-10)
+        self.assertTrue(all(row.budget_completion_rate == 1.0 for row in result.rows))
 
     def test_multi_seed_protocol_is_deterministic(self) -> None:
         config = BridgeExperimentConfig(

@@ -1,6 +1,7 @@
 """Synthetic data generators for Causal ATLAS experiments."""
 
 from .dgp import (
+    AssumptionProfile,
     EFFECT_ABSOLUTE_BOUND,
     EFFECT_CURVATURE_BOUND,
     EFFECT_LIPSCHITZ_BOUND,
@@ -25,8 +26,10 @@ from .methods import (
     Certificate,
     compute_certificate,
     design_compatible,
+    filter_design_compatible_candidates,
     fit_causal_atlas,
     fit_global_mean,
+    honest_interval_radius,
     fit_method,
     fit_nearest_semantic_neighbor,
     fit_no_rejection_atlas,
@@ -84,6 +87,7 @@ from .paper_artifacts import (
     render_paper_results_tables,
 )
 from .partial_identification import (
+    construct_partial_identification_interval,
     PartialIdentificationExperimentConfig,
     PartialIdentificationExperimentResult,
     PartialIdentificationInterval,
@@ -95,6 +99,13 @@ from .partial_identification import (
     fit_reject_or_identify,
     oracle_hull_distance,
     run_partial_identification_experiment,
+)
+from .algorithm1 import (
+    Algorithm1Config,
+    Algorithm1Result,
+    BridgeCandidate,
+    expected_partial_id_diameter,
+    run_algorithm1,
 )
 from .minimax_experiment import (
     MinimaxExperimentConfig,
@@ -109,7 +120,6 @@ from .minimax_experiment import (
     run_minimax_experiment,
 )
 from .bridge_experiment import (
-    BridgeCandidate,
     BridgeExperimentConfig,
     BridgeExperimentResult,
     BridgePolicy,
@@ -143,6 +153,7 @@ __all__ = [
     "EFFECT_CURVATURE_BOUND",
     "EFFECT_LIPSCHITZ_BOUND",
     "HIDDEN_MODERATOR_LIPSCHITZ_BOUND",
+    "AssumptionProfile",
     "DesignProfile",
     "ExperimentData",
     "GeneratedArchive",
@@ -164,8 +175,10 @@ __all__ = [
     "Certificate",
     "compute_certificate",
     "design_compatible",
+    "filter_design_compatible_candidates",
     "fit_causal_atlas",
     "fit_global_mean",
+    "honest_interval_radius",
     "fit_method",
     "fit_nearest_semantic_neighbor",
     "fit_no_rejection_atlas",
@@ -216,10 +229,16 @@ __all__ = [
     "PartialIdentificationScenario",
     "PartialIdentificationSummaryRow",
     "RejectOrIdentifyResult",
+    "construct_partial_identification_interval",
     "default_partial_identification_scenarios",
     "fit_reject_or_identify",
     "oracle_hull_distance",
     "run_partial_identification_experiment",
+    "Algorithm1Config",
+    "Algorithm1Result",
+    "BridgeCandidate",
+    "expected_partial_id_diameter",
+    "run_algorithm1",
     "MinimaxExperimentConfig",
     "MinimaxExperimentResult",
     "MinimaxParameters",
@@ -230,7 +249,6 @@ __all__ = [
     "geometric_surface_value",
     "minimax_parameters",
     "run_minimax_experiment",
-    "BridgeCandidate",
     "BridgeExperimentConfig",
     "BridgeExperimentResult",
     "BridgePolicy",

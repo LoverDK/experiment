@@ -10,23 +10,23 @@ mechanism-support gap.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from math import log, sqrt
 from typing import Any, Sequence
 
 import numpy as np
 
 from .dgp import (
-    EFFECT_ABSOLUTE_BOUND,
-    EFFECT_CURVATURE_BOUND,
-    EFFECT_LIPSCHITZ_BOUND,
-    HIDDEN_MODERATOR_LIPSCHITZ_BOUND,
     ExperimentData,
     Mechanism,
     SimulationConfig,
     effect_surface,
     generate_minimal_archive,
 )
-from .methods import _project_to_simplex
+from .algorithm1 import (
+    Algorithm1Config,
+    BridgeCandidate,
+    run_algorithm1,
+)
+from .methods import AtlasConfig, _project_to_simplex
 
 
 @dataclass(frozen=True)
@@ -118,6 +118,9 @@ class BridgeExperimentConfig:
     bridge_budget: int = 4
     bridge_standard_error: float = 0.10
     selection_error_bound: float = 0.01
+    support_tolerance: float = 0.0
+    max_singletons: int = 4
+    bridge_quadrature_points: int = 3
     zeta: float = 0.05
     variance_penalty: float = 0.25
     max_weight_iterations: int = 80
@@ -134,26 +137,16 @@ class BridgeExperimentConfig:
             raise ValueError("bridge_standard_error must be positive.")
         if self.selection_error_bound < 0.0:
             raise ValueError("selection_error_bound must be nonnegative.")
+        if self.support_tolerance < 0.0:
+            raise ValueError("support_tolerance must be nonnegative.")
+        if self.max_singletons < 1 or self.bridge_quadrature_points < 1:
+            raise ValueError("partial-ID and quadrature controls must be positive.")
         if not 0.0 < self.zeta < 1.0:
             raise ValueError("zeta must lie in (0, 1).")
         if self.variance_penalty < 0.0:
             raise ValueError("variance_penalty must be nonnegative.")
         if self.max_weight_iterations < 1 or self.weight_tolerance <= 0.0:
             raise ValueError("weight-optimizer controls must be positive.")
-
-
-@dataclass(frozen=True)
-class BridgeCandidate:
-    """One proposed experiment with public representation and noisy outcome."""
-
-    key: str
-    family: str
-    mechanism: Mechanism
-    observed_representation: np.ndarray
-    standard_error: float
-    moderator_sensitivity_radius: float
-    true_effect: float
-    observed_effect: float
 
 
 @dataclass(frozen=True)
@@ -170,6 +163,8 @@ class BridgeRecord:
     selected_candidate_keys: tuple[str, ...]
     selected_candidate_families: tuple[str, ...]
     evaluation_diameter_path: tuple[float, ...]
+    planning_diameter_path: tuple[float, ...]
+    stopping_reason: str | None
     initial_oracle_hull_distance: float
     final_oracle_hull_distance: float
     mean_selected_measurement_absolute_error: float
@@ -180,12 +175,23 @@ class BridgeRecord:
         return self.evaluation_diameter_path[0]
 
     @property
-    def final_diameter(self) -> float:
-        return self.evaluation_diameter_path[-1]
+    def final_diameter(self) -> float | None:
+        value = self.evaluation_diameter_path[-1]
+        return value if np.isfinite(value) else None
 
     @property
-    def diameter_shrinkage(self) -> float:
+    def diameter_shrinkage(self) -> float | None:
+        if self.final_diameter is None:
+            return None
         return self.initial_diameter - self.final_diameter
+
+    @property
+    def planning_consistent(self) -> bool:
+        return bool(np.all(np.isfinite(self.planning_diameter_path)))
+
+    @property
+    def evaluation_consistent(self) -> bool:
+        return bool(np.all(np.isfinite(self.evaluation_diameter_path)))
 
 
 @dataclass(frozen=True)
@@ -199,10 +205,16 @@ class BridgeSummaryRow:
     repetitions: int
     seed_batches: int
     bridge_budget: int
+    completed_repetitions: int
+    budget_completion_rate: float
+    mean_selected_bridge_count: float
+    planning_inconsistency_rate: float
+    evaluation_inconsistency_rate: float
+    finite_final_diameter_repetitions: int
     mean_initial_diameter: float
-    mean_final_diameter: float
-    mean_diameter_shrinkage: float
-    shrinkage_fraction: float
+    mean_final_diameter: float | None
+    mean_diameter_shrinkage: float | None
+    shrinkage_fraction: float | None
     mean_initial_oracle_hull_distance: float
     mean_final_oracle_hull_distance: float
     mean_selected_measurement_absolute_error: float
@@ -232,6 +244,9 @@ class BridgeExperimentResult:
                 "bridge_budget": self.config.bridge_budget,
                 "bridge_standard_error": self.config.bridge_standard_error,
                 "selection_error_bound": self.config.selection_error_bound,
+                "support_tolerance": self.config.support_tolerance,
+                "max_singletons": self.config.max_singletons,
+                "bridge_quadrature_points": self.config.bridge_quadrature_points,
                 "zeta": self.config.zeta,
                 "variance_penalty": self.config.variance_penalty,
                 "max_weight_iterations": self.config.max_weight_iterations,
@@ -379,59 +394,33 @@ def _run_policy(
     seed: int,
     rng: np.random.Generator,
 ) -> BridgeRecord:
-    selected: list[BridgeCandidate] = []
-    remaining = list(candidates)
-    sources: list[ExperimentData | BridgeCandidate] = list(archive)
-    evaluation_path = [
-        _certificate_diameter(
-            target.observed_representation,
-            sources,
-            target.moderator_sensitivity_radius,
-            (0, 1, 2, 3),
-            config,
-        )
+    dimensions = policy.planning_dimensions or (0, 1, 2, 3)
+    algorithm_result = run_algorithm1(
+        archive,
+        target,
+        candidates,
+        Algorithm1Config(
+            atlas_config=AtlasConfig(
+                scientific_tolerance=config.support_tolerance,
+                zeta=config.zeta,
+            ),
+            max_singletons=config.max_singletons,
+            bridge_budget=config.bridge_budget,
+            bridge_quadrature_points=config.bridge_quadrature_points,
+            planning_dimensions=dimensions,
+            selection_mode=(
+                "random" if policy.planning_dimensions is None else "voi"
+            ),
+            selection_error_bound=config.selection_error_bound,
+            planning_max_iterations=config.max_weight_iterations,
+        ),
+        rng=rng,
+    )
+    selected = [
+        next(candidate for candidate in candidates if candidate.key == key)
+        for key in algorithm_result.selected_bridge_keys
     ]
-    selection_errors: list[float] = []
-    for _ in range(config.bridge_budget):
-        if policy.planning_dimensions is None:
-            chosen_index = int(rng.integers(len(remaining)))
-        else:
-            current = _certificate_diameter(
-                target.observed_representation,
-                sources,
-                target.moderator_sensitivity_radius,
-                policy.planning_dimensions,
-                config,
-            )
-            scored = []
-            for index, candidate in enumerate(remaining):
-                prospective = _singleton_candidate_diameter(
-                    target.observed_representation,
-                    policy.planning_dimensions,
-                    target.moderator_sensitivity_radius,
-                    candidate,
-                    config,
-                )
-                marginal = current - prospective
-                error = rng.uniform(
-                    -config.selection_error_bound,
-                    config.selection_error_bound,
-                )
-                scored.append((marginal + error, -index, index, abs(error)))
-            _, _, chosen_index, error = max(scored)
-            selection_errors.append(error)
-        chosen = remaining.pop(chosen_index)
-        selected.append(chosen)
-        sources.append(chosen)
-        evaluation_path.append(
-            _certificate_diameter(
-                target.observed_representation,
-                sources,
-                target.moderator_sensitivity_radius,
-                (0, 1, 2, 3),
-                config,
-            )
-        )
+    sources: list[ExperimentData | BridgeCandidate] = [*archive, *selected]
     initial_oracle = _hull_distance(
         target.mechanism.as_array(),
         [source.mechanism.as_array() for source in archive],
@@ -448,109 +437,27 @@ def _run_policy(
         seed_batch=seed_batch,
         replicate=replicate,
         seed=seed,
-        selected_candidate_keys=tuple(candidate.key for candidate in selected),
-        selected_candidate_families=tuple(candidate.family for candidate in selected),
-        evaluation_diameter_path=tuple(evaluation_path),
+        selected_candidate_keys=algorithm_result.selected_bridge_keys,
+        selected_candidate_families=algorithm_result.selected_bridge_families,
+        evaluation_diameter_path=algorithm_result.partial_diameter_path,
+        planning_diameter_path=algorithm_result.planning_diameter_path,
+        stopping_reason=algorithm_result.stopping_reason,
         initial_oracle_hull_distance=initial_oracle,
         final_oracle_hull_distance=final_oracle,
-        mean_selected_measurement_absolute_error=float(
-            np.mean(
-                [
-                    abs(candidate.observed_effect - candidate.true_effect)
-                    for candidate in selected
-                ]
+        mean_selected_measurement_absolute_error=(
+            float(
+                np.mean(
+                    [
+                        abs(candidate.observed_effect - candidate.true_effect)
+                        for candidate in selected
+                    ]
+                )
             )
+            if selected
+            else 0.0
         ),
-        mean_selection_error=(
-            float(np.mean(selection_errors)) if selection_errors else None
-        ),
+        mean_selection_error=algorithm_result.mean_selection_error,
     )
-
-
-def _certificate_diameter(
-    target_representation: np.ndarray,
-    sources: Sequence[ExperimentData | BridgeCandidate],
-    target_moderator_radius: float,
-    dimensions: tuple[int, ...],
-    config: BridgeExperimentConfig,
-) -> float:
-    """Return an observable partial-ID diameter proxy for one archive state.
-
-    It is twice a support, curvature, hidden-moderator, and statistical radius.
-    The candidate effect realization changes the center of a future interval;
-    this pre-outcome value-of-information proxy uses its known standard error,
-    which is the expected-width component available at design time.
-    """
-
-    points = np.vstack(
-        [_source_representation(source)[list(dimensions)] for source in sources]
-    )
-    target = np.asarray(target_representation, dtype=float)[list(dimensions)]
-    standard_errors = np.array(
-        [_source_standard_error(source) for source in sources], dtype=float
-    )
-    moderator_radii = np.array(
-        [_source_moderator_radius(source) for source in sources], dtype=float
-    )
-    weights = _regularized_hull_weights(
-        target,
-        points,
-        standard_errors,
-        config.variance_penalty,
-        config.max_weight_iterations,
-        config.weight_tolerance,
-    )
-    residual = target - weights @ points
-    support_distance = float(np.linalg.norm(residual))
-    weighted_point = weights @ points
-    dispersion = float(
-        sum(
-            weight * np.linalg.norm(point - weighted_point) ** 2
-            for weight, point in zip(weights, points, strict=True)
-        )
-    )
-    statistical_term = sqrt(
-        2.0
-        * log(2.0 / config.zeta)
-        * float(np.sum(weights**2 * standard_errors**2))
-    )
-    radius = (
-        EFFECT_LIPSCHITZ_BOUND * support_distance
-        + EFFECT_CURVATURE_BOUND * dispersion / 2.0
-        + HIDDEN_MODERATOR_LIPSCHITZ_BOUND
-        * (target_moderator_radius + float(weights @ moderator_radii))
-        + statistical_term
-    )
-    return 2.0 * min(radius, EFFECT_ABSOLUTE_BOUND)
-
-
-def _singleton_candidate_diameter(
-    target_representation: np.ndarray,
-    dimensions: tuple[int, ...],
-    target_moderator_radius: float,
-    candidate: BridgeCandidate,
-    config: BridgeExperimentConfig,
-) -> float:
-    """Cheap expected-width proxy used to rank an unmeasured candidate.
-
-    Before a bridge is run, its effect center is unknown.  The design stage
-    therefore ranks a candidate by its singleton support certificate, while
-    the post-selection evaluation recomputes the full archive certificate.
-    """
-
-    target = np.asarray(target_representation, dtype=float)[list(dimensions)]
-    candidate_point = candidate.observed_representation[list(dimensions)]
-    support_distance = float(np.linalg.norm(target - candidate_point))
-    statistical_term = sqrt(
-        2.0 * log(2.0 / config.zeta) * candidate.standard_error**2
-    )
-    radius = (
-        EFFECT_LIPSCHITZ_BOUND * support_distance
-        + HIDDEN_MODERATOR_LIPSCHITZ_BOUND
-        * (target_moderator_radius + candidate.moderator_sensitivity_radius)
-        + statistical_term
-    )
-    return 2.0 * min(radius, EFFECT_ABSOLUTE_BOUND)
 
 
 def _regularized_hull_weights(
@@ -616,22 +523,6 @@ def _hull_distance(target: np.ndarray, points: Sequence[np.ndarray]) -> float:
     return float(np.linalg.norm(weights @ matrix - target))
 
 
-def _source_representation(
-    source: ExperimentData | BridgeCandidate,
-) -> np.ndarray:
-    return source.observed_representation
-
-
-def _source_standard_error(source: ExperimentData | BridgeCandidate) -> float:
-    if isinstance(source, BridgeCandidate):
-        return source.standard_error
-    return source.standard_error_certificate
-
-
-def _source_moderator_radius(source: ExperimentData | BridgeCandidate) -> float:
-    return source.moderator_sensitivity_radius
-
-
 def _summarize_records(
     records: list[BridgeRecord],
     config: BridgeExperimentConfig,
@@ -662,7 +553,14 @@ def _summarize_one(
     if not records:
         raise ValueError("Cannot summarize an empty bridge-policy cell.")
     initial = float(np.mean([record.initial_diameter for record in records]))
-    final = float(np.mean([record.final_diameter for record in records]))
+    finite_records = [
+        record for record in records if record.final_diameter is not None
+    ]
+    final = (
+        float(np.mean([record.final_diameter for record in finite_records]))
+        if finite_records
+        else None
+    )
     seed_finals = [
         float(
             np.mean(
@@ -670,10 +568,15 @@ def _summarize_one(
                     record.final_diameter
                     for record in records
                     if record.seed_batch == seed_batch
+                    and record.final_diameter is not None
                 ]
             )
         )
         for seed_batch in sorted({record.seed_batch for record in records})
+        if any(
+            record.seed_batch == seed_batch and record.final_diameter is not None
+            for record in records
+        )
     ]
     selection_errors = [
         record.mean_selection_error
@@ -688,10 +591,36 @@ def _summarize_one(
         repetitions=len(records),
         seed_batches=len(seed_finals),
         bridge_budget=config.bridge_budget,
+        completed_repetitions=sum(
+            len(record.selected_candidate_keys) == config.bridge_budget
+            for record in records
+        ),
+        budget_completion_rate=float(
+            np.mean(
+                [
+                    len(record.selected_candidate_keys) == config.bridge_budget
+                    for record in records
+                ]
+            )
+        ),
+        mean_selected_bridge_count=float(
+            np.mean([len(record.selected_candidate_keys) for record in records])
+        ),
+        planning_inconsistency_rate=float(
+            np.mean([not record.planning_consistent for record in records])
+        ),
+        evaluation_inconsistency_rate=float(
+            np.mean([not record.evaluation_consistent for record in records])
+        ),
+        finite_final_diameter_repetitions=len(finite_records),
         mean_initial_diameter=initial,
         mean_final_diameter=final,
-        mean_diameter_shrinkage=initial - final,
-        shrinkage_fraction=(initial - final) / initial if initial > 0.0 else 0.0,
+        mean_diameter_shrinkage=(initial - final if final is not None else None),
+        shrinkage_fraction=(
+            (initial - final) / initial
+            if final is not None and initial > 0.0
+            else None
+        ),
         mean_initial_oracle_hull_distance=float(
             np.mean([record.initial_oracle_hull_distance for record in records])
         ),

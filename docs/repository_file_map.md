@@ -17,8 +17,9 @@
 | .gitignore | 仓库配置 | 排除 Python 缓存和临时输出，并显式保留各阶段固定种子 CSV、JSON、图表等可复现产物。 |
 | README.md | 项目入口 | 说明研究目标、各实验阶段、复现命令和主要产物位置；新增阶段时同步更新。 |
 | data/nsw_dw.dta | 阶段 12 数据 | NBER 发布的 Dehejia-Wahba NSW 随机实验原始快照；运行前按固定 SHA-256 校验。 |
+| docs/algorithm1_alignment.md | 算法对照 | 将论文 Algorithm 1 逐行映射到统一代码入口、阶段、公式、分支和肉眼可见产出。 |
 | docs/calibration_experiment.md | 阶段 6 文档 | 说明证书校准、异质隐藏半径和失效边界实验的设计、指标与结论。 |
-| docs/bridge_experiment.md | 阶段 11 文档 | 说明 Definition 5.2 的 bridge value、三种候选选择策略、直径代理、结果和 Theorem 5.6 的限制。 |
+| docs/bridge_experiment.md | 阶段 11 文档 | 说明 Definition 5.2 条件边际期望部分识别直径、正态规划模型、三种策略、不一致诊断和 Theorem 5.6 边界。 |
 | docs/final_experiment_report.md | 阶段 7 产物 | 汇总全部合成仿真实验的中文报告，由 scripts/build_final_report.py 生成。 |
 | docs/formal_experiment.md | 阶段 5 文档 | 说明多种子正式基准、消融设置、统计不确定性与结果解释。 |
 | docs/main_experiment.md | 阶段 4 文档 | 说明四个单因素参数扫描、图表和空单元含义。 |
@@ -47,9 +48,9 @@
 | results/formal_experiment_summary.csv | 阶段 5 产物 | 正式实验的 42 行场景和估计器汇总；阶段 7、8 从中读取数值。 |
 | results/main_experiment_metadata.json | 阶段 4 产物 | 保存主参数扫描的固定种子、扫参水平和方法配置。 |
 | results/main_experiment_summary.csv | 阶段 4 产物 | 主扫描的 60 行长表，包含发布率、误差、区间和证书分解。 |
-| results/bridge_experiment_metadata.json | 阶段 11 产物 | 保存 bridge 场景、候选库、策略、预算、直径代理和信息边界。 |
-| results/bridge_experiment_seed_summary.csv | 阶段 11 产物 | 按基准种子汇总三种 bridge 策略的直径缩减和 oracle 支持距离。 |
-| results/bridge_experiment_summary.csv | 阶段 11 产物 | 12 个场景-策略单元的初始直径、最终直径、缩减比例和测量误差汇总。 |
+| results/bridge_experiment_metadata.json | 阶段 11 产物 | 保存 bridge 场景、候选库、预算、plug-in 正态模型、Gauss-Hermite 求积、不一致处理和信息边界。 |
+| results/bridge_experiment_seed_summary.csv | 阶段 11 产物 | 按基准种子汇总三种策略的条件 VoI、预算完成率、不一致率和 oracle 支持距离。 |
+| results/bridge_experiment_summary.csv | 阶段 11 产物 | 12 个场景-策略单元的部分识别直径、缩减、实际选择数、完成率和不一致诊断主表。 |
 | results/minimax_experiment_metadata.json | 阶段 10 产物 | 保存二点子模型、定理常数、场景、种子和代表性估计器配置。 |
 | results/minimax_experiment_seed_summary.csv | 阶段 10 产物 | 按基准种子汇总下界分量和最坏 MAE，用于检查 Monte Carlo 跨种子稳定性。 |
 | results/minimax_experiment_summary.csv | 阶段 10 产物 | 8 个距离与噪声场景的构造下界、经验风险和解析风险主汇总表。 |
@@ -60,7 +61,7 @@
 | results/partial_identification_seed_summary.csv | 阶段 9 产物 | 按基准种子汇总部分识别覆盖率、非空率、宽度和支持距离。 |
 | results/partial_identification_summary.csv | 阶段 9 产物 | 4 个支持场景的正式汇总，是阶段 9 的主结果表。 |
 | results/tables/calibration_experiment_tables.md | 阶段 6 产物 | Markdown 形式的证书校准结果表。 |
-| results/tables/bridge_experiment_tables.md | 阶段 11 产物 | Markdown 形式的 bridge value、策略比较、直径缩减和 oracle 评估表。 |
+| results/tables/bridge_experiment_tables.md | 阶段 11 产物 | Markdown 形式的 Definition 5.2 策略比较、部分识别直径、预算完成和不一致诊断表。 |
 | results/tables/final_summary_tables.md | 阶段 7 产物 | 紧凑的正式基准与失效边界摘要表，由 build_final_report.py 生成。 |
 | results/tables/formal_experiment_tables.md | 阶段 5 产物 | Markdown 形式的正式多种子实验与消融表。 |
 | results/tables/minimax_experiment_tables.md | 阶段 10 产物 | Markdown 形式的 Theorem 5.5 下界分量与代表性估计器风险表。 |
@@ -69,8 +70,9 @@
 | results/tables/partial_identification_tables.md | 阶段 9 产物 | Markdown 形式的 Theorem 5.4 部分识别结果表。 |
 | scripts/build_final_report.py | 阶段 7 脚本 | 读取三张结果 CSV，生成最终报告、摘要表并刷新产物清单。 |
 | scripts/build_paper_artifacts.py | 阶段 8 脚本 | 读取三张结果 CSV，生成论文写作稿、LaTeX 表格并刷新产物清单。 |
+| scripts/run_algorithm1.py | 算法快速入口 | 运行一条拒绝、部分识别、两轮条件边际 bridge 的完整 Algorithm 1 路径并打印所有关键状态。 |
 | scripts/run_calibration_experiment.py | 阶段 6 脚本 | 运行证书校准与失效边界实验，写入阶段 6 的 CSV、JSON、图和表。 |
-| scripts/run_bridge_experiment.py | 阶段 11 脚本 | 运行 Definition 5.2/Theorem 5.6 bridge 协议，写入 CSV、JSON、图和 Markdown 表。 |
+| scripts/run_bridge_experiment.py | 阶段 11 脚本 | 运行 3,600 条严格条件边际 VoI 路径，写入直径、完成率、不一致诊断、JSON、图和 Markdown 表。 |
 | scripts/run_formal_experiment.py | 阶段 5 脚本 | 运行正式多种子协议，写入阶段 5 的 CSV、JSON、图和表。 |
 | scripts/run_main_experiment.py | 阶段 4 脚本 | 运行四个受控参数扫描，写入阶段 4 的 CSV、JSON 和两张图。 |
 | scripts/run_method_comparison.py | 阶段 3 脚本 | 运行固定设置下的方法比较并输出文字摘要。 |
@@ -80,21 +82,23 @@
 | scripts/run_partial_identification_experiment.py | 阶段 9 脚本 | 运行多种子部分识别实验，写入 CSV、JSON、图和 Markdown 表。 |
 | scripts/run_sanity_check.py | 阶段 1 脚本 | 生成最小 DGP 并执行 Assumption 3.1--3.5 的快速校验。 |
 | src/causal_atlas_sim/__init__.py | 包接口 | 集中导出 DGP、方法、实验、报告和论文产物的公开 API。 |
+| src/causal_atlas_sim/algorithm1.py | 统一算法入口 | 严格调度 Algorithm 1 接受/拒绝分支，计算条件边际期望部分识别直径并自适应选择 bridge。 |
 | src/causal_atlas_sim/calibration_experiment.py | 阶段 6 源码 | 定义证书校准场景、策略、汇总指标和图表生成。 |
-| src/causal_atlas_sim/bridge_experiment.py | 阶段 11 源码 | 定义 bridge 候选、VoI 直径代理、causal/semantic/random 策略和多种子汇总。 |
+| src/causal_atlas_sim/bridge_experiment.py | 阶段 11 源码 | 构造 bridge 候选库，调用统一 Algorithm 1 比较 causal/semantic/random 策略并汇总完成率和不一致率。 |
 | src/causal_atlas_sim/comparison.py | 阶段 3 源码 | 定义共享重复下的方法比较协议及其汇总。 |
-| src/causal_atlas_sim/dgp.py | 阶段 1 源码 | 定义最小机制空间、随机试验数据、真实效应、AIPW 证书及假设校验。 |
+| src/causal_atlas_sim/dgp.py | 阶段 1 源码 | 定义最小机制空间、随机试验、共同设计/识别假设档案、式 (4.2) AIPW 样本方差及 Assumption 3.1--3.5 校验。 |
 | src/causal_atlas_sim/experiments.py | 阶段 4 源码 | 定义主参数扫描、固定重复、长表汇总和主实验图表。 |
 | src/causal_atlas_sim/formal_experiment.py | 阶段 5 源码 | 定义预注册式多种子场景、消融估计器、Wilson 区间和正式汇总。 |
-| src/causal_atlas_sim/methods.py | 方法源码 | 实现 Causal ATLAS、拒绝规则、证书分解、权重优化和各基线方法。 |
+| src/causal_atlas_sim/methods.py | 方法源码 | 实现候选/兼容筛选、式 (4.3) 权重、Theorem 5.1 接受证书、Corollary 5.2 区间和基线。 |
 | src/causal_atlas_sim/minimax_experiment.py | 阶段 10 源码 | 实现 Theorem 5.5 几何与统计二点子模型、下界常数、代表性估计器和多种子汇总。 |
 | src/causal_atlas_sim/monte_carlo.py | 阶段 2 源码 | 实现独立种子重复、oracle 对照和 Monte Carlo 指标汇总。 |
 | src/causal_atlas_sim/nsw_experiment.py | 阶段 12 源码 | 实现 NSW 数据校验、局部对比对象、blind reconstruction、证书与多种子汇总。 |
 | src/causal_atlas_sim/paper_artifacts.py | 阶段 8 源码 | 从已保存结果渲染论文写作稿和 LaTeX 表，禁止重新抽样。 |
-| src/causal_atlas_sim/partial_identification.py | 阶段 9 源码 | 实现 Theorem 5.4 权重区间交集、oracle 凸包评价和多种子协议。 |
+| src/causal_atlas_sim/partial_identification.py | 阶段 9 源码 | 实现仅在拒绝分支构造的 Theorem 5.4 权重区间交集、oracle 凸包评价和多种子协议。 |
 | src/causal_atlas_sim/reporting.py | 阶段 7 源码 | 验证结果行数，渲染最终报告和摘要表，计算产物 SHA-256 清单。 |
 | tests/test_calibration_experiment.py | 阶段 6 测试 | 检验校准场景、策略、行数和固定协议的确定性。 |
-| tests/test_bridge_experiment.py | 阶段 11 测试 | 检验候选库、直径代理单调性、固定协议确定性和 Stage 11 产物清单。 |
+| tests/test_algorithm1.py | 算法测试 | 检验分支互斥、Corollary 5.2、兼容过滤、真值隔离、条件边际更新、复现性和空交集诊断。 |
+| tests/test_bridge_experiment.py | 阶段 11 测试 | 检验候选库、统一 Algorithm 1 直径路径、预算完成汇总、固定协议确定性和产物清单。 |
 | tests/test_comparison.py | 阶段 3 测试 | 检验共享随机重复、方法集合和比较结果的确定性。 |
 | tests/test_dgp.py | 阶段 1 测试 | 检验最小 DGP、五条假设、随机化一致性和证书界。 |
 | tests/test_experiments.py | 阶段 4 测试 | 检验主扫描行数、固定种子和语义失配的机制范围。 |

@@ -53,6 +53,9 @@
   "bridge_budget": 4,
   "bridge_standard_error": 0.1,
   "selection_error_bound": 0.01,
+  "support_tolerance": 0.0,
+  "max_singletons": 4,
+  "bridge_quadrature_points": 3,
   "zeta": 0.05,
   "variance_penalty": 0.25,
   "max_weight_iterations": 80,
@@ -65,8 +68,9 @@
     "hidden_moderator_lipschitz_bound": 1.55,
     "effect_absolute_bound": 3.88
   },
-  "objective": "expected shrinkage of a support-diameter certificate; the pre-outcome width uses the known bridge standard error",
-  "marginal_estimator": "rank each unmeasured candidate by its observable singleton certificate, then recompute the full archive certificate after selection",
+  "objective": "conditional marginal expected reduction of the current Theorem 5.4 partial-identification diameter",
+  "marginal_estimator": "predict each unmeasured bridge effect from the public archive, integrate future partial-identification diameters under a declared normal design model with Gauss-Hermite quadrature, then update adaptively after observing the selected bridge",
+  "inconsistency_handling": "an empty Theorem 5.4 intersection is recorded as mutually inconsistent certificates under Lemma 5.1; it is never assigned zero diameter or counted as successful shrinkage",
   "oracle_evaluation": "true mechanism hull distance and bridge measurement error are evaluation-only quantities",
   "theorem_scope": "Theorem 5.6 is conditional on monotonicity and weak submodularity; this simulation reports policy shrinkage and does not assume or prove those properties"
 }

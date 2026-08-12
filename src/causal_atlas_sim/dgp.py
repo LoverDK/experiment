@@ -12,7 +12,7 @@ randomization, uncertainty certificates, and a nonzero moderator certificate.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from math import sqrt
 from typing import Any
 
@@ -65,6 +65,21 @@ class DesignProfile:
 
 
 COMMON_DESIGN = DesignProfile()
+
+
+@dataclass(frozen=True)
+class AssumptionProfile:
+    """Recorded identification assumptions used by the compatibility predicate."""
+
+    consistency: str = "observed outcome follows assigned potential outcome"
+    assignment: str = "known Bernoulli randomized treatment"
+    ignorability: str = "randomization implies conditional ignorability"
+    overlap: str = "known propensity satisfies the declared overlap bound"
+    interference: str = "no interference under the recorded exposure mapping"
+    nuisance_estimation: str = "known propensity and oracle outcome regressions"
+
+
+COMMON_ASSUMPTIONS = AssumptionProfile()
 
 
 @dataclass(frozen=True)
@@ -121,6 +136,7 @@ class ExperimentData:
     mechanism: Mechanism
     observed_representation: np.ndarray
     design: DesignProfile
+    assumption_profile: AssumptionProfile
     x: np.ndarray
     treatment: np.ndarray
     observed_outcome: np.ndarray
@@ -338,6 +354,10 @@ def minimal_assumption_report(generated: GeneratedArchive) -> dict[str, dict[str
         for experiment in experiments
     )
     common_design = all(experiment.design == COMMON_DESIGN for experiment in experiments)
+    common_assumptions = all(
+        experiment.assumption_profile == COMMON_ASSUMPTIONS
+        for experiment in experiments
+    )
 
     return {
         "assumption_3_1_identified_experiment_effects": {
@@ -355,10 +375,11 @@ def minimal_assumption_report(generated: GeneratedArchive) -> dict[str, dict[str
             "overlap_lower_bound": generated.config.overlap_lower_bound,
         },
         "assumption_3_2_design_compatibility_and_normalization": {
-            "satisfied": bool(common_design),
-            "construction": "all experiments use the same recorded DesignProfile and identity normalization",
+            "satisfied": bool(common_design and common_assumptions),
+            "construction": "all experiments share the recorded DesignProfile, AssumptionProfile, estimand, and identity normalization",
             "common_estimand": COMMON_DESIGN.estimand,
             "outcome_scale": COMMON_DESIGN.outcome_scale,
+            "common_identification_assumptions": asdict(COMMON_ASSUMPTIONS),
         },
         "assumption_3_3_local_smoothness": {
             "satisfied": bool(
@@ -383,7 +404,7 @@ def minimal_assumption_report(generated: GeneratedArchive) -> dict[str, dict[str
             "satisfied": bool(all_standard_errors_match),
             "construction": "known-nuisance AIPW score with zero nuisance remainder and independent experiment streams",
             "nuisance_bias_bound": 0.0,
-            "variance_proxy_formula": "v=sigma^2/min(pi,1-pi)^2; s^2=v/n",
+            "variance_proxy_formula": "v=sample variance of AIPW scores; s^2=v/n",
             "independent_experiments": True,
         },
         "assumption_3_5_observed_representation_and_moderator_certificate": {
@@ -450,9 +471,9 @@ def _generate_experiment(
         * (observed_outcome - nuisance_control)
         / (1.0 - config.propensity)
     )
-    variance_proxy = config.outcome_noise_sd**2 / min(
-        config.propensity, 1.0 - config.propensity
-    ) ** 2
+    # Equation (4.2): the experiment object stores the empirical influence-
+    # function variance rather than a hand-selected population envelope.
+    variance_proxy = float(np.var(aipw_scores, ddof=1))
     proxy_error = rng.uniform(
         -config.moderator_proxy_half_width,
         config.moderator_proxy_half_width,
@@ -472,6 +493,7 @@ def _generate_experiment(
             [mechanism.s1, mechanism.s2, moderator_proxy, mechanism.q], dtype=float
         ),
         design=COMMON_DESIGN,
+        assumption_profile=COMMON_ASSUMPTIONS,
         x=covariates,
         treatment=treatment,
         observed_outcome=observed_outcome,

@@ -27,6 +27,7 @@ from .methods import (
     _project_to_simplex,
     compute_certificate,
     design_compatible,
+    filter_design_compatible_candidates,
     fit_causal_atlas,
     optimize_support_weights,
     retrieve_semantic_candidates,
@@ -71,7 +72,7 @@ class RejectOrIdentifyResult:
     """Point-release decision plus the fallback partial-identification set."""
 
     atlas_result: AtlasResult
-    partial_interval: PartialIdentificationInterval
+    partial_interval: PartialIdentificationInterval | None
 
 
 def fit_reject_or_identify(
@@ -86,7 +87,36 @@ def fit_reject_or_identify(
     config = config or AtlasConfig()
     if max_singletons < 1:
         raise ValueError("max_singletons must be positive.")
-    atlas_result = fit_causal_atlas(archive, target, config)
+    # Local import avoids a module cycle: Algorithm 1 uses the interval
+    # constructor below, while this compatibility wrapper uses its dispatcher.
+    from .algorithm1 import Algorithm1Config, run_algorithm1
+
+    algorithm_result = run_algorithm1(
+        archive,
+        target,
+        config=Algorithm1Config(
+            atlas_config=config,
+            max_singletons=max_singletons,
+        ),
+    )
+    return RejectOrIdentifyResult(
+        atlas_result=algorithm_result.atlas_result,
+        partial_interval=algorithm_result.partial_interval,
+    )
+
+
+def construct_partial_identification_interval(
+    archive: Sequence[ExperimentData],
+    target: ExperimentData,
+    config: AtlasConfig | None = None,
+    *,
+    max_singletons: int = 4,
+) -> PartialIdentificationInterval:
+    """Construct the Theorem 5.4 interval for pre-debiased archive objects."""
+
+    config = config or AtlasConfig()
+    if max_singletons < 1:
+        raise ValueError("max_singletons must be positive.")
     weight_labels, weights = _weight_family(
         archive,
         target,
@@ -118,7 +148,7 @@ def fit_reject_or_identify(
         radii.append(certificate.radius)
         lower_bounds.append(center - certificate.radius)
         upper_bounds.append(center + certificate.radius)
-    partial_interval = PartialIdentificationInterval(
+    return PartialIdentificationInterval(
         weight_labels=weight_labels,
         weights=weights,
         centers=tuple(centers),
@@ -127,10 +157,6 @@ def fit_reject_or_identify(
         interval_upper=min(upper_bounds),
         total_zeta=config.zeta,
         component_zeta=component_zeta,
-    )
-    return RejectOrIdentifyResult(
-        atlas_result=atlas_result,
-        partial_interval=partial_interval,
     )
 
 
@@ -141,7 +167,11 @@ def _weight_family(
     *,
     max_singletons: int,
 ) -> tuple[tuple[str, ...], tuple[np.ndarray, ...]]:
-    candidates = retrieve_semantic_candidates(archive, target)
+    candidates = filter_design_compatible_candidates(
+        archive,
+        target,
+        retrieve_semantic_candidates(archive, target, config=config),
+    )
     compatible = tuple(
         index
         for index, experiment in enumerate(archive)
@@ -427,35 +457,47 @@ def _summarize_one(
     rejected = [
         record for record in records if record.result.atlas_result.rejected
     ]
-    nonempty = [
+    partial_records = [
         record
         for record in records
-        if record.result.partial_interval.nonempty
+        if record.result.partial_interval is not None
+    ]
+    nonempty = [
+        record
+        for record in partial_records
+        if record.result.partial_interval is not None
+        and record.result.partial_interval.nonempty
     ]
     rejected_nonempty = [
         record
         for record in rejected
-        if record.result.partial_interval.nonempty
+        if record.result.partial_interval is not None
+        and record.result.partial_interval.nonempty
     ]
     coverage = [
         record.result.partial_interval.contains(record.target_true_effect)
-        for record in records
+        for record in partial_records
+        if record.result.partial_interval is not None
     ]
     rejected_coverage = [
         record.result.partial_interval.contains(record.target_true_effect)
         for record in rejected
+        if record.result.partial_interval is not None
     ]
     widths = [
         record.result.partial_interval.width
         for record in nonempty
+        if record.result.partial_interval is not None
     ]
     rejected_widths = [
         record.result.partial_interval.width
         for record in rejected_nonempty
+        if record.result.partial_interval is not None
     ]
     rejected_reference_widths = [
         record.result.partial_interval.reference_width
         for record in rejected_nonempty
+        if record.result.partial_interval is not None
     ]
     reductions = [
         (
@@ -464,6 +506,7 @@ def _summarize_one(
         )
         / record.result.partial_interval.reference_width
         for record in rejected_nonempty
+        if record.result.partial_interval is not None
     ]
     rejection_ci_lower, rejection_ci_upper = wilson_interval(
         len(rejected),
@@ -478,7 +521,8 @@ def _summarize_one(
         float(
             np.mean(
                 [
-                    record.result.partial_interval.contains(
+                    record.result.partial_interval is not None
+                    and record.result.partial_interval.contains(
                         record.target_true_effect
                     )
                     for record in batch
@@ -496,8 +540,12 @@ def _summarize_one(
         rejection_rate=len(rejected) / len(records),
         rejection_ci_lower=rejection_ci_lower,
         rejection_ci_upper=rejection_ci_upper,
-        partial_id_nonempty_rate=len(nonempty) / len(records),
-        partial_id_coverage=float(np.mean(coverage)),
+        partial_id_nonempty_rate=(
+            len(nonempty) / len(partial_records) if partial_records else 0.0
+        ),
+        partial_id_coverage=(
+            float(np.mean(coverage)) if coverage else 0.0
+        ),
         partial_id_coverage_on_rejected=(
             float(np.mean(rejected_coverage)) if rejected_coverage else None
         ),

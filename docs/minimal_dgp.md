@@ -1,6 +1,6 @@
 # 最小化数据生成机制
 
-本阶段只实现可验证理论前提的数据生成器，不实现候选检索、权重优化、拒绝规则或基线比较。生成器的任务是产生一组 archive experiments 和一个 target experiment，并使 Assumption 3.1--3.5 在构造上成立。
+本阶段对应 Algorithm 1 第 1 行：生成可验证理论前提的数据，并把每个历史实验整理成可去偏、可比较、带证书的 archive 对象。本阶段不实现候选检索、权重优化或拒绝规则；它的任务是产生 archive 和 target，并使 Assumption 3.1--3.5 在构造上成立。
 
 ## 机制与真实效应
 
@@ -37,7 +37,7 @@ Y=A Y(1)+(1-A)Y(0)
 
 ## Assumption 3.2：设计兼容性与归一化
 
-所有 archive 和 target 共用同一个不可变 `DesignProfile`：相同处理版本、无处理对照、标准化连续结果差、固定结果时间窗、无干扰暴露映射、相同抽样框，以及共同 estimand \(\operatorname{ATE}=E[Y(1)-Y(0)]\)。效果尺度已经标准化，归一化为恒等变换。
+所有 archive 和 target 共用同一个不可变 `DesignProfile`：相同处理版本、无处理对照、标准化连续结果差、固定结果时间窗、无干扰暴露映射、相同抽样框，以及共同 estimand \(\operatorname{ATE}=E[Y(1)-Y(0)]\)。同时保存共同的 `AssumptionProfile`，记录一致性、随机分配、可忽略性、重叠、无干扰和 nuisance 估计方式。效果尺度已经标准化，归一化为恒等变换。后续兼容性筛选会同时比较这两份档案，而不只是比较字段形式。
 
 ## Assumption 3.3：局部平滑性
 
@@ -60,15 +60,21 @@ Y=A Y(1)+(1-A)Y(0)
 \qquad b_i=0,
 \]
 
-其中 \(\xi_i\) 是均值零次高斯误差，方差代理证书取为
+其中 \(\xi_i\) 是均值零误差。严格按照论文式 (4.2)，先计算每个单位的 AIPW
+分数 \(\phi_{i\ell}\)，再保存
 
 \[
-s_i^2=\frac{v_i}{n_i},
+\widehat\tau_i=\frac1{n_i}\sum_{\ell=1}^{n_i}\phi_{i\ell},
 \qquad
-v_i=\frac{\sigma^2}{\min\{\pi,1-\pi\}^2}.
+\widehat v_i=\frac1{n_i-1}\sum_{\ell=1}^{n_i}
+(\phi_{i\ell}-\widehat\tau_i)^2,
+\qquad
+s_i^2=\widehat v_i/n_i.
 \]
 
-默认 \(\pi=0.5\) 时，该界为 \(v_i=4\sigma^2\)。每个实验使用独立随机流，所以协方差证书为对角形式。
+因此 `variance_proxy` 是当前实验 AIPW 分数的样本方差，不再是手工指定的总体
+方差包络。每个实验使用独立随机流，所以协方差证书为对角形式；已知倾向概率和
+oracle outcome regressions 使本最小 DGP 的 nuisance 余项为 0。
 
 ## Assumption 3.5：观测表示与隐藏调节变量证书
 
@@ -101,4 +107,9 @@ R_{\mathrm{hid}}(\alpha)
 & 'C:\Users\Qiutian\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' -m unittest discover -s tests -v
 ```
 
-这些校验只证明实现遵守了所声明的数学构造；真实数据分析中的随机化审计、平衡检验、重叠图、负对照和敏感性曲线将在后续步骤实现。
+快速输出中肉眼可见的结果包括：archive 数量、target 真值、target 的直接估计、
+支持残差，以及五条假设各自的 `satisfied=true` 和构造说明。完整 Algorithm 1
+对应关系见 `docs/algorithm1_alignment.md`。
+
+这些校验只证明实现遵守了所声明的数学构造；真实数据分析中的随机化审计、平衡
+检验、重叠图、负对照和敏感性曲线属于另外的实证任务。

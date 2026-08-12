@@ -66,6 +66,17 @@ def render_paper_results_section(bundle: ResultBundle) -> str:
     severe_understated = _calibration_row(
         bundle, "severe_semantic_mismatch", "understated_smoothness"
     )
+    partial_severe = next(
+        row
+        for row in bundle.partial_identification_rows
+        if row["scenario_key"] == "severe_mismatch"
+    )
+    bridge_severe = next(
+        row
+        for row in bundle.bridge_rows
+        if row["scenario_key"] == "severe"
+        and row["policy_key"] == "causal_greedy"
+    )
 
     lines = [
         "# 论文实验结果写作稿",
@@ -76,6 +87,8 @@ def render_paper_results_section(bundle: ResultBundle) -> str:
         "## 实验设计与报告原则",
         "",
         "所有实验使用满足 Assumption 3.1--3.5 的最小数据生成机制。正式基准实验",
+        "按论文 Algorithm 1 的统一入口运行：接受时报告 Corollary 5.2 区间，拒绝时",
+        "才进入 Theorem 5.4 部分识别和 Definition 5.2 bridge 设计。",
         "包含 6 个预先定义的情景、3 个独立基准种子，以及每个种子 100 次重复。",
         "对每个 target，所有比较方法共享同一份 archive-target 抽样；目标真值仅在",
         "方法输出后用于评价。可拒绝方法同时报告发布率和已发布点上的误差，避免把拒绝",
@@ -120,6 +133,17 @@ def render_paper_results_section(bundle: ResultBundle) -> str:
         f"{_f(severe_understated, 'released_interval_coverage')}。"
         "因此，这个边界实验支持的结论是：证书有用的前提是其上界确实有效，"
         "而不是任何数值化的置信区间都会自动保证可靠发布。",
+        "",
+        "## 拒绝后的部分识别与 bridge",
+        "",
+        "严重失配时，ATLAS 拒绝率为 "
+        f"{_f(partial_severe, 'rejection_rate')}，拒绝分支的平均 Theorem 5.4 "
+        f"区间宽度为 {_f(partial_severe, 'mean_partial_id_width_on_rejected')}，"
+        f"覆盖率为 {_f(partial_severe, 'partial_id_coverage_on_rejected')}。"
+        "在 Definition 5.2 bridge 实验中，完整因果 greedy 把平均直径从 "
+        f"{_f(bridge_severe, 'mean_initial_diameter')} 降至 "
+        f"{_f(bridge_severe, 'mean_final_diameter')}，缩减 "
+        f"{_f(bridge_severe, 'shrinkage_fraction')}，并在全部路径用满预算。",
         "",
         "## 可引用结论与限制",
         "",

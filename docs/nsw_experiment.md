@@ -6,7 +6,9 @@
 规定使用 Dehejia-Wahba NSW job-training 随机实验，以 1978 earnings 为结果，
 在标准化协变量空间内构造局部邻域；每个局部对象保存 context、overlap、radius、
 treated-minus-control effect 和 standard error，再留出一部分 local objects 做
-archive reconstruction。
+blind reconstruction。它是 Algorithm 1 思想在真实数据结构上的描述性压力测试，
+不改变合成实验的统一 `run_algorithm1(...)` 入口；由于公开数据不能提供无噪声
+target 真值，本阶段保留独立实现和明确的评价限制。
 
 论文没有公开邻域大小、锚点选择、coordinate split、holdout seeds、证书常数和
 拒绝阈值，因此无法仅凭论文逐数值复刻 Table 3。本仓库固定并公开这些缺失选择，

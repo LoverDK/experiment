@@ -1,224 +1,127 @@
 # Causal ATLAS 仿真实验
 
-仓库中每个文件的职责与生成关系见 docs/repository_file_map.md。新增、删除、
-移动文件或改变既有文件职责时，必须在同一提交中同步更新该对照表。
+本仓库实现重点论文 `Rejectable Causal Atlas` 的合成仿真、理论边界数值实验和
+NSW 真实数据分析。当前 12 个阶段是项目开发与验证阶段，不是论文 Algorithm 1
+的 12 个步骤。Algorithm 1 的唯一端到端代码入口是
+`src/causal_atlas_sim/algorithm1.py::run_algorithm1`，逐行对照见
+[`docs/algorithm1_alignment.md`](docs/algorithm1_alignment.md)。
 
-本仓库用于逐步实现和记录重点论文 **Rejectable Causal Atlas** 的仿真实验。
+仓库每个文件的职责和生成关系见
+[`docs/repository_file_map.md`](docs/repository_file_map.md)。新增、删除、移动文件
+或改变职责时，必须在同一提交中更新该表。
 
-## 当前进度
+## Algorithm 1 主流程
 
-- [x] 创建 GitHub 仓库并连接本地目录
-- [x] 建立仿真实验说明文档
-- [x] 实现最小化数据生成机制（sanity check）
-- [x] 加入统计噪声并重复 Monte Carlo 实验
-- [x] 实现目标方法和基线方法
-- [x] 完成主实验、消融实验和敏感性分析
-- [x] 完成论文写作产物、部分识别和 minimax 下界实验
-- [x] 实现 bridge design 实验
-- [x] 实现 NSW 真实数据实验
+1. 按式 (4.2) 对 archive 实验效应去偏，保存公开表示、设计与假设档案、AIPW
+   效应估计、AIPW 分数样本方差和样本量。
+2. 用语义和元数据检索候选，再删除设计或识别假设不兼容的实验。
+3. 按式 (4.3) 学习非负且和为 1 的支持权重。
+4. 按 Theorem 5.1 计算支持、曲率、隐藏调节、nuisance 和统计证书。
+5. 若证书不超过科学容忍度，返回点预测和 Corollary 5.2 诚实区间。
+6. 若证书超过容忍度，不发布点预测，改为构造 Theorem 5.4 部分识别区间。
+7. 在当前已选 bridge 集合条件下，逐轮选择期望部分识别直径缩减最大的候选。
+8. 返回部分识别区间、bridge 集合、每轮边际价值和直径路径。
 
-## 仿真实验总流程
+接受和拒绝两个分支互斥：接受时不构造部分识别、不选择 bridge；拒绝时
+`point_estimate=None`。空的部分识别交集按 Lemma 5.1 记录为证书不一致，绝不
+当作直径为 0。
 
-仿真用于在“真实答案已知”的受控环境中检验理论结论。整体流程为：
+## 论文算法与项目阶段
 
-1. **明确理论命题**：确定本轮实验要验证的具体结论，例如语义相似是否足以保证因果效应可迁移，或拒绝机制是否能识别不可靠预测。
-2. **定义实验机制**：为每个实验生成可观察语义特征、隐藏调节变量和设计特征，记为
-   \[
-   m_i=(s_{i1},s_{i2},h_i,q_i).
-   \]
-3. **定义真实效应**：通过预先指定的效应函数计算真实因果效应
-   \[
-   \tau_i=\mu(m_i).
-   \]
-4. **模拟观测误差**：加入与样本量相关的统计噪声，得到旧实验中可观察的估计值
-   \[
-   \hat\tau_i=\tau_i+\varepsilon_i.
-   \]
-5. **划分 archive 和 target**：方法只能使用旧实验信息预测目标实验；目标实验的真实效应只用于最后评价，避免信息泄漏。
-6. **运行比较方法**：比较完整的 Causal ATLAS、语义基线、最近邻基线、全局均值、不带拒绝机制的版本，以及必要时的 oracle 参考方法。
-7. **评价结果**：报告 MAE、RMSE、Bias、方向准确率、区间覆盖率、区间宽度和拒绝率等指标。
-8. **重复和扩展**：通过 Monte Carlo 重复获得稳定结果，再进行消融实验和敏感性分析。
-9. **理论解释**：每张表和每幅图都要对应一个理论命题，说明实验现象支持或不支持什么结论。
+| 项目阶段 | 对应论文或职责 | 肉眼可见产出 |
+| --- | --- | --- |
+| 1 最小 DGP | Assumption 3.1--3.5；Algorithm 1 第 1 行 | 8 个 archive、target、AIPW 估计和五条假设报告 |
+| 2 Monte Carlo | 误差分解基础设施校验 | 200 次 oracle 重复的误差与覆盖率 JSON |
+| 3 方法比较 | 式 (4.3)、Theorem 5.1、Corollary 5.2；第 2--7 行 | ATLAS/基线的接受率、误差、覆盖与证书分量 |
+| 4 主扫描 | 第 2--7 行的单因素压力测试 | 60 行 CSV、两张扫描图和元数据 |
+| 5 正式实验 | 多种子基准与消融 | 42 行合并表、126 行逐种子表和总览图 |
+| 6 校准 | 证书与拒绝的失效边界 | 正确/不拒绝/低报平滑界的覆盖与发布率 |
+| 7 最终报告 | 从已保存 CSV 生成报告与清单 | 中文报告、摘要表、SHA-256 manifest |
+| 8 论文产物 | 从已保存 CSV 生成写作稿 | 中文结果段和 LaTeX 表 |
+| 9 部分识别 | Definition 5.1、Theorem 5.4；第 8--9 行 | 拒绝率、部分识别覆盖与宽度 |
+| 10 minimax 下界 | Theorem 5.5；解释为什么不能强制外推 | 8 个下界场景的解析与经验风险 |
+| 11 bridge 设计 | Definition 5.2、Theorem 5.6；第 10--15 行 | 3,600 条策略路径、直径缩减和不一致诊断 |
+| 12 NSW | Section 6.2 与 Appendix B 的真实数据扩展 | 8,400 条方法级评价记录和五方法主表 |
 
-## 实验记录原则
+Algorithm 1 的核心实现跨阶段 1、3、9、11；其余阶段用于验证、压力测试、理论
+下界、结果生成或真实数据扩展。
 
-- 每轮实验固定随机种子并保存参数；
-- 主实验、消融实验和敏感性分析使用独立配置；
-- 不把目标实验真实效应传给预测方法；
-- 对可拒绝方法同时报告接受率、拒绝率和接受预测上的误差；
-- 每完成一个阶段，更新本 README 和对应实验记录，并提交到 GitHub。
+## 严格实现要点
 
-## 已实现：最小化数据生成机制
+### 式 (4.2) 的 archive 方差
 
-第一阶段的实现位于 [`src/causal_atlas_sim/dgp.py`](src/causal_atlas_sim/dgp.py)。它生成 archive experiments、一个 held-out target 以及每个实验的单位级记录、AIPW 效应估计和不确定性证书。
+每个实验的 `variance_proxy` 是 AIPW 分数的无偏样本方差：
 
-该实现将 target 机制构造为 archive 机制的凸组合，用于验证机制空间、真实效应、支持残差和误差证书的基础链路；构造权重只作为 oracle sanity check 元数据保存，后续方法不可访问。
+\[
+\widehat v_i=\frac1{n_i-1}\sum_\ell
+(\phi_{i\ell}-\widehat\tau_i)^2,
+\qquad s_i^2=\widehat v_i/n_i.
+\]
 
-生成器满足论文 Assumption 3.1--3.5 的方式如下：
+它不再使用手工指定的总体方差包络。
 
-| 假设 | 最小实现中的保证 |
-| --- | --- |
-| 3.1 可识别性 | 独立单位、已知 Bernoulli 随机化、\(\pi=0.5\)、一致性生成规则和真值 nuisance functions。 |
-| 3.2 设计兼容性 | 所有实验使用同一个 `DesignProfile` 和共同的标准化 ATE 尺度。 |
-| 3.3 局部平滑性 | \(\mathcal M=[-1,1]^4\)；使用论文的平滑非线性 \(\mu\)，并记录 \(L=2.61\)、\(H=1.80\) 的保守解析界。 |
-| 3.4 不确定性证书 | 通过已知随机化的 AIPW score 生成 \(\hat\tau=\tau+\xi+0\)，并为每个实验记录 \(s_i^2=v_i/n_i\)。 |
-| 3.5 隐藏调节变量证书 | 公开有界噪声的 \(h\) 代理，保留真实 \(h\) 仅作 oracle 评价，并按 \(R_{\mathrm{hid}}=L_h(\delta_*+\sum_j\alpha_j\delta_j)\) 生成证书。 |
+### 接受后的区间
 
-更完整的数学构造、边界来源和运行方式见 [`docs/minimal_dgp.md`](docs/minimal_dgp.md)。自动校验位于 [`tests/test_dgp.py`](tests/test_dgp.py)，快速运行入口为 [`scripts/run_sanity_check.py`](scripts/run_sanity_check.py)。
+Theorem 5.1 的完整有限样本证书负责接受或拒绝；接受后报告 Corollary 5.2 区间：
 
-## 已实现：Monte Carlo 重复运行框架
+\[
+\widehat\theta_\alpha\pm
+\left\{\widehat D(\alpha)+z_{1-\zeta/2}\widehat V_\alpha^{1/2}\right\}.
+\]
 
-第二阶段位于 [`src/causal_atlas_sim/monte_carlo.py`](src/causal_atlas_sim/monte_carlo.py)。它使用独立子随机种子重复最小 DGP，并以真实支持权重组合构造一个 oracle 参考结果，检查误差、偏差、方向准确率和区间覆盖率。该 oracle 只用于验证重复运行和理论误差分解，不能当作完整 Causal ATLAS 方法的性能结果。
+### bridge 的条件边际 VoI
 
-本阶段同时报告只含统计噪声的区间，以及加入 Assumption 3.3 曲率项和 Assumption 3.5 隐藏调节变量证书后的保守区间。详细说明见 [`docs/monte_carlo.md`](docs/monte_carlo.md)，运行入口为 [`scripts/run_monte_carlo.py`](scripts/run_monte_carlo.py)。
+bridge 不是按单候选距离排序。每轮对所有剩余候选计算“当前 Theorem 5.4 直径
+减去加入候选后期望直径”，选中并观测结果后更新 archive，再计算下一轮。未来结果
+期望使用公开声明的 plug-in 正态规划模型和 3 点 Gauss-Hermite 求积。真实 target
+效应、真实机制和候选真实效应不进入选择。
 
-## 已实现：可拒绝 Causal ATLAS 与基线比较
+## 当前关键结果
 
-第三阶段实现位于 src/causal_atlas_sim/methods.py 和
-src/causal_atlas_sim/comparison.py，包含：
+- 200 次方法演示中，ATLAS 接受率为 0.5300，接受点 MAE 为 0.1177；不拒绝版本
+  MAE 为 0.1373。
+- 正式名义场景中，ATLAS 接受率为 0.4633，接受点 MAE 为 0.1109；隐藏半径
+  0.40 时全部拒绝。
+- 部分识别的 1,200 个 target 中，所有拒绝分支交集均非空并覆盖真值；严重失配
+  拒绝率为 0.9900，拒绝点平均区间宽度为 7.0760。
+- 严重失配的 bridge 实验中，causal greedy 把平均直径从 6.9423 降至 1.8772，
+  缩减 72.96%；四个场景均完成全部预算。语义策略出现 0.67%--6.00% 的规划证书
+  不一致，均被明确记录而非当作零直径。
+- NSW 描述性 holdout 中，ATLAS MAE 为 0.8615 千美元、覆盖率 0.9744、拒绝率
+  0.2321；该阶段不声称逐数值复刻论文 Table 3。
 
-1. 语义候选检索和设计兼容性过滤；
-2. 单纯形约束下的投影梯度权重优化；
-3. 可分解的传输证书，以及基于科学容忍度的接受或拒绝；
-4. 使用相同权重的 no-rejection 消融；
-5. semantic_forced、nearest_semantic 和 global_mean 三种基线；
-6. 使用相同独立子随机种子的公平 Monte Carlo 方法比较。
+## 运行入口
 
-所有估计器只读取观测表示、设计档案、历史效应估计和不确定性
-证书。目标真值、真实机制和 oracle 权重仅在评价层使用，不能泄漏给
-方法。数学构造、信息边界、输出指标和当前 200 次重复的结果见
-docs/method_comparison.md。
+快速检查 Algorithm 1 一条完整拒绝路径：
 
-## 已实现：主实验参数扫描与结果归档
+```powershell
+python scripts/run_algorithm1.py
+python -m unittest tests.test_algorithm1 -v
+```
 
-第四阶段由 src/causal_atlas_sim/experiments.py 和
-scripts/run_main_experiment.py 实现。它按固定随机种子逐一扫描语义失配、
-隐藏调节变量证书半径、每实验样本量和科学容忍度；每个水平都让所有
-方法使用相同的 archive-target 重复数据。
+按阶段运行：
 
-当前默认运行使用 200 次重复，生成 60 行长表、配置元数据和两张 PNG
-图，均已保存到 results/。详细的因素定义、结果解释和空单元含义见
-docs/main_experiment.md。
+```powershell
+python scripts/run_sanity_check.py
+python scripts/run_monte_carlo.py
+python scripts/run_method_comparison.py
+python scripts/run_main_experiment.py
+python scripts/run_formal_experiment.py
+python scripts/run_calibration_experiment.py
+python scripts/run_partial_identification_experiment.py
+python scripts/run_minimax_experiment.py
+python scripts/run_bridge_experiment.py
+python scripts/run_nsw_experiment.py
+python scripts/build_final_report.py
+python scripts/build_paper_artifacts.py
+```
 
-本阶段结果是对仿真协议和拒绝机制的筛查，不是对真实数据性能的结论。
+阶段 11 的 3,600 路径严格 VoI 协议计算较慢；日常检查流程优先使用
+`scripts/run_algorithm1.py`。完整测试：
 
-## 已实现：多随机种子正式实验与消融
+```powershell
+python -m unittest discover -s tests -v
+```
 
-第五阶段位于 src/causal_atlas_sim/formal_experiment.py 和
-scripts/run_formal_experiment.py。正式协议包含 6 个场景、3 个独立基准
-种子和每种子 100 次重复，并在同一目标数据上公平比较完整 ATLAS、
-no-rejection、无方差正则、top-4 候选消融及三种基线。
-
-本阶段保存了 42 行合并结果、126 行逐种子结果、配置元数据、三张
-论文式 Markdown 表和一张总览图。完整设置、统计不确定性和结果解释见
-docs/formal_experiment.md，所有产物位于 results/。
-
-## 已实现：证书校准与失效边界
-
-第六阶段由 src/causal_atlas_sim/calibration_experiment.py 和
-scripts/run_calibration_experiment.py 实现。它在异质隐藏半径、强语义
-失配和故意低报平滑界的条件下，对比正确拒绝、no-rejection 和错误
-证书策略。
-
-正确证书在所有 300 次合并重复中保持完整区间覆盖，同时在压力情景下
-大幅降低点预测发布率；no-rejection 则会发布绝大多数证书已经超过
-科学容忍度的预测。若把 L 和 H 错误低报，强失配下的发布区间覆盖率
-会从 1.0000 降至 0.8767，严重失配下进一步降至 0.7533。
-
-完整设置、指标定义和三张结果表见 docs/calibration_experiment.md，产物
-已保存到 results/。
-
-## 已实现：最终报告与可复现清单
-
-第七阶段使用 src/causal_atlas_sim/reporting.py 和
-scripts/build_final_report.py 自动读取三张结果 CSV，验证其行数和关键
-唯一键，并生成最终中文实验报告、统一摘要表和 SHA-256 产物清单。
-
-最终报告位于 docs/final_experiment_report.md，摘要表位于
-results/tables/final_summary_tables.md，所有结果文件、图表和文档的
-校验值位于 results/experiment_manifest.json。该生成步骤不会重新抽样，
-因此报告中的每个数值可追溯到已保存的原始结果表。
-
-至此，当前合成数据下的最小 DGP、方法比较、主扫描、正式多种子实验、
-消融、证书校准和失效边界实验均已完成。后续工作应由导师审核结果后，
-决定是否扩展到新的 DGP、异质设计档案或真实数据应用。
-
-## 已实现：论文图表与写作包
-
-第八阶段通过 src/causal_atlas_sim/paper_artifacts.py 和
-scripts/build_paper_artifacts.py 从已保存的 CSV 生成中文论文结果写作稿、
-可直接输入论文的 LaTeX 表格，并把新增产物写入 SHA-256 清单。该阶段不重跑
-仿真，不改变任何结果数值。
-
-写作稿位于 docs/paper_results_section.md，其中链接主扫描、正式多种子比较和
-证书校准三张图；表格位于 results/tables/paper_results_tables.tex。运行
-python scripts/build_paper_artifacts.py 可重新生成两者及产物清单。
-
-## 已实现：失败组合后的部分识别
-
-第九阶段实现论文 Theorem 5.4。点组合被拒绝后，方法对 support-optimized、
-compatible-uniform 和四个最近设计兼容语义邻居分别构造同时有效的证书区间，
-再返回这些区间的交集，而不是强行发布点估计。
-
-正式协议包含 4 个支持强度场景、3 个独立种子和每种子 100 次重复，共 1,200
-个 target。所有部分识别交集均非空且覆盖真值；shift 从 0 增至 0.80 时，
-拒绝率从 0.5167 增至 0.9900，拒绝点的平均交集宽度从 3.6462 增至
-7.0770。完整说明见 docs/partial_identification_experiment.md，运行入口为
-python scripts/run_partial_identification_experiment.py。
-
-## 已实现：unsupported-target minimax 下界
-
-第十阶段直接实例化论文 Theorem 5.5 证明中的两个高斯二点子模型。几何构造让
-两条有界 Lipschitz 效应曲面在所有 archive 机制处完全相同、在 target 处相差
-`2 × (1/4)min(Ld*, M)`；统计构造使用常数曲面 `±δ`，并由
-`I=Σs_j^-2` 计算 Pinsker/Le Cam 下界。
-
-正式协议交叉 4 个 hull distance 和 2 个 archive 噪声档，使用 3 个独立种子、
-每种子 100 次重复，共 2,400 次。全部 8 个场景中，inverse-variance archive
-mean 的经验最坏 MAE 均高于构造下界，并与解析高斯风险接近。`d*=0` 时有限
-信息量项主导；`d*≥0.25` 时当前设置下几何不可识别项主导。
-
-完整构造、常数、结果与限制见 docs/minimax_experiment.md，运行入口为
-python scripts/run_minimax_experiment.py。本阶段是定理证明子模型的数值说明，
-不是对 minimax 定理的数值证明，也不声称该代表性估计器达到全局 minimax 最优。
-
-## 已实现：bridge experiment design
-
-第十一阶段对应论文 Definition 5.2、Algorithm 1 和 Theorem 5.6。实验把桥接
-价值定义为部分识别证书直径的缩减，并比较使用完整公开机制表示的
-causal-support greedy、只使用 `(s1,s2)` 的 semantic-only greedy 和 random
-bridge。候选选择不读取 target 真值或真实机制；这些 oracle 量只用于事后评估。
-
-正式协议包含 4 个支持场景、12 个桥接候选、预算 4、3 个独立种子和每种子
-100 次重复，共生成 3,600 条策略路径。causal greedy 在全部场景取得最小最终
-直径。严重失配时，平均证书直径从 7.0338 降至 1.7817，缩减 74.67%；semantic
-和 random 的缩减分别为 68.99% 和 67.15%。
-
-完整目标函数、候选库、结果与 Theorem 5.6 的适用边界见
-docs/bridge_experiment.md，运行入口为 python scripts/run_bridge_experiment.py。
-本阶段比较桥接策略，但没有把经验结果解释为对 weak submodularity 或理论近似
-系数的证明。
-
-## 已实现：NSW 真实数据 local-contrast archive
-
-第十二阶段对应论文 Section 6.2 和 Appendix B。仓库保存 NBER 发布的
-Dehejia-Wahba NSW 随机实验数据快照；原始文件共有 445 人，其中 treatment
-185 人、control 260 人，SHA-256 为
-`d1bd2680a1c6f799f1c6d2455bf29633fdf19be01cb19490621c20a560b4e072`。
-
-实验在 8 个标准化协变量上构造 112 个局部对比对象，每个对象含 50 人，并保存
-treated-minus-control 的 1978 earnings 差、Welch 标准误、局部 overlap 和
-neighborhood radius。正式协议使用 3 个独立基准种子、每种子 20 次对象级拆分，
-每次留出 28 个 local objects；五种方法共享完全相同的 archive-target 拆分，共
-产生 8,400 条方法级评价记录。目标 effect 和 standard error 不进入预测方法，
-只作为带噪声的事后评价参考。
-
-ATLAS 的 holdout MAE 为 0.8615 千美元，低于 semantic forced 的 1.1688、
-nearest semantic 的 1.2422 和 global mean 的 1.6790；区间覆盖率为 0.9744，
-拒绝率为 0.2321。由于论文未公开邻域大小、锚点选择、coordinate split、随机
-种子和证书调参，本阶段复现的是论文实验结构，不声称逐数值复刻 Table 3；重叠
-局部邻域也使这些对象级指标属于描述性压力测试，而不是独立样本推断。
-
-完整数据来源、固定协议、公式、结果和限制见 docs/nsw_experiment.md，运行入口为
-python scripts/run_nsw_experiment.py。原始结果、逐种子汇总、元数据、Markdown
-表和总览图位于 results/。
+各阶段的数学构造、协议、结果与限制位于 `docs/`；固定结果、图表、表格与
+SHA-256 清单位于 `results/`。

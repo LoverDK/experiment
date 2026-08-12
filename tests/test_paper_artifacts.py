@@ -26,13 +26,15 @@ class PaperArtifactsTests(unittest.TestCase):
         self.assertIn("main_experiment_mae.png", section)
         self.assertIn("formal_experiment_overview.png", section)
         self.assertIn("calibration_experiment_overview.png", section)
-        self.assertIn("0.7533", section)
+        self.assertIn("0.7233", section)
+        self.assertIn("7.0760", section)
+        self.assertIn("1.8772", section)
 
     def test_latex_tables_preserve_key_benchmark_and_boundary_values(self) -> None:
         tables = render_paper_results_tables(self.bundle)
         self.assertIn("\\label{tab:causal-atlas-nominal}", tables)
         self.assertIn("\\label{tab:causal-atlas-failure-boundary}", tables)
-        self.assertIn("0.1111", tables)
+        self.assertIn("0.1109", tables)
         self.assertIn("0.9933", tables)
         self.assertEqual(tables.count("Causal ATLAS"), 1)
 

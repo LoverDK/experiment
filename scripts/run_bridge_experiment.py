@@ -7,6 +7,7 @@ import json
 import sys
 from pathlib import Path
 
+import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -117,13 +118,19 @@ def _write_metadata(result: BridgeExperimentResult) -> None:
             "effect_absolute_bound": EFFECT_ABSOLUTE_BOUND,
         },
         "objective": (
-            "expected shrinkage of a support-diameter certificate; the "
-            "pre-outcome width uses the known bridge standard error"
+            "conditional marginal expected reduction of the current "
+            "Theorem 5.4 partial-identification diameter"
         ),
         "marginal_estimator": (
-            "rank each unmeasured candidate by its observable singleton "
-            "certificate, then recompute the full archive certificate after "
-            "selection"
+            "predict each unmeasured bridge effect from the public archive, "
+            "integrate future partial-identification diameters under a declared "
+            "normal design model with Gauss-Hermite quadrature, then update "
+            "adaptively after observing the selected bridge"
+        ),
+        "inconsistency_handling": (
+            "an empty Theorem 5.4 intersection is recorded as mutually "
+            "inconsistent certificates under Lemma 5.1; it is never assigned "
+            "zero diameter or counted as successful shrinkage"
         ),
         "policies": {
             "causal_greedy": "full observed mechanism representation",
@@ -151,6 +158,10 @@ def _write_markdown_tables(rows: tuple[BridgeSummaryRow, ...]) -> None:
         "scenario_key",
         "policy_key",
         "bridge_budget",
+        "budget_completion_rate",
+        "mean_selected_bridge_count",
+        "planning_inconsistency_rate",
+        "evaluation_inconsistency_rate",
         "mean_initial_diameter",
         "mean_final_diameter",
         "mean_diameter_shrinkage",
@@ -163,8 +174,8 @@ def _write_markdown_tables(rows: tuple[BridgeSummaryRow, ...]) -> None:
         "# Theorem 5.6 bridge-design experiment tables",
         "",
         "Each row pools 300 repetitions from three independent base seeds.",
-        "The diameter is a support, curvature, hidden-moderator, and statistical",
-        "certificate proxy evaluated using the full observed representation.",
+        "The diameter is the Theorem 5.4 partial-identification intersection",
+        "evaluated using the full observed representation.",
         "",
         "## Table 1. Bridge value by selection policy",
         "",
@@ -176,8 +187,11 @@ def _write_markdown_tables(rows: tuple[BridgeSummaryRow, ...]) -> None:
         "",
         "## Table 2. Interpretation",
         "",
-        "- `mean_diameter_shrinkage` is the empirical bridge value in the",
-        "  restricted certificate proxy.",
+        "- `mean_diameter_shrinkage` is empirical Definition 5.2 bridge value",
+        "  among paths whose evaluation intersection remains nonempty.",
+        "- `planning_inconsistency_rate` and `evaluation_inconsistency_rate`",
+        "  report empty intersections as Lemma 5.1 diagnostics, never as zero",
+        "  diameter or successful shrinkage.",
         "- `mean_final_oracle_hull_distance` is an evaluation-only support check.",
         "- The experiment compares policies; it does not prove weak submodularity.",
     ]
@@ -273,6 +287,8 @@ def _draw_final_diameter_panel(
             align="center",
         )
         for policy_index, row in enumerate(scenario_rows):
+            if row.mean_final_diameter is None:
+                continue
             x0 = center + (policy_index - 1) * (bar_width + 8) - bar_width / 2
             y0 = plot_bottom - row.mean_final_diameter / maximum * (plot_bottom - plot_top)
             draw.rectangle(
@@ -309,16 +325,33 @@ def _draw_budget_panel(
             if record.scenario_key == severe_key and record.policy_key == policy.key
         ]
         paths[policy.key] = [
-            sum(record.evaluation_diameter_path[index] for record in records)
-            / len(records)
+            sum(values) / len(values) if values else None
             for index in range(result.config.bridge_budget + 1)
+            for values in [
+                [
+                    record.evaluation_diameter_path[
+                        min(index, len(record.evaluation_diameter_path) - 1)
+                    ]
+                    for record in records
+                    if np.isfinite(
+                        record.evaluation_diameter_path[
+                            min(index, len(record.evaluation_diameter_path) - 1)
+                        ]
+                    )
+                ]
+            ]
         ]
-    maximum = max(max(path) for path in paths.values()) * 1.15
+    finite_values = [
+        value for path in paths.values() for value in path if value is not None
+    ]
+    maximum = max(finite_values) * 1.15
     _draw_axes(draw, left, top, plot_left, plot_top, plot_right, plot_bottom, title, maximum)
     for policy in result.config.policies:
         path = paths[policy.key]
         points = []
         for index, value in enumerate(path):
+            if value is None:
+                continue
             x = plot_left + index / result.config.bridge_budget * (plot_right - plot_left)
             y = plot_bottom - value / maximum * (plot_bottom - plot_top)
             points.append((int(x), int(y)))

@@ -11,11 +11,13 @@ from typing import Any
 
 @dataclass(frozen=True)
 class ResultBundle:
-    """Validated long-form tables from the three experiment stages."""
+    """Validated long-form tables used by final reports."""
 
     main_rows: tuple[dict[str, str], ...]
     formal_rows: tuple[dict[str, str], ...]
     calibration_rows: tuple[dict[str, str], ...]
+    partial_identification_rows: tuple[dict[str, str], ...]
+    bridge_rows: tuple[dict[str, str], ...]
 
 
 def load_result_bundle(results_dir: Path) -> ResultBundle:
@@ -27,11 +29,20 @@ def load_result_bundle(results_dir: Path) -> ResultBundle:
         calibration_rows=_read_csv(
             results_dir / "calibration_experiment_summary.csv"
         ),
+        partial_identification_rows=_read_csv(
+            results_dir / "partial_identification_summary.csv"
+        ),
+        bridge_rows=_read_csv(results_dir / "bridge_experiment_summary.csv"),
     )
     expected_counts = {
         "main": (len(bundle.main_rows), 60),
         "formal": (len(bundle.formal_rows), 42),
         "calibration": (len(bundle.calibration_rows), 12),
+        "partial_identification": (
+            len(bundle.partial_identification_rows),
+            4,
+        ),
+        "bridge": (len(bundle.bridge_rows), 12),
     }
     failures = [
         f"{name}: expected {expected}, found {actual}"
@@ -111,6 +122,22 @@ def render_final_report(bundle: ResultBundle) -> str:
             "understated_smoothness",
         )
     }
+    partial_nominal = _find(
+        bundle.partial_identification_rows,
+        scenario_key="nominal",
+    )
+    partial_severe = _find(
+        bundle.partial_identification_rows,
+        scenario_key="severe_mismatch",
+    )
+    bridge_severe = {
+        policy: _find(
+            bundle.bridge_rows,
+            scenario_key="severe",
+            policy_key=policy,
+        )
+        for policy in ("causal_greedy", "semantic_greedy", "random")
+    }
 
     lines = [
         "# Causal ATLAS 仿真实验总报告",
@@ -137,6 +164,12 @@ def render_final_report(bundle: ResultBundle) -> str:
         "错误的平滑常数，用于观察无效证书的后果。",
         "",
         "## 3. 实验流程",
+        "",
+        "项目的 12 个阶段是开发与验证阶段，不是 Algorithm 1 的 12 个步骤。",
+        "统一入口 run_algorithm1 先执行式 (4.2) 去偏、候选与兼容性筛选、式 (4.3)",
+        "权重和 Theorem 5.1 证书；接受时返回 Corollary 5.2 区间，拒绝时才构造",
+        "Theorem 5.4 部分识别并按 Definition 5.2 选择 bridge。逐行对照见",
+        "docs/algorithm1_alignment.md。",
         "",
         "| 阶段 | 内容 | 核心产物 |",
         "| --- | --- | --- |",
@@ -209,7 +242,32 @@ def render_final_report(bundle: ResultBundle) -> str:
         f"{_f(calibration[('severe_semantic_mismatch', 'no_rejection')], 'released_above_tolerance_rate')} "
         "的发布点超过容忍度。",
         "",
-        "## 7. 可以支持的结论",
+        "## 7. 拒绝后的部分识别与 bridge",
+        "",
+        f"Theorem 5.4 实验中，名义支持场景的拒绝率为 "
+        f"{_f(partial_nominal, 'rejection_rate')}，拒绝点平均部分识别宽度为 "
+        f"{_f(partial_nominal, 'mean_partial_id_width_on_rejected')}。严重失配时，"
+        f"拒绝率升至 {_f(partial_severe, 'rejection_rate')}，平均宽度升至 "
+        f"{_f(partial_severe, 'mean_partial_id_width_on_rejected')}；全部拒绝分支区间"
+        f"覆盖率为 {_f(partial_severe, 'partial_id_coverage_on_rejected')}。",
+        "",
+        "严重失配的 Definition 5.2 实验结果如下：",
+        "",
+        "| bridge 策略 | 预算完成率 | 初始直径 | 最终直径 | 缩减比例 |",
+        "| --- | ---: | ---: | ---: | ---: |",
+        *[
+            f"| {policy} | {_f(row, 'budget_completion_rate')} | "
+            f"{_f(row, 'mean_initial_diameter')} | "
+            f"{_f(row, 'mean_final_diameter')} | "
+            f"{_f(row, 'shrinkage_fraction')} |"
+            for policy, row in bridge_severe.items()
+        ],
+        "",
+        "causal greedy 在全部路径用满预算；语义策略的规划证书不一致会单独记录，",
+        "不被当作零直径。该实验没有估计弱次模参数，因而不证明 Theorem 5.6 的",
+        "近似系数。",
+        "",
+        "## 8. 可以支持的结论",
         "",
         "1. 在当前满足理论条件的合成机制中，完整证书区间保持保守覆盖。",
         "2. 拒绝规则会优先筛除高误差、高证书半径的目标，接受样本误差低于",
@@ -218,7 +276,7 @@ def render_final_report(bundle: ResultBundle) -> str:
         "4. 错误低报平滑界会导致过度发布和覆盖率下降，证书有效性依赖于其",
         "   常数确实有效。",
         "",
-        "## 8. 不能支持的结论与局限",
+        "## 9. 不能支持的结论与局限",
         "",
         "这些结果不能证明真实世界泛化性能，也不能把 oracle 支持实验当作",
         "可部署结果。当前 archive 数量固定为 8，效应曲面和随机化机制均为",
@@ -226,16 +284,22 @@ def render_final_report(bundle: ResultBundle) -> str:
         "误差仍需单独研究。覆盖率 1.0000 说明证书在该 DGP 下较保守，不等于",
         "区间宽度已经最优。",
         "",
-        "## 9. 复现命令",
+        "## 10. 复现命令",
         "",
         "    python -m unittest discover -s tests -v",
         "    python scripts/run_sanity_check.py",
+        "    python scripts/run_algorithm1.py",
         "    python scripts/run_monte_carlo.py",
         "    python scripts/run_method_comparison.py",
         "    python scripts/run_main_experiment.py",
         "    python scripts/run_formal_experiment.py",
         "    python scripts/run_calibration_experiment.py",
+        "    python scripts/run_partial_identification_experiment.py",
+        "    python scripts/run_minimax_experiment.py",
+        "    python scripts/run_bridge_experiment.py",
+        "    python scripts/run_nsw_experiment.py",
         "    python scripts/build_final_report.py",
+        "    python scripts/build_paper_artifacts.py",
         "",
         "结果文件、配置、图表及其 SHA-256 校验值见",
         "results/experiment_manifest.json。",

@@ -1,6 +1,10 @@
 # Monte Carlo 重复运行框架
 
-本阶段把已通过 Assumption 3.1--3.5 校验的单次 DGP 重复运行，但暂时不实现 Causal ATLAS 的权重学习。唯一的比较对象是 `oracle-support composition`：使用 DGP 内部保存的真实凸组合权重 \(\alpha\) 组合 archive 效应估计，作为后续方法和评价管线的参考，不代表可部署方法。
+本阶段是 Algorithm 1 上线前的 Monte Carlo 基础设施校验，不是论文伪代码中的
+独立步骤。它把已通过 Assumption 3.1--3.5 校验的单次 DGP 重复运行，但暂时不
+实现 Causal ATLAS 的权重学习。唯一的比较对象是 `oracle-support composition`：
+使用 DGP 内部保存的真实凸组合权重 \(\alpha\) 组合 archive 效应估计，作为后续
+方法和评价管线的参考，不代表可部署方法。
 
 ## 每次重复
 
@@ -52,4 +56,9 @@
 & 'C:\Users\Qiutian\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' scripts/run_monte_carlo.py
 ```
 
-默认运行 200 次，不会把生成的数据或结果文件写入仓库。后续正式实验应为每种方法使用相同的重复数据和随机种子，并保存配置与结果表。
+当前 200 次固定运行肉眼可见的关键结果是：平均绝对误差 0.1256、只含统计噪声
+区间覆盖率 0.4150、加入曲率与隐藏调节证书后的覆盖率 1.0000，平均完整区间宽度
+3.2708。这说明单独的 Wald 噪声区间没有包含组合逼近误差。
+
+默认运行不会把数据或摘要写入仓库。后续正式实验为每种方法使用相同重复数据和
+随机种子，并保存配置与结果表。
