@@ -21,14 +21,17 @@ class PaperArtifactsTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.bundle = load_result_bundle(PROJECT_ROOT / "results")
 
-    def test_section_links_to_the_three_committed_figures(self) -> None:
+    def test_section_links_to_the_paper_facing_figures(self) -> None:
         section = render_paper_results_section(self.bundle)
         self.assertIn("main_experiment_mae.png", section)
         self.assertIn("formal_experiment_overview.png", section)
         self.assertIn("calibration_experiment_overview.png", section)
+        self.assertIn("risk_coverage_curve.png", section)
+        self.assertIn("calibration_curve.png", section)
         self.assertIn("0.7233", section)
         self.assertIn("7.0760", section)
         self.assertIn("1.8772", section)
+        self.assertIn("0.9776", section)
 
     def test_latex_tables_preserve_key_benchmark_and_boundary_values(self) -> None:
         tables = render_paper_results_tables(self.bundle)
@@ -45,6 +48,8 @@ class PaperArtifactsTests(unittest.TestCase):
         }
         self.assertIn("docs/paper_results_section.md", paths)
         self.assertIn("results/tables/paper_results_tables.tex", paths)
+        self.assertIn("results/risk_coverage_summary.csv", paths)
+        self.assertIn("results/bridge_optimality_summary.csv", paths)
 
 
 if __name__ == "__main__":

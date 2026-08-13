@@ -28,6 +28,9 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(len(self.bundle.calibration_rows), 12)
         self.assertEqual(len(self.bundle.partial_identification_rows), 4)
         self.assertEqual(len(self.bundle.bridge_rows), 12)
+        self.assertEqual(len(self.bundle.risk_coverage_rows), 9)
+        self.assertEqual(len(self.bundle.calibration_curve_rows), 20)
+        self.assertEqual(len(self.bundle.bridge_optimality_rows), 3)
 
     def test_report_is_derived_from_key_result_values(self) -> None:
         report = render_final_report(self.bundle)
@@ -37,6 +40,8 @@ class ReportingTests(unittest.TestCase):
         self.assertIn("Assumption 3.1--3.5", report)
         self.assertIn("7.0760", report)
         self.assertIn("1.8772", report)
+        self.assertIn("risk--coverage frontier", report)
+        self.assertIn("0.9776", report)
 
     def test_compact_tables_include_benchmark_and_failure_boundary(self) -> None:
         tables = render_final_summary_tables(self.bundle)

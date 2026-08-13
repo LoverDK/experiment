@@ -89,6 +89,15 @@ bridge 不是按单候选距离排序。每轮对所有剩余候选计算“当�
   不一致，均被明确记录而非当作零直径。
 - NSW 描述性 holdout 中，ATLAS MAE 为 0.8615 千美元、覆盖率 0.9744、拒绝率
   0.2321；该阶段不声称逐数值复刻论文 Table 3。
+- risk--coverage 补实验在同一批 300 个 target 上显示：阈值 1.65 时发布率
+  0.5000、条件 MAE 0.1163；阈值 2.00 时发布率 0.9433、条件 MAE 0.1327；
+  acceptance=1 的 no-rejection 端点 MAE 为 0.1365。
+- coverage--width 曲线显示，正确证书在 0.80--0.975 名义水平下经验覆盖率均为
+  1.0000、平均宽度为 3.2835--3.3667；Wald-only 对照覆盖率为 0.2000--0.3367，
+  因此 coverage 不能脱离 width 解释。
+- 12 候选 bridge 穷举中，预算 1、2、3 的 causal greedy/事后最优 bridge value
+  比例为 0.9957、0.9776、0.9857。它是小规模经验效率对照，不估计弱次模参数，
+  也不证明 Theorem 5.6 的近似系数。
 
 ## 运行入口
 
@@ -108,9 +117,12 @@ python scripts/run_method_comparison.py
 python scripts/run_main_experiment.py
 python scripts/run_formal_experiment.py
 python scripts/run_calibration_experiment.py
+python scripts/run_risk_coverage_experiment.py
+python scripts/run_calibration_curve_experiment.py
 python scripts/run_partial_identification_experiment.py
 python scripts/run_minimax_experiment.py
 python scripts/run_bridge_experiment.py
+python scripts/run_bridge_optimality_experiment.py
 python scripts/run_nsw_experiment.py
 python scripts/build_final_report.py
 python scripts/build_paper_artifacts.py
@@ -125,3 +137,7 @@ python -m unittest discover -s tests -v
 
 各阶段的数学构造、协议、结果与限制位于 `docs/`；固定结果、图表、表格与
 SHA-256 清单位于 `results/`。
+
+新增评价产物：`results/risk_coverage_summary.csv` 和其 frontier 图；
+`results/calibration_curve_summary.csv` 和 coverage--width 图；
+`results/bridge_optimality_summary.csv` 和小规模穷举对照表。

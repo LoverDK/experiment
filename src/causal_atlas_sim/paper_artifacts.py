@@ -77,6 +77,23 @@ def render_paper_results_section(bundle: ResultBundle) -> str:
         if row["scenario_key"] == "severe"
         and row["policy_key"] == "causal_greedy"
     )
+    risk_nominal = _find_one(bundle.risk_coverage_rows, threshold="1.65")
+    risk_relaxed = _find_one(bundle.risk_coverage_rows, threshold="2.0")
+    risk_no_rejection = _find_one(bundle.risk_coverage_rows, threshold="inf")
+    curve_low = _find_one(
+        bundle.calibration_curve_rows,
+        confidence_level="0.8",
+        policy="honest_atlas",
+    )
+    curve_high = _find_one(
+        bundle.calibration_curve_rows,
+        confidence_level="0.975",
+        policy="honest_atlas",
+    )
+    bridge_optimality = [
+        _find_one(bundle.bridge_optimality_rows, budget=budget)
+        for budget in ("1", "2", "3")
+    ]
 
     lines = [
         "# 论文实验结果写作稿",
@@ -134,6 +151,23 @@ def render_paper_results_section(bundle: ResultBundle) -> str:
         "因此，这个边界实验支持的结论是：证书有用的前提是其上界确实有效，"
         "而不是任何数值化的置信区间都会自动保证可靠发布。",
         "",
+        "## Risk--coverage 与 coverage--width",
+        "",
+        "![Risk--coverage frontier](../results/figures/risk_coverage_curve.png)",
+        "",
+        "风险--覆盖率曲线在同一批 target 上同时报告发布率与已发布点条件 MAE。"
+        f"阈值 1.65 时发布率为 {_f(risk_nominal, 'acceptance_rate')}、条件 MAE 为 "
+        f"{_f(risk_nominal, 'conditional_mae')}；将阈值放宽到 2.00 时，"
+        f"发布率升至 {_f(risk_relaxed, 'acceptance_rate')}、条件 MAE 为 "
+        f"{_f(risk_relaxed, 'conditional_mae')}；无拒绝端点的 MAE 为 "
+        f"{_f(risk_no_rejection, 'conditional_mae')}。",
+        "",
+        "![Coverage--width calibration](../results/figures/calibration_curve.png)",
+        "",
+        "正确证书的经验覆盖率在 0.80--0.975 名义水平下均为 1.0000，但平均宽度约为 "
+        f"{_f(curve_low, 'mean_width')}--{_f(curve_high, 'mean_width')}；"
+        "因此覆盖率和区间宽度必须联合报告。",
+        "",
         "## 拒绝后的部分识别与 bridge",
         "",
         "严重失配时，ATLAS 拒绝率为 "
@@ -144,16 +178,22 @@ def render_paper_results_section(bundle: ResultBundle) -> str:
         f"{_f(bridge_severe, 'mean_initial_diameter')} 降至 "
         f"{_f(bridge_severe, 'mean_final_diameter')}，缩减 "
         f"{_f(bridge_severe, 'shrinkage_fraction')}，并在全部路径用满预算。",
+        "小规模穷举基准中，预算 1、2、3 的 greedy/optimal bridge value 比例分别为 "
+        + "、".join(
+            _f(row, "greedy_to_optimal_value_ratio") for row in bridge_optimality
+        )
+        + "；这只是当前候选库上的事后效率比较，不是弱次模性证明。",
         "",
         "## 可引用结论与限制",
         "",
         "当前结果支持：在这个满足理论假设的合成 DGP 中，拒绝机制会优先保留较低误差的",
         "点预测，并在高不确定性区域减少发布；完整证书在预设情景下保持保守覆盖。",
         "它们不支持对真实世界的泛化结论，也不能说明当前区间宽度最优。真实数据应用仍需",
-        "单独处理表征误差、设计不兼容和 nuisance estimation 误差。",
+        "单独处理表征误差、设计不兼容和 nuisance estimation 误差。NSW 阶段是 real-data",
+        "reconstruction stress test；held-out local contrast 是带噪评价参考，不是 causal ground truth。",
         "",
         "LaTeX 表格位于 results/tables/paper_results_tables.tex，其中仅使用已保存的",
-        "正式多种子和失效边界结果。",
+        "正式多种子、失效边界和新增 risk--coverage/校准结果。",
     ]
     return "\n".join(lines) + "\n"
 

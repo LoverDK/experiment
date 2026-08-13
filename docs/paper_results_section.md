@@ -32,16 +32,28 @@ Causal ATLAS 的发布率从 0.5150 降至 0.3000，而已发布点 MAE 仍保�
 
 在强语义失配下，正确证书的 ATLAS 仅发布 0.0433 的点，已发布区间覆盖率为 1.0000。相同场景下，无拒绝策略发布全部点，其中 0.9567 的点的证书半径超过科学容忍度。作为故意违反理论前提的反例，严重失配且低报平滑界时，发布区间覆盖率降至 0.7233。因此，这个边界实验支持的结论是：证书有用的前提是其上界确实有效，而不是任何数值化的置信区间都会自动保证可靠发布。
 
+## Risk--coverage 与 coverage--width
+
+![Risk--coverage frontier](../results/figures/risk_coverage_curve.png)
+
+风险--覆盖率曲线在同一批 target 上同时报告发布率与已发布点条件 MAE。阈值 1.65 时发布率为 0.5000、条件 MAE 为 0.1163；将阈值放宽到 2.00 时，发布率升至 0.9433、条件 MAE 为 0.1327；无拒绝端点的 MAE 为 0.1365。
+
+![Coverage--width calibration](../results/figures/calibration_curve.png)
+
+正确证书的经验覆盖率在 0.80--0.975 名义水平下均为 1.0000，但平均宽度约为 3.2835--3.3667；因此覆盖率和区间宽度必须联合报告。
+
 ## 拒绝后的部分识别与 bridge
 
 严重失配时，ATLAS 拒绝率为 0.9900，拒绝分支的平均 Theorem 5.4 区间宽度为 7.0760，覆盖率为 1.0000。在 Definition 5.2 bridge 实验中，完整因果 greedy 把平均直径从 6.9423 降至 1.8772，缩减 0.7296，并在全部路径用满预算。
+小规模穷举基准中，预算 1、2、3 的 greedy/optimal bridge value 比例分别为 0.9957、0.9776、0.9857；这只是当前候选库上的事后效率比较，不是弱次模性证明。
 
 ## 可引用结论与限制
 
 当前结果支持：在这个满足理论假设的合成 DGP 中，拒绝机制会优先保留较低误差的
 点预测，并在高不确定性区域减少发布；完整证书在预设情景下保持保守覆盖。
 它们不支持对真实世界的泛化结论，也不能说明当前区间宽度最优。真实数据应用仍需
-单独处理表征误差、设计不兼容和 nuisance estimation 误差。
+单独处理表征误差、设计不兼容和 nuisance estimation 误差。NSW 阶段是 real-data
+reconstruction stress test；held-out local contrast 是带噪评价参考，不是 causal ground truth。
 
 LaTeX 表格位于 results/tables/paper_results_tables.tex，其中仅使用已保存的
-正式多种子和失效边界结果。
+正式多种子、失效边界和新增 risk--coverage/校准结果。

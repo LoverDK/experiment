@@ -50,13 +50,14 @@ r_g=\sqrt{\frac{1}{|N_g|}\sum_{i\in N_g}\|x_i-\bar x_g\|_2^2}.
 
 ## 4. 表示、方法与防泄漏
 
-本实现明确区分两个表示：
+本实现明确区分两个表示。它们不表示“已知哪些变量是因果变量”，而是模拟检索时
+遗漏效应相关协变量和设计坐标的可审计情形：
 
-- semantic representation：age、education、race indicators、married、nodegree；
-- causal representation：semantic coordinates、re74、re75、overlap、radius。
+- restricted representation：age、education、race indicators、married、nodegree；
+- design-enriched representation：restricted coordinates、re74、re75、overlap、radius。
 
 这一分工是对论文未公开 coordinate split 的可审计实例化。Causal ATLAS 先在
-semantic representation 中取最近 24 个候选，再在完整 causal representation
+restricted representation 中取最近 24 个候选，再在完整 design-enriched representation
 上求带标准误正则项的非负 simplex 权重。证书由 source statistical term 与
 representation residual/dispersion term 相加；半宽超过固定的 3.30 千美元科学
 容忍度时拒绝点发布。
@@ -103,7 +104,8 @@ semantic 的高 coverage 来自最宽的区间，不能单独解释为点预测�
 ## 7. 限制
 
 1. held-out contrast 本身含采样噪声，因此 coverage 不是对真实局部效应的频率学
-   覆盖证明；
+   覆盖证明；本阶段是 real-data reconstruction stress test，不是 causal ground-truth
+   validation；
 2. local neighborhoods 会重叠，对象级 holdout 不等于 unit-level independent
    holdout，重复指标是稳定性描述而不是 1,680 个独立样本；
 3. coordinate split 与证书尺度是公开但非唯一的研究者选择；

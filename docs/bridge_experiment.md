@@ -136,6 +136,18 @@ Theorem 5.6 是条件保证：只有 (F) 单调且满足 (gamma)-弱次模条件
 不能把 causal greedy 的经验优势解释成对弱次模性或近似系数的证明。候选库与
 正态规划模型也是受控仿真设定，不能直接外推到任意真实 bridge 库。
 
+## 小规模 exhaustive 对照
+
+新增独立的事后基准：固定严重失配场景和 12 个候选，对预算 1、2、3 分别枚举
+12、66、220 个组合。每个组合用已经观测到的 bridge 结果重算 Theorem 5.4 区间，
+最终直径最小者称为 exhaustive optimum；causal greedy 仍只使用公开信息与条件
+边际 VoI。
+
+30 次重复的 greedy/optimal bridge value 比例为 0.9957、0.9776、0.9857，
+greedy 恰好选中最优集合的比例为 0.6667、0.3333、0.4333。穷举使用了未来观测
+结果，所以是评价 oracle，不是部署策略；该实验只展示当前 DGP 下的经验效率，
+不估计弱次模参数，也不证明 Theorem 5.6 的近似系数。
+
 ## 复现与肉眼可见产出
 
 快速查看一条完整 Algorithm 1 路径：
@@ -154,3 +166,12 @@ python scripts/run_bridge_experiment.py
 它生成 `results/bridge_experiment_summary.csv`、逐种子 CSV、元数据 JSON、
 `results/tables/bridge_experiment_tables.md` 和总览 PNG。Algorithm 1 的逐行对应见
 `docs/algorithm1_alignment.md`。
+
+小规模 exhaustive 对照：
+
+```powershell
+python scripts/run_bridge_optimality_experiment.py
+```
+
+它生成 `results/bridge_optimality_summary.csv`、metadata JSON 和
+`results/tables/bridge_optimality_tables.md`。

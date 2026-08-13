@@ -58,8 +58,18 @@
 - `results/tables/calibration_experiment_tables.md`：报告用结果表；
 - `results/figures/calibration_experiment_overview.png`：发布率与覆盖率比较图。
 
+### coverage--width 校准曲线
+
+`run_calibration_curve_experiment.py` 在名义置信水平 0.80、0.90、0.95、0.975 下，
+对同一批 target 同时报告经验覆盖率与平均区间宽度。它比较正确证书、Wald-only、
+semantic forced、低报平滑界和取消隐藏调节膨胀。正确证书覆盖率为 1.0000 但区间较宽，
+Wald-only 覆盖率为 0.2000--0.3367，说明论文必须联合报告 coverage 与 width。
+
+新增产物：`results/calibration_curve_summary.csv`、metadata JSON、Markdown 表和 PNG 图。
+
 运行命令：
 
 ```powershell
 python scripts/run_calibration_experiment.py
+python scripts/run_calibration_curve_experiment.py
 ```

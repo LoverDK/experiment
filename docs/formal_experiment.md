@@ -53,8 +53,11 @@ target，同时保留3个种子批次各自的结果，用于检查跨种子稳�
 误差从0.1109变为0.1124。只保留4个候选的影响更明显：接受率降到0.3200，接受后
 的平均绝对误差升到0.1234。
 
-所有证书区间在这些实验中都覆盖了合成真值。这与证书较为保守一致，但也说明不能
-把1.000的覆盖率自动理解成最优结果，需要阶段6专门检验证书的校准和失效边界。
+0.1109 是“接受事件条件下”的 MAE，不能直接写成 ATLAS 对全体 target 比
+no-rejection 更准确。risk--coverage 实验使用同一批 target 展示完整 trade-off：
+阈值1.65时发布率0.5000、条件 MAE0.1163；阈值2.00时发布率0.9433、条件
+MAE0.1327；acceptance=1端点 MAE0.1365。所有证书区间在这些实验中都覆盖了
+合成真值，但 coverage 必须与区间宽度一起解释。
 
 ## 可复现产物
 
@@ -68,4 +71,5 @@ target，同时保留3个种子批次各自的结果，用于检查跨种子稳�
 
 ```powershell
 python scripts/run_formal_experiment.py
+python scripts/run_risk_coverage_experiment.py
 ```

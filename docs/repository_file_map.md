@@ -15,10 +15,25 @@
 | 路径 | 类别 | 功能与维护关系 |
 | --- | --- | --- |
 | .gitignore | 仓库配置 | 排除 Python 缓存和临时输出，并显式保留各阶段固定种子 CSV、JSON、图表等可复现产物。 |
+| .agents/skills/lean-bisect/SKILL.md | 本地代理技能 | Lean 工具链版本二分工作流说明；不参与本项目仿真运行。 |
+| .agents/skills/lean-mwe/SKILL.md | 本地代理技能 | Lean 错误最小可复现示例工作流说明；不参与本项目仿真运行。 |
+| .agents/skills/lean-pr/SKILL.md | 本地代理技能 | Lean 项目 PR 约定；不参与本项目仿真运行。 |
+| .agents/skills/lean-proof/SKILL.md | 本地代理技能 | Lean 证明协作工作流说明；不参与本项目仿真运行。 |
+| .agents/skills/lean-setup/SKILL.md | 本地代理技能 | Lean 仓库与 toolchain 配置说明；不参与本项目仿真运行。 |
+| .agents/skills/mathlib-build/SKILL.md | 本地代理技能 | Mathlib 构建工作流说明；不参与本项目仿真运行。 |
+| .agents/skills/mathlib-pr/SKILL.md | 本地代理技能 | Mathlib PR 约定；不参与本项目仿真运行。 |
+| .agents/skills/mathlib-review/SKILL.md | 本地代理技能 | Mathlib 代码审查工作流说明；不参与本项目仿真运行。 |
+| .agents/skills/nightly-testing/SKILL.md | 本地代理技能 | Lean/Mathlib nightly 测试说明；不参与本项目仿真运行。 |
+| .agents/skills/scientific-figure-making/SKILL.md | 本地代理技能 | 学术图表制作与检查工作流说明；可用于后续论文图表整理。 |
+| .agents/skills/scientific-figure-making/references/api.md | 技能参考 | scientific-figure-making 的 API 参考。 |
+| .agents/skills/scientific-figure-making/references/common-patterns.md | 技能参考 | scientific-figure-making 的常见图表模式参考。 |
+| .agents/skills/scientific-figure-making/references/demos.md | 技能参考 | scientific-figure-making 的示例参考。 |
+| .agents/skills/scientific-figure-making/references/design-theory.md | 技能参考 | scientific-figure-making 的图表设计原则参考。 |
+| .agents/skills/scientific-figure-making/references/tutorials.md | 技能参考 | scientific-figure-making 的教程参考。 |
 | README.md | 项目入口 | 说明研究目标、各实验阶段、复现命令和主要产物位置；新增阶段时同步更新。 |
 | data/nsw_dw.dta | 阶段 12 数据 | NBER 发布的 Dehejia-Wahba NSW 随机实验原始快照；运行前按固定 SHA-256 校验。 |
 | docs/algorithm1_alignment.md | 算法对照 | 将论文 Algorithm 1 逐行映射到统一代码入口、阶段、公式、分支和肉眼可见产出。 |
-| docs/calibration_experiment.md | 阶段 6 文档 | 说明证书校准、异质隐藏半径和失效边界实验的设计、指标与结论。 |
+| docs/calibration_experiment.md | 阶段 6 文档 | 说明证书校准、异质隐藏半径、失效边界和 coverage--width 校准曲线。 |
 | docs/bridge_experiment.md | 阶段 11 文档 | 说明 Definition 5.2 条件边际期望部分识别直径、正态规划模型、三种策略、不一致诊断和 Theorem 5.6 边界。 |
 | docs/final_experiment_report.md | 阶段 7 产物 | 汇总全部合成仿真实验的中文报告，由 scripts/build_final_report.py 生成。 |
 | docs/formal_experiment.md | 阶段 5 文档 | 说明多种子正式基准、消融设置、统计不确定性与结果解释。 |
@@ -34,8 +49,13 @@
 | results/calibration_experiment_metadata.json | 阶段 6 产物 | 保存证书校准实验的固定配置、种子和场景元数据。 |
 | results/calibration_experiment_seed_summary.csv | 阶段 6 产物 | 按基准种子汇总的证书校准结果，用于检查跨种子稳定性。 |
 | results/calibration_experiment_summary.csv | 阶段 6 产物 | 证书校准与失效边界的主汇总表；阶段 7、8 从中读取数值。 |
+| results/calibration_curve_metadata.json | 校准曲线元数据 | 保存多置信水平 coverage--width 校准协议、固定种子与证书配置。 |
+| results/calibration_curve_summary.csv | 校准曲线主表 | 20 行名义水平-策略汇总，联合报告发布率、经验覆盖率、宽度与条件指标。 |
+| results/bridge_optimality_metadata.json | Bridge 穷举元数据 | 保存 12 候选、预算 1--3、30 次重复和事后穷举评价边界。 |
+| results/bridge_optimality_summary.csv | Bridge 穷举主表 | 三个预算下 causal greedy 与 exhaustive optimum 的最终直径、价值比和集合命中率。 |
 | results/experiment_manifest.json | 可复现性产物 | 记录结果、图表和报告的 SHA-256 校验值，由两个 build 脚本刷新。 |
 | results/figures/calibration_experiment_overview.png | 阶段 6 图 | 比较正确证书、无拒绝和低报界策略的发布率与覆盖率。 |
+| results/figures/calibration_curve.png | 校准曲线图 | 展示多个名义置信水平下各策略的经验覆盖率与平均区间宽度。 |
 | results/figures/bridge_experiment_overview.png | 阶段 11 图 | 比较 causal greedy、semantic greedy 和 random bridge 的最终直径及预算路径。 |
 | results/figures/formal_experiment_overview.png | 阶段 5 图 | 展示正式多种子基准中的发布率、消融与已发布点 MAE。 |
 | results/figures/main_experiment_acceptance.png | 阶段 4 图 | 展示四项参数扫描下各方法的发布率。 |
@@ -43,6 +63,7 @@
 | results/figures/minimax_experiment_overview.png | 阶段 10 图 | 并列展示 Theorem 5.5 两个构造下界分量及其与代表性估计器最坏风险的关系。 |
 | results/figures/nsw_experiment_overview.png | 阶段 12 图 | 展示五种方法的 NSW holdout MAE、coverage 和 rejection diagnostics。 |
 | results/figures/partial_identification_overview.png | 阶段 9 图 | 展示拒绝率、部分识别非空率、覆盖率和拒绝点区间宽度。 |
+| results/figures/risk_coverage_curve.png | 风险--覆盖率图 | 展示证书阈值变化引起的发布率与已发布点条件 MAE frontier。 |
 | results/formal_experiment_metadata.json | 阶段 5 产物 | 保存正式多种子协议的场景、估计器、种子与参数配置。 |
 | results/formal_experiment_seed_summary.csv | 阶段 5 产物 | 按基准种子汇总正式实验，支持跨种子变异检查。 |
 | results/formal_experiment_summary.csv | 阶段 5 产物 | 正式实验的 42 行场景和估计器汇总；阶段 7、8 从中读取数值。 |
@@ -60,19 +81,26 @@
 | results/partial_identification_metadata.json | 阶段 9 产物 | 保存部分识别场景、种子、总失败概率和权重族配置。 |
 | results/partial_identification_seed_summary.csv | 阶段 9 产物 | 按基准种子汇总部分识别覆盖率、非空率、宽度和支持距离。 |
 | results/partial_identification_summary.csv | 阶段 9 产物 | 4 个支持场景的正式汇总，是阶段 9 的主结果表。 |
+| results/risk_coverage_metadata.json | 风险--覆盖率元数据 | 保存共享 target 抽样、阈值网格和固定种子。 |
+| results/risk_coverage_summary.csv | 风险--覆盖率主表 | 9 行阈值结果，包含发布率、条件误差、区间指标和无拒绝端点。 |
 | results/tables/calibration_experiment_tables.md | 阶段 6 产物 | Markdown 形式的证书校准结果表。 |
 | results/tables/bridge_experiment_tables.md | 阶段 11 产物 | Markdown 形式的 Definition 5.2 策略比较、部分识别直径、预算完成和不一致诊断表。 |
+| results/tables/bridge_optimality_tables.md | Bridge 穷举表 | 小候选库 causal greedy 与事后 exhaustive optimum 的预算对照。 |
+| results/tables/calibration_curve_tables.md | 校准曲线表 | 多置信水平下 coverage、width 和发布率的联合表。 |
 | results/tables/final_summary_tables.md | 阶段 7 产物 | 紧凑的正式基准与失效边界摘要表，由 build_final_report.py 生成。 |
 | results/tables/formal_experiment_tables.md | 阶段 5 产物 | Markdown 形式的正式多种子实验与消融表。 |
 | results/tables/minimax_experiment_tables.md | 阶段 10 产物 | Markdown 形式的 Theorem 5.5 下界分量与代表性估计器风险表。 |
 | results/tables/nsw_experiment_tables.md | 阶段 12 产物 | Markdown 形式的 NSW local-contrast reconstruction 结果与评价边界。 |
 | results/tables/paper_results_tables.tex | 阶段 8 产物 | 可输入论文的 LaTeX 基准和失效边界表，由 build_paper_artifacts.py 生成。 |
 | results/tables/partial_identification_tables.md | 阶段 9 产物 | Markdown 形式的 Theorem 5.4 部分识别结果表。 |
+| results/tables/risk_coverage_tables.md | 风险--覆盖率表 | 证书阈值、发布率与条件风险的完整 frontier 表。 |
 | scripts/build_final_report.py | 阶段 7 脚本 | 读取三张结果 CSV，生成最终报告、摘要表并刷新产物清单。 |
 | scripts/build_paper_artifacts.py | 阶段 8 脚本 | 读取三张结果 CSV，生成论文写作稿、LaTeX 表格并刷新产物清单。 |
 | scripts/run_algorithm1.py | 算法快速入口 | 运行一条拒绝、部分识别、两轮条件边际 bridge 的完整 Algorithm 1 路径并打印所有关键状态。 |
 | scripts/run_calibration_experiment.py | 阶段 6 脚本 | 运行证书校准与失效边界实验，写入阶段 6 的 CSV、JSON、图和表。 |
+| scripts/run_calibration_curve_experiment.py | 校准曲线脚本 | 运行多置信水平的 coverage--width 诊断，写入 CSV、JSON、图和表。 |
 | scripts/run_bridge_experiment.py | 阶段 11 脚本 | 运行 3,600 条严格条件边际 VoI 路径，写入直径、完成率、不一致诊断、JSON、图和 Markdown 表。 |
+| scripts/run_bridge_optimality_experiment.py | Bridge 穷举脚本 | 运行 12 候选预算 1--3 的事后 exhaustive benchmark，写入结果表和元数据。 |
 | scripts/run_formal_experiment.py | 阶段 5 脚本 | 运行正式多种子协议，写入阶段 5 的 CSV、JSON、图和表。 |
 | scripts/run_main_experiment.py | 阶段 4 脚本 | 运行四个受控参数扫描，写入阶段 4 的 CSV、JSON 和两张图。 |
 | scripts/run_method_comparison.py | 阶段 3 脚本 | 运行固定设置下的方法比较并输出文字摘要。 |
@@ -80,10 +108,12 @@
 | scripts/run_monte_carlo.py | 阶段 2 脚本 | 运行独立重复和 oracle 评估的 Monte Carlo 管线。 |
 | scripts/run_nsw_experiment.py | 阶段 12 脚本 | 运行固定 NSW 对象级 holdout 协议，写入 CSV、JSON、图和 Markdown 表。 |
 | scripts/run_partial_identification_experiment.py | 阶段 9 脚本 | 运行多种子部分识别实验，写入 CSV、JSON、图和 Markdown 表。 |
+| scripts/run_risk_coverage_experiment.py | 风险--覆盖率脚本 | 运行同一 target 抽样下的阈值 frontier，写入 CSV、JSON、图和表。 |
 | scripts/run_sanity_check.py | 阶段 1 脚本 | 生成最小 DGP 并执行 Assumption 3.1--3.5 的快速校验。 |
 | src/causal_atlas_sim/__init__.py | 包接口 | 集中导出 DGP、方法、实验、报告和论文产物的公开 API。 |
 | src/causal_atlas_sim/algorithm1.py | 统一算法入口 | 严格调度 Algorithm 1 接受/拒绝分支，计算条件边际期望部分识别直径并自适应选择 bridge。 |
 | src/causal_atlas_sim/calibration_experiment.py | 阶段 6 源码 | 定义证书校准场景、策略、汇总指标和图表生成。 |
+| src/causal_atlas_sim/calibration_curve.py | 校准曲线源码 | 在多个名义置信水平下生成 honest/Wald/失配对照的 coverage--width 汇总。 |
 | src/causal_atlas_sim/bridge_experiment.py | 阶段 11 源码 | 构造 bridge 候选库，调用统一 Algorithm 1 比较 causal/semantic/random 策略并汇总完成率和不一致率。 |
 | src/causal_atlas_sim/comparison.py | 阶段 3 源码 | 定义共享重复下的方法比较协议及其汇总。 |
 | src/causal_atlas_sim/dgp.py | 阶段 1 源码 | 定义最小机制空间、随机试验、共同设计/识别假设档案、式 (4.2) AIPW 样本方差及 Assumption 3.1--3.5 校验。 |
@@ -96,9 +126,12 @@
 | src/causal_atlas_sim/paper_artifacts.py | 阶段 8 源码 | 从已保存结果渲染论文写作稿和 LaTeX 表，禁止重新抽样。 |
 | src/causal_atlas_sim/partial_identification.py | 阶段 9 源码 | 实现仅在拒绝分支构造的 Theorem 5.4 权重区间交集、oracle 凸包评价和多种子协议。 |
 | src/causal_atlas_sim/reporting.py | 阶段 7 源码 | 验证结果行数，渲染最终报告和摘要表，计算产物 SHA-256 清单。 |
+| src/causal_atlas_sim/risk_coverage.py | 风险--覆盖率源码 | 用共享 target 抽样按证书阈值汇总发布率、条件风险、区间覆盖和无拒绝端点。 |
 | tests/test_calibration_experiment.py | 阶段 6 测试 | 检验校准场景、策略、行数和固定协议的确定性。 |
+| tests/test_calibration_curve.py | 校准曲线测试 | 检验五个对照策略、置信水平网格和固定协议确定性。 |
 | tests/test_algorithm1.py | 算法测试 | 检验分支互斥、Corollary 5.2、兼容过滤、真值隔离、条件边际更新、复现性和空交集诊断。 |
 | tests/test_bridge_experiment.py | 阶段 11 测试 | 检验候选库、统一 Algorithm 1 直径路径、预算完成汇总、固定协议确定性和产物清单。 |
+| tests/test_bridge_optimality.py | Bridge 穷举测试 | 检验小库穷举的组合计数以及 greedy 不优于事后最优的基本性质。 |
 | tests/test_comparison.py | 阶段 3 测试 | 检验共享随机重复、方法集合和比较结果的确定性。 |
 | tests/test_dgp.py | 阶段 1 测试 | 检验最小 DGP、五条假设、随机化一致性和证书界。 |
 | tests/test_experiments.py | 阶段 4 测试 | 检验主扫描行数、固定种子和语义失配的机制范围。 |
@@ -110,4 +143,5 @@
 | tests/test_paper_artifacts.py | 阶段 8 测试 | 检验论文写作稿、LaTeX 数值和清单中第 8 步产物的存在。 |
 | tests/test_partial_identification.py | 阶段 9 测试 | 检验失败概率分配、区间交集、覆盖、凸包距离和协议确定性。 |
 | tests/test_reporting.py | 阶段 7 测试 | 检验结果行数、最终报告、摘要表和清单哈希。 |
+| tests/test_risk_coverage.py | 风险--覆盖率测试 | 检验无拒绝端点、单调发布率和固定协议确定性。 |
 | tests/test_repository_file_map.py | 维护测试 | 检验本表覆盖全部受跟踪或待提交项目文件，防止未来更新遗漏对照说明。 |

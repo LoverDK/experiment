@@ -34,6 +34,12 @@ logs/
 !results/nsw_experiment_summary.csv
 !results/nsw_experiment_seed_summary.csv
 !results/nsw_experiment_metadata.json
+!results/risk_coverage_summary.csv
+!results/risk_coverage_metadata.json
+!results/calibration_curve_summary.csv
+!results/calibration_curve_metadata.json
+!results/bridge_optimality_summary.csv
+!results/bridge_optimality_metadata.json
 !results/figures/
 !results/figures/*.png
 !results/tables/

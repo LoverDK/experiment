@@ -7,7 +7,10 @@
     "partial_identification_summary.csv": 4,
     "minimax_experiment_summary.csv": 8,
     "bridge_experiment_summary.csv": 12,
-    "nsw_experiment_summary.csv": 5
+    "nsw_experiment_summary.csv": 5,
+    "risk_coverage_summary.csv": 9,
+    "calibration_curve_summary.csv": 20,
+    "bridge_optimality_summary.csv": 3
   },
   "artifacts": [
     {
@@ -24,6 +27,16 @@
       "path": "results/bridge_experiment_summary.csv",
       "bytes": 3736,
       "sha256": "20d23dfd618e1496818f4a38635826519443aa188cbec542e78532f8f6cb0cb2"
+    },
+    {
+      "path": "results/bridge_optimality_summary.csv",
+      "bytes": 579,
+      "sha256": "815fc0aba01aef594ff41dcaae308fd94c583a81940ca857fb2a47bdb93f7988"
+    },
+    {
+      "path": "results/calibration_curve_summary.csv",
+      "bytes": 2179,
+      "sha256": "b5d99f529b1c70eb9c9a57eddd80454f5c480df0a237149aa4c8abe14c7418cd"
     },
     {
       "path": "results/calibration_experiment_seed_summary.csv",
@@ -81,9 +94,24 @@
       "sha256": "8f8b6c62809f2d050c8d5f8fa0e6dd0c2ac800a603b34742d558ad162bf23489"
     },
     {
+      "path": "results/risk_coverage_summary.csv",
+      "bytes": 966,
+      "sha256": "cc0dcb70f0d3191dce618241286214e960afebb02865ae1e3ac9fa89cec15d1b"
+    },
+    {
       "path": "results/bridge_experiment_metadata.json",
       "bytes": 2694,
       "sha256": "895861bb1678661fd661f3c2ce99e0b2fc932b814ca654ae3b44730425ca4a19"
+    },
+    {
+      "path": "results/bridge_optimality_metadata.json",
+      "bytes": 388,
+      "sha256": "4fefb222a4b097226459d69bfb28a2b4a2dac0f1dbb0ef2c06ea6d275ac8191a"
+    },
+    {
+      "path": "results/calibration_curve_metadata.json",
+      "bytes": 1103,
+      "sha256": "49ab00a08c8ef195fdba70f4971b7819dfa3a1303781a6b384209f7a85f2fdd3"
     },
     {
       "path": "results/calibration_experiment_metadata.json",
@@ -116,9 +144,19 @@
       "sha256": "602dbbb60976ee6fa4d56c0ee99390bb2a0bc7cef716c0aa535af6d8af8e419b"
     },
     {
+      "path": "results/risk_coverage_metadata.json",
+      "bytes": 1107,
+      "sha256": "fc8ad004ce1b64a5fa905da0e8d96a43fa5bbebf52ec83d994fe3f51e5c4b7c2"
+    },
+    {
       "path": "results/figures/bridge_experiment_overview.png",
       "bytes": 36302,
       "sha256": "047a31114d2b69ddb01e7174c73ea4ccdb66bfcebf60de87aff8d30e21e5599f"
+    },
+    {
+      "path": "results/figures/calibration_curve.png",
+      "bytes": 27223,
+      "sha256": "4b795670e06cee106ec905fc06c707481a4f47e62738d1fc873b4a019be8f518"
     },
     {
       "path": "results/figures/calibration_experiment_overview.png",
@@ -156,9 +194,24 @@
       "sha256": "85915fe73f1ef46c90c757eaafafdbdf4c06c7849b2cdebee2178dcdb6d8ec81"
     },
     {
+      "path": "results/figures/risk_coverage_curve.png",
+      "bytes": 24925,
+      "sha256": "7f90fe68cdf9cb77c08f705d8bfb7167646315fdf57523f5a0cb4ff675799d63"
+    },
+    {
       "path": "results/tables/bridge_experiment_tables.md",
       "bytes": 2990,
       "sha256": "d28405210ac17235fb873e5b65393e6150b721973cc234b12d075be5932d43cf"
+    },
+    {
+      "path": "results/tables/bridge_optimality_tables.md",
+      "bytes": 743,
+      "sha256": "10b81c7a5676de112f08e7f91110ee260ff86afcc4fca4d69f38265c3c9c52d7"
+    },
+    {
+      "path": "results/tables/calibration_curve_tables.md",
+      "bytes": 1896,
+      "sha256": "10ec2811183bf20c526e254ed0585ab5163fad334ef163f63606998ecd83cbef"
     },
     {
       "path": "results/tables/calibration_experiment_tables.md",
@@ -191,31 +244,39 @@
       "sha256": "b95e25319ce9edef125c8122ac6ee92aaf5a71eaa0511f046c1954e43a130f58"
     },
     {
+      "path": "results/tables/risk_coverage_tables.md",
+      "bytes": 839,
+      "sha256": "4669ddc20639c2acf60fbc2f7df96643ee388819da88bc0e252add458935b81f"
+    },
+    {
       "path": "results/tables/paper_results_tables.tex",
       "bytes": 1642,
       "sha256": "4636a57639d3619a2cfd1c8599bc4a4878c102b9a561cd2cbc9a1e6456083807"
     },
     {
       "path": "docs/final_experiment_report.md",
-      "bytes": 6289,
-      "sha256": "0d541d5577125c37ea7bdf53bd9b6593789281fb24c86343c70491039376bf2f"
+      "bytes": 7913,
+      "sha256": "902c1b3abf3377add35b2d53f9c70b146c75346f82d6c688149937d78a73a9c9"
     },
     {
       "path": "docs/paper_results_section.md",
-      "bytes": 3486,
-      "sha256": "a4bb06e8d3264aa5f079b08fa0641cd412b9c46a716193e0e45fc64dcd72d916"
+      "bytes": 4484,
+      "sha256": "d95d38385e19d2fb0350f95a0974f49e540e51a28ced86570f4e164e65f249e9"
     },
     {
       "path": "docs/nsw_experiment.md",
-      "bytes": 6388,
-      "sha256": "f2b3cb8e8293037a97e9d28506b021a8251ff0cf3c61aace575cf84ec13ad590"
+      "bytes": 6649,
+      "sha256": "a1ab378f4b534ef6c77895200d4b74de0d0eac7d88fd805b69833d6e12aafd7b"
     }
   ],
   "verification_commands": [
     "python -m unittest discover -s tests -v",
+    "python scripts/run_risk_coverage_experiment.py",
+    "python scripts/run_calibration_curve_experiment.py",
     "python scripts/run_partial_identification_experiment.py",
     "python scripts/run_minimax_experiment.py",
     "python scripts/run_bridge_experiment.py",
+    "python scripts/run_bridge_optimality_experiment.py",
     "python scripts/run_nsw_experiment.py",
     "python scripts/build_final_report.py"
   ]
