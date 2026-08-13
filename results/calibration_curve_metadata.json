@@ -1,0 +1,48 @@
+{
+  "repetitions_per_seed": 100,
+  "base_seeds": [
+    20260841,
+    20260842,
+    20260843
+  ],
+  "confidence_levels": [
+    0.8,
+    0.9,
+    0.95,
+    0.975
+  ],
+  "scientific_tolerance": 1.65,
+  "dgp_config": {
+    "n_archive": 8,
+    "n_units_per_experiment": 400,
+    "n_units_target": 400,
+    "propensity": 0.5,
+    "overlap_lower_bound": 0.1,
+    "outcome_noise_sd": 1.0,
+    "moderator_sensitivity_radius": 0.2,
+    "moderator_proxy_half_width": 0.1,
+    "archive_moderator_radius_spread": 0.0,
+    "target_shift_fraction": 0.0,
+    "target_shift_anchor": [
+      1.0,
+      -1.0,
+      1.0,
+      -1.0
+    ]
+  },
+  "atlas_config": {
+    "max_candidates": null,
+    "semantic_radius": null,
+    "representation_dimensions": null,
+    "lambda_sigma": 1.0,
+    "lambda_hidden": 1.0,
+    "effect_lipschitz_bound": 2.61,
+    "effect_curvature_bound": 1.8,
+    "hidden_moderator_lipschitz_bound": 1.55,
+    "zeta": 0.05,
+    "scientific_tolerance": 1.65,
+    "max_iterations": 800,
+    "learning_rate": 0.25,
+    "convergence_tolerance": 1e-10
+  }
+}

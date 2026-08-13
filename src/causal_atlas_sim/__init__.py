@@ -75,6 +75,18 @@ from .calibration_experiment import (
     default_calibration_scenarios,
     run_calibration_experiment,
 )
+from .risk_coverage import (
+    RiskCoverageConfig,
+    RiskCoverageResult,
+    RiskCoverageRow,
+    run_risk_coverage_experiment,
+)
+from .calibration_curve import (
+    CalibrationCurveConfig,
+    CalibrationCurveResult,
+    CalibrationCurveRow,
+    run_calibration_curve_experiment,
+)
 from .reporting import (
     ResultBundle,
     build_artifact_manifest,
@@ -126,8 +138,10 @@ from .bridge_experiment import (
     BridgeRecord,
     BridgeScenario,
     BridgeSummaryRow,
+    BridgeOptimalityRow,
     default_bridge_policies,
     default_bridge_scenarios,
+    run_bridge_optimality_experiment,
     run_bridge_experiment,
 )
 from .nsw_experiment import (
@@ -215,6 +229,14 @@ __all__ = [
     "default_calibration_policies",
     "default_calibration_scenarios",
     "run_calibration_experiment",
+    "RiskCoverageConfig",
+    "RiskCoverageResult",
+    "RiskCoverageRow",
+    "run_risk_coverage_experiment",
+    "CalibrationCurveConfig",
+    "CalibrationCurveResult",
+    "CalibrationCurveRow",
+    "run_calibration_curve_experiment",
     "ResultBundle",
     "build_artifact_manifest",
     "load_result_bundle",
@@ -255,8 +277,10 @@ __all__ = [
     "BridgeRecord",
     "BridgeScenario",
     "BridgeSummaryRow",
+    "BridgeOptimalityRow",
     "default_bridge_policies",
     "default_bridge_scenarios",
+    "run_bridge_optimality_experiment",
     "run_bridge_experiment",
     "NSW_COVARIATES",
     "NSW_METHODS",

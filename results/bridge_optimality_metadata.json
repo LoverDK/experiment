@@ -1,0 +1,12 @@
+{
+  "scenario": "severe mismatch",
+  "candidate_library_size": 12,
+  "budgets": [
+    1,
+    2,
+    3
+  ],
+  "repetitions": 30,
+  "selection_information": "causal greedy uses only public coordinates; exhaustive optimum is evaluation-only",
+  "interpretation": "This compares greedy with a small-scale combinatorial optimum; it does not estimate gamma or prove Theorem 5.6."
+}

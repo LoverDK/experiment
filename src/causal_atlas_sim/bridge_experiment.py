@@ -10,6 +10,7 @@ mechanism-support gap.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
+from itertools import combinations
 from typing import Any, Sequence
 
 import numpy as np
@@ -24,9 +25,11 @@ from .dgp import (
 from .algorithm1 import (
     Algorithm1Config,
     BridgeCandidate,
+    _candidate_experiment,
     run_algorithm1,
 )
 from .methods import AtlasConfig, _project_to_simplex
+from .partial_identification import construct_partial_identification_interval
 
 
 @dataclass(frozen=True)
@@ -458,6 +461,156 @@ def _run_policy(
         ),
         mean_selection_error=algorithm_result.mean_selection_error,
     )
+
+
+@dataclass(frozen=True)
+class BridgeOptimalityRow:
+    """Greedy-versus-exhaustive result for one small-library budget."""
+
+    budget: int
+    repetitions: int
+    exhaustive_sets_per_repetition: int
+    greedy_mean_final_diameter: float
+    optimal_mean_final_diameter: float
+    greedy_mean_shrinkage: float
+    optimal_mean_shrinkage: float
+    greedy_to_optimal_value_ratio: float | None
+    greedy_optimal_selection_rate: float
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+def run_bridge_optimality_experiment(
+    *,
+    repetitions: int = 30,
+    base_seed: int = 20261121,
+    budgets: tuple[int, ...] = (1, 2, 3),
+) -> tuple[BridgeOptimalityRow, ...]:
+    """Compare causal greedy with ex-post exhaustive subsets on severe mismatch.
+
+    The exhaustive benchmark uses observed outcomes for every enumerated subset
+    and is therefore an evaluation oracle, not a deployable policy.
+    """
+
+    if repetitions < 2 or not budgets or any(budget < 1 for budget in budgets):
+        raise ValueError("repetitions and budgets must be positive.")
+    scenario = BridgeScenario("severe", "severe mismatch", 0.80)
+    records: dict[int, list[tuple[float, float, float, bool]]] = {
+        budget: [] for budget in budgets
+    }
+    for sequence in np.random.SeedSequence(base_seed).spawn(repetitions):
+        seed = int(sequence.generate_state(1, dtype=np.uint32)[0])
+        generated = generate_minimal_archive(
+            _scenario_dgp_config(SimulationConfig(), scenario), seed=seed
+        )
+        config = BridgeExperimentConfig(
+            repetitions_per_seed=2,
+            base_seeds=(base_seed,),
+            scenarios=(scenario,),
+            bridge_budget=max(budgets),
+            selection_error_bound=0.0,
+        )
+        streams = np.random.SeedSequence(seed).spawn(len(budgets) + 1)
+        candidates = _build_bridge_library(
+            generated.target, config, np.random.default_rng(streams[0])
+        )
+        atlas_config = AtlasConfig(scientific_tolerance=0.0, zeta=config.zeta)
+        initial_interval = construct_partial_identification_interval(
+            generated.archive,
+            generated.target,
+            atlas_config,
+            max_singletons=config.max_singletons,
+        )
+        if initial_interval.width is None:
+            continue
+        initial = float(initial_interval.width)
+        for stream_index, budget in enumerate(budgets, start=1):
+            greedy = run_algorithm1(
+                generated.archive,
+                generated.target,
+                candidates,
+                Algorithm1Config(
+                    atlas_config=atlas_config,
+                    max_singletons=config.max_singletons,
+                    bridge_budget=budget,
+                    bridge_quadrature_points=config.bridge_quadrature_points,
+                    planning_dimensions=(0, 1, 2, 3),
+                    selection_error_bound=0.0,
+                    planning_max_iterations=config.max_weight_iterations,
+                ),
+                rng=np.random.default_rng(streams[stream_index]),
+            )
+            subset_values: list[tuple[float, tuple[str, ...]]] = []
+            for subset in combinations(candidates, budget):
+                augmented = tuple(generated.archive) + tuple(
+                    _candidate_experiment(
+                        candidate,
+                        generated.target,
+                        candidate.observed_effect,
+                    )
+                    for candidate in subset
+                )
+                interval = construct_partial_identification_interval(
+                    augmented,
+                    generated.target,
+                    atlas_config,
+                    max_singletons=config.max_singletons,
+                )
+                if interval.width is not None:
+                    subset_values.append(
+                        (
+                            float(interval.width),
+                            tuple(candidate.key for candidate in subset),
+                        )
+                    )
+            optimal_final, optimal_keys = min(
+                subset_values, key=lambda item: item[0]
+            )
+            records[budget].append(
+                (
+                    initial,
+                    float(greedy.partial_diameter_path[-1]),
+                    optimal_final,
+                    frozenset(greedy.selected_bridge_keys)
+                    == frozenset(optimal_keys),
+                )
+            )
+    rows = []
+    for budget in budgets:
+        values = records[budget]
+        greedy_shrinkage = float(
+            np.mean([initial - greedy for initial, greedy, _, _ in values])
+        )
+        optimal_shrinkage = float(
+            np.mean([initial - optimal for initial, _, optimal, _ in values])
+        )
+        rows.append(
+            BridgeOptimalityRow(
+                budget=budget,
+                repetitions=len(values),
+                exhaustive_sets_per_repetition=int(
+                    __import__("math").comb(12, budget)
+                ),
+                greedy_mean_final_diameter=float(
+                    np.mean([item[1] for item in values])
+                ),
+                optimal_mean_final_diameter=float(
+                    np.mean([item[2] for item in values])
+                ),
+                greedy_mean_shrinkage=greedy_shrinkage,
+                optimal_mean_shrinkage=optimal_shrinkage,
+                greedy_to_optimal_value_ratio=(
+                    greedy_shrinkage / optimal_shrinkage
+                    if optimal_shrinkage > 0.0
+                    else None
+                ),
+                greedy_optimal_selection_rate=float(
+                    np.mean([item[3] for item in values])
+                ),
+            )
+        )
+    return tuple(rows)
 
 
 def _regularized_hull_weights(
