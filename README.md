@@ -4,11 +4,27 @@
 NSW 真实数据分析。当前 12 个阶段是项目开发与验证阶段，不是论文 Algorithm 1
 的 12 个步骤。Algorithm 1 的唯一端到端代码入口是
 `src/causal_atlas_sim/algorithm1.py::run_algorithm1`，逐行对照见
-[`docs/algorithm1_alignment.md`](docs/algorithm1_alignment.md)。
+[`docs/reference/algorithm1_alignment.md`](docs/reference/algorithm1_alignment.md)。
 
 仓库每个文件的职责和生成关系见
-[`docs/repository_file_map.md`](docs/repository_file_map.md)。新增、删除、移动文件
+[`docs/reference/repository_file_map.md`](docs/reference/repository_file_map.md)。新增、删除、移动文件
 或改变职责时，必须在同一提交中更新该表。
+
+## 仓库分区
+
+| 区域 | 内容 | 是否手工修改 |
+| --- | --- | --- |
+| `src/causal_atlas_sim/` | DGP、Algorithm 1、实验协议、评价基线和论文绘图函数 | 是，核心代码 |
+| `scripts/run/` | 运行仿真或真实数据实验，生成 CSV/JSON | 是，命令入口 |
+| `scripts/build/` | 只读取既有结果，生成报告、论文图表和清单 | 是，不能重新抽样 |
+| `docs/stages/` | 阶段 1--12 的中文流程说明 | 是 |
+| `docs/paper/` | 最终报告和论文结果写作稿 | 主要由构建脚本生成 |
+| `docs/reference/` | Algorithm 1 对照和全仓库文件地图 | 是 |
+| `results/` | 固定种子结果；图在 `figures/`，表在 `tables/` | 由脚本生成 |
+| `tests/` | 假设、算法、实验、产物和文件地图测试 | 是 |
+
+更细的运行顺序见 [`scripts/README.md`](scripts/README.md)，结果分区见
+[`results/README.md`](results/README.md)，文档导航见 [`docs/README.md`](docs/README.md)。
 
 ## Algorithm 1 主流程
 
@@ -45,6 +61,19 @@ NSW 真实数据分析。当前 12 个阶段是项目开发与验证阶段，不
 
 Algorithm 1 的核心实现跨阶段 1、3、9、11；其余阶段用于验证、压力测试、理论
 下界、结果生成或真实数据扩展。
+
+## 论文级补充评价
+
+核心 Algorithm 1 和 estimator 未改变。新增层全部位于实验、评价和论文展示侧：
+
+1. `representation_sensitivity` 在 5×5 网格上扫描隐藏调节偏移与代理不确定性，
+   将表示优势与选择性发布带来的经验风险变化分开报告。
+2. `oracle_latent_support` 只在合成评价中把公开表示 `r(e)` 替换为真实机制
+   `m(e)`；它不进入任何可部署方法、接受判定或 bridge 选择。
+3. `certificate_diagnostics` 保存 300 个目标的证书半径、实际绝对误差、发布状态
+   和五个证书分量，并生成六方法主基准表。
+4. `build_paper_figures.py` 只读取已有 CSV/JSON，生成 Figure 2--5 的 PNG/PDF
+   和可直接给 Overleaf 使用的 Markdown/LaTeX 表格。
 
 ## 严格实现要点
 
@@ -98,46 +127,60 @@ bridge 不是按单候选距离排序。每轮对所有剩余候选计算“当�
 - 12 候选 bridge 穷举中，预算 1、2、3 的 causal greedy/事后最优 bridge value
   比例为 0.9957、0.9776、0.9857。它是小规模经验效率对照，不估计弱次模参数，
   也不证明 Theorem 5.6 的近似系数。
+- 新的六方法共同目标基准中，ATLAS 发布率为 0.4633、发布点 MAE 为 0.1109；
+  no-rejection MAE 为 0.1387，semantic-only forced MAE 为 0.2493，评价专用
+  oracle latent support MAE 为 0.1350。
+- 当代理不确定性固定为 0.10 时，隐藏偏移从 0 增到 0.8，表示优势从 0.1232
+  增到 0.6035，而 ATLAS 发布率从 0.8867 降到 0.2600。
+- 证书半径和实际绝对误差的 Spearman 相关为 0.2716；300 个共同目标中实际误差
+  超过证书半径的经验比例为 0。该比例只称经验诊断，不直接称定理违反率。
 
 ## 运行入口
 
 快速检查 Algorithm 1 一条完整拒绝路径：
 
 ```powershell
-python scripts/run_algorithm1.py
+python scripts/run/run_algorithm1.py
 python -m unittest tests.test_algorithm1 -v
 ```
 
 按阶段运行：
 
 ```powershell
-python scripts/run_sanity_check.py
-python scripts/run_monte_carlo.py
-python scripts/run_method_comparison.py
-python scripts/run_main_experiment.py
-python scripts/run_formal_experiment.py
-python scripts/run_calibration_experiment.py
-python scripts/run_risk_coverage_experiment.py
-python scripts/run_calibration_curve_experiment.py
-python scripts/run_partial_identification_experiment.py
-python scripts/run_minimax_experiment.py
-python scripts/run_bridge_experiment.py
-python scripts/run_bridge_optimality_experiment.py
-python scripts/run_nsw_experiment.py
-python scripts/build_final_report.py
-python scripts/build_paper_artifacts.py
+python scripts/run/run_sanity_check.py
+python scripts/run/run_monte_carlo.py
+python scripts/run/run_method_comparison.py
+python scripts/run/run_main_experiment.py
+python scripts/run/run_formal_experiment.py
+python scripts/run/run_calibration_experiment.py
+python scripts/run/run_risk_coverage_experiment.py
+python scripts/run/run_calibration_curve_experiment.py
+python scripts/run/run_partial_identification_experiment.py
+python scripts/run/run_minimax_experiment.py
+python scripts/run/run_bridge_experiment.py
+python scripts/run/run_bridge_optimality_experiment.py
+python scripts/run/run_nsw_experiment.py
+python scripts/run/run_representation_sensitivity.py
+python scripts/run/run_certificate_diagnostics.py
+python scripts/run/run_bridge_budget_path_experiment.py
+python scripts/build/build_final_report.py
+python scripts/build/build_paper_artifacts.py
+python scripts/build/build_paper_figures.py
 ```
 
 阶段 11 的 3,600 路径严格 VoI 协议计算较慢；日常检查流程优先使用
-`scripts/run_algorithm1.py`。完整测试：
+`scripts/run/run_algorithm1.py`。完整测试：
 
 ```powershell
 python -m unittest discover -s tests -v
 ```
 
-各阶段的数学构造、协议、结果与限制位于 `docs/`；固定结果、图表、表格与
+各阶段的数学构造、协议、结果与限制位于 `docs/stages/`；固定结果、图表、表格与
 SHA-256 清单位于 `results/`。
 
 新增评价产物：`results/risk_coverage_summary.csv` 和其 frontier 图；
 `results/calibration_curve_summary.csv` 和 coverage--width 图；
-`results/bridge_optimality_summary.csv` 和小规模穷举对照表。
+`results/bridge_optimality_summary.csv` 和小规模穷举对照表；
+`results/representation_sensitivity_summary.csv`、
+`results/certificate_diagnostics_summary.csv`、`results/synthetic_benchmark_summary.csv`
+以及 `results/figures/*_overview.{png,pdf}` 论文组合图。

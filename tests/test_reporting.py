@@ -50,7 +50,7 @@ class ReportingTests(unittest.TestCase):
         self.assertIn("understated_smoothness", tables)
 
     def test_manifest_hashes_existing_artifacts(self) -> None:
-        report_path = PROJECT_ROOT / "docs" / "final_experiment_report.md"
+        report_path = PROJECT_ROOT / "docs" / "paper" / "final_experiment_report.md"
         self.assertTrue(report_path.exists())
         manifest = build_artifact_manifest(PROJECT_ROOT)
         self.assertGreaterEqual(len(manifest["artifacts"]), 10)

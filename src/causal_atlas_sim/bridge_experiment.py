@@ -229,6 +229,23 @@ class BridgeSummaryRow:
 
 
 @dataclass(frozen=True)
+class BridgeBudgetPathRow:
+    """Mean evaluation diameter at one realized bridge budget."""
+
+    scenario_key: str
+    scenario_label: str
+    policy_key: str
+    policy_label: str
+    budget: int
+    repetitions: int
+    finite_repetitions: int
+    mean_diameter: float | None
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class BridgeExperimentResult:
     """Records and summaries for the fixed Stage 11 protocol."""
 
@@ -305,6 +322,43 @@ def run_bridge_experiment(
         records=tuple(records),
         rows=_summarize_records(records, config),
     )
+
+
+def bridge_budget_path_rows(
+    result: BridgeExperimentResult,
+) -> tuple[BridgeBudgetPathRow, ...]:
+    """Summarize stored diameter paths without rerunning bridge selection."""
+
+    rows: list[BridgeBudgetPathRow] = []
+    for scenario in result.config.scenarios:
+        for policy in result.config.policies:
+            selected = [
+                record
+                for record in result.records
+                if record.scenario_key == scenario.key
+                and record.policy_key == policy.key
+            ]
+            for budget in range(result.config.bridge_budget + 1):
+                values = [
+                    record.evaluation_diameter_path[
+                        min(budget, len(record.evaluation_diameter_path) - 1)
+                    ]
+                    for record in selected
+                ]
+                finite = [value for value in values if np.isfinite(value)]
+                rows.append(
+                    BridgeBudgetPathRow(
+                        scenario_key=scenario.key,
+                        scenario_label=scenario.label,
+                        policy_key=policy.key,
+                        policy_label=policy.label,
+                        budget=budget,
+                        repetitions=len(values),
+                        finite_repetitions=len(finite),
+                        mean_diameter=(float(np.mean(finite)) if finite else None),
+                    )
+                )
+    return tuple(rows)
 
 
 def _scenario_dgp_config(

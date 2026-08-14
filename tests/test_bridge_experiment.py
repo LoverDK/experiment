@@ -16,6 +16,7 @@ from causal_atlas_sim.bridge_experiment import (
     BridgeExperimentConfig,
     BridgeScenario,
     _build_bridge_library,
+    bridge_budget_path_rows,
     default_bridge_policies,
     run_bridge_experiment,
 )
@@ -68,6 +69,10 @@ class BridgeExperimentTests(unittest.TestCase):
             )
         )
         self.assertTrue(all(row.budget_completion_rate == 1.0 for row in result.rows))
+        path_rows = bridge_budget_path_rows(result)
+        self.assertEqual(len(path_rows), 6)
+        self.assertEqual({row.budget for row in path_rows}, {0, 1})
+        self.assertTrue(all(row.mean_diameter is not None for row in path_rows))
 
     def test_multi_seed_protocol_is_deterministic(self) -> None:
         config = BridgeExperimentConfig(

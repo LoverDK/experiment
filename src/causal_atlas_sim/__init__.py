@@ -87,6 +87,23 @@ from .calibration_curve import (
     CalibrationCurveRow,
     run_calibration_curve_experiment,
 )
+from .evaluation_baselines import fit_oracle_latent_support
+from .representation_sensitivity import (
+    RepresentationSensitivityConfig,
+    RepresentationSensitivityRecord,
+    RepresentationSensitivityResult,
+    RepresentationSensitivityRow,
+    run_representation_sensitivity,
+)
+from .certificate_diagnostics import (
+    BENCHMARK_METHODS,
+    CertificateDiagnosticRecord,
+    CertificateDiagnosticsConfig,
+    CertificateDiagnosticsResult,
+    SyntheticBenchmarkRow,
+    run_certificate_diagnostics,
+)
+from .paper_figures import build_paper_figures
 from .reporting import (
     ResultBundle,
     build_artifact_manifest,
@@ -132,6 +149,7 @@ from .minimax_experiment import (
     run_minimax_experiment,
 )
 from .bridge_experiment import (
+    BridgeBudgetPathRow,
     BridgeExperimentConfig,
     BridgeExperimentResult,
     BridgePolicy,
@@ -141,6 +159,7 @@ from .bridge_experiment import (
     BridgeOptimalityRow,
     default_bridge_policies,
     default_bridge_scenarios,
+    bridge_budget_path_rows,
     run_bridge_optimality_experiment,
     run_bridge_experiment,
 )
@@ -151,6 +170,8 @@ from .nsw_experiment import (
     NSW_SOURCE_SHA256,
     NSW_SOURCE_URL,
     NswArchive,
+    NswArchiveMapRow,
+    NswDiagnosticRow,
     NswExperimentConfig,
     NswExperimentResult,
     NswLocalContrast,
@@ -159,6 +180,8 @@ from .nsw_experiment import (
     NswSummaryRow,
     build_nsw_local_archive,
     fit_nsw_method,
+    nsw_archive_map_rows,
+    nsw_diagnostic_rows,
     run_nsw_experiment,
 )
 
@@ -237,6 +260,19 @@ __all__ = [
     "CalibrationCurveResult",
     "CalibrationCurveRow",
     "run_calibration_curve_experiment",
+    "fit_oracle_latent_support",
+    "RepresentationSensitivityConfig",
+    "RepresentationSensitivityRecord",
+    "RepresentationSensitivityResult",
+    "RepresentationSensitivityRow",
+    "run_representation_sensitivity",
+    "BENCHMARK_METHODS",
+    "CertificateDiagnosticRecord",
+    "CertificateDiagnosticsConfig",
+    "CertificateDiagnosticsResult",
+    "SyntheticBenchmarkRow",
+    "run_certificate_diagnostics",
+    "build_paper_figures",
     "ResultBundle",
     "build_artifact_manifest",
     "load_result_bundle",
@@ -272,6 +308,7 @@ __all__ = [
     "minimax_parameters",
     "run_minimax_experiment",
     "BridgeExperimentConfig",
+    "BridgeBudgetPathRow",
     "BridgeExperimentResult",
     "BridgePolicy",
     "BridgeRecord",
@@ -280,6 +317,7 @@ __all__ = [
     "BridgeOptimalityRow",
     "default_bridge_policies",
     "default_bridge_scenarios",
+    "bridge_budget_path_rows",
     "run_bridge_optimality_experiment",
     "run_bridge_experiment",
     "NSW_COVARIATES",
@@ -288,6 +326,8 @@ __all__ = [
     "NSW_SOURCE_SHA256",
     "NSW_SOURCE_URL",
     "NswArchive",
+    "NswArchiveMapRow",
+    "NswDiagnosticRow",
     "NswExperimentConfig",
     "NswExperimentResult",
     "NswLocalContrast",
@@ -296,5 +336,7 @@ __all__ = [
     "NswSummaryRow",
     "build_nsw_local_archive",
     "fit_nsw_method",
+    "nsw_archive_map_rows",
+    "nsw_diagnostic_rows",
     "run_nsw_experiment",
 ]

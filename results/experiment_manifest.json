@@ -10,13 +10,24 @@
     "nsw_experiment_summary.csv": 5,
     "risk_coverage_summary.csv": 9,
     "calibration_curve_summary.csv": 20,
-    "bridge_optimality_summary.csv": 3
+    "bridge_optimality_summary.csv": 3,
+    "representation_sensitivity_summary.csv": 25,
+    "certificate_diagnostics_summary.csv": 300,
+    "synthetic_benchmark_summary.csv": 6,
+    "bridge_budget_path_summary.csv": 15,
+    "nsw_diagnostics_summary.csv": 1680,
+    "nsw_archive_map_summary.csv": 112
   },
   "artifacts": [
     {
       "path": "data/nsw_dw.dta",
       "bytes": 28598,
       "sha256": "d1bd2680a1c6f799f1c6d2455bf29633fdf19be01cb19490621c20a560b4e072"
+    },
+    {
+      "path": "results/bridge_budget_path_summary.csv",
+      "bytes": 1330,
+      "sha256": "62977f370c848e7b02eb3a7d7958c504fb04170fba88c167a186d38de6f1c691"
     },
     {
       "path": "results/bridge_experiment_seed_summary.csv",
@@ -49,6 +60,11 @@
       "sha256": "1579820b3137a29d7c96f1e25b8a8f4b847e543108d3f05cb4fa62873b58472f"
     },
     {
+      "path": "results/certificate_diagnostics_summary.csv",
+      "bytes": 124134,
+      "sha256": "66920597c40d74750ef97cfb2ec205b13540ae9bb32201efec19b49df799025e"
+    },
+    {
       "path": "results/formal_experiment_seed_summary.csv",
       "bytes": 30886,
       "sha256": "26cfc2cd58178a3ddaf7e10c98e6e223267be45c02786ad64b78cf5daa073ecb"
@@ -74,6 +90,16 @@
       "sha256": "ae96192b1db53565be7a7a7a75acd972058d4cacec8a806675d7b5b76c7783cb"
     },
     {
+      "path": "results/nsw_archive_map_summary.csv",
+      "bytes": 7009,
+      "sha256": "34d7931ce3721d6990ec65bd65c9533657ba019b89ab077bba8d2fa8328841f1"
+    },
+    {
+      "path": "results/nsw_diagnostics_summary.csv",
+      "bytes": 339677,
+      "sha256": "38c0afb6b118c940d17520029290af2b980de520363f36e9faa34155630a1a53"
+    },
+    {
       "path": "results/nsw_experiment_seed_summary.csv",
       "bytes": 2496,
       "sha256": "fd5a793b21b20c5b9e280ad556829334021238f32faa4376822291fa4f76cd0f"
@@ -94,14 +120,29 @@
       "sha256": "8f8b6c62809f2d050c8d5f8fa0e6dd0c2ac800a603b34742d558ad162bf23489"
     },
     {
+      "path": "results/representation_sensitivity_summary.csv",
+      "bytes": 4235,
+      "sha256": "48d8d6d064484e9b41c151ee9aa6141a5eabb55b84d0300d32b92f29ab36aca4"
+    },
+    {
       "path": "results/risk_coverage_summary.csv",
       "bytes": 966,
       "sha256": "cc0dcb70f0d3191dce618241286214e960afebb02865ae1e3ac9fa89cec15d1b"
     },
     {
+      "path": "results/synthetic_benchmark_summary.csv",
+      "bytes": 794,
+      "sha256": "1079763c633d2fa6eacb8c1411e17768a4e03a38841612cb66564d26b3e26573"
+    },
+    {
+      "path": "results/bridge_budget_path_metadata.json",
+      "bytes": 821,
+      "sha256": "9b5ef1f2c7d823e53fd1d704260cdf05d19aa88cbe8829377b5022be0521dab0"
+    },
+    {
       "path": "results/bridge_experiment_metadata.json",
-      "bytes": 2694,
-      "sha256": "895861bb1678661fd661f3c2ce99e0b2fc932b814ca654ae3b44730425ca4a19"
+      "bytes": 2736,
+      "sha256": "fcb2de7b6c1e5690ffbd885356c5d94446957c153db51e81c32c80a998e577c7"
     },
     {
       "path": "results/bridge_optimality_metadata.json",
@@ -117,6 +158,11 @@
       "path": "results/calibration_experiment_metadata.json",
       "bytes": 2543,
       "sha256": "a95c29dd8b813e3e58f5055c160088ae4c8b851f7fc922be28dc6b710f629dca"
+    },
+    {
+      "path": "results/certificate_diagnostics_metadata.json",
+      "bytes": 3975,
+      "sha256": "c4fa2595778835eeba09269d6b47ae798f6c73c32126ec4550191830bc118104"
     },
     {
       "path": "results/formal_experiment_metadata.json",
@@ -142,6 +188,11 @@
       "path": "results/partial_identification_metadata.json",
       "bytes": 1719,
       "sha256": "602dbbb60976ee6fa4d56c0ee99390bb2a0bc7cef716c0aa535af6d8af8e419b"
+    },
+    {
+      "path": "results/representation_sensitivity_metadata.json",
+      "bytes": 1765,
+      "sha256": "98b77aca59e1a2cc2e5a5d1463dbfd68cba3157ff82a09f18cd527d842af7304"
     },
     {
       "path": "results/risk_coverage_metadata.json",
@@ -184,6 +235,11 @@
       "sha256": "c6e1df5d1e9d6dd946287b87f3891ca354f3a0f937dd09a59379518c398eee11"
     },
     {
+      "path": "results/figures/nsw_diagnostics_overview.png",
+      "bytes": 1019213,
+      "sha256": "bd90cac2bd41fd8877f48345b7624976181b8bb702babb069c78062032b8c0e4"
+    },
+    {
       "path": "results/figures/nsw_experiment_overview.png",
       "bytes": 47577,
       "sha256": "63fd893241071c9494123788f42068832b890446537974ee4baa06afd63ebce1"
@@ -194,9 +250,44 @@
       "sha256": "85915fe73f1ef46c90c757eaafafdbdf4c06c7849b2cdebee2178dcdb6d8ec81"
     },
     {
+      "path": "results/figures/rejection_bridge_overview.png",
+      "bytes": 307794,
+      "sha256": "90596fdba4a66e52375465e5118173981a00662ee657b41cbb50a46f5c50adbd"
+    },
+    {
       "path": "results/figures/risk_coverage_curve.png",
       "bytes": 24925,
       "sha256": "7f90fe68cdf9cb77c08f705d8bfb7167646315fdf57523f5a0cb4ff675799d63"
+    },
+    {
+      "path": "results/figures/selective_uncertainty_overview.png",
+      "bytes": 367450,
+      "sha256": "62702df5c18a01920cb983c1906549d7734ee203844902c63befa320312444a9"
+    },
+    {
+      "path": "results/figures/synthetic_composability_overview.png",
+      "bytes": 564808,
+      "sha256": "3fb296d0cfe39974ea1a42bb44080ae6cb54aaa19d70dacec1a954159174d26d"
+    },
+    {
+      "path": "results/figures/nsw_diagnostics_overview.pdf",
+      "bytes": 107629,
+      "sha256": "045cc9df1543a62f221e25ee04939e3303a55134b4c0c8a558a9fb50fdcf3233"
+    },
+    {
+      "path": "results/figures/rejection_bridge_overview.pdf",
+      "bytes": 33343,
+      "sha256": "a18f5c324d96d9d8d0227561ffbc63e520a7a24bf747825cf2d230e8dc86a4d2"
+    },
+    {
+      "path": "results/figures/selective_uncertainty_overview.pdf",
+      "bytes": 33639,
+      "sha256": "352b97e99db963c8e4b14fa821229a04c6cd415ee14019d137d848092322d853"
+    },
+    {
+      "path": "results/figures/synthetic_composability_overview.pdf",
+      "bytes": 78463,
+      "sha256": "5a69f913d3cd690071e447c07e561817ed42d5e2e6732fae07dbf29aa8e039dc"
     },
     {
       "path": "results/tables/bridge_experiment_tables.md",
@@ -229,6 +320,11 @@
       "sha256": "37133d9c6099de177838df96593146514d443b807207bba7e0c2a1f868ebe1fb"
     },
     {
+      "path": "results/tables/main_synthetic_table.md",
+      "bytes": 1008,
+      "sha256": "97da67fb3ad55bdab1481a53ce9d551c188da3ad334a81af31675f7d282a174d"
+    },
+    {
       "path": "results/tables/minimax_experiment_tables.md",
       "bytes": 2111,
       "sha256": "c18001ed9b955636107be0829ca8b60b01ba93f048b4b929eb1df3ef675727a8"
@@ -244,40 +340,64 @@
       "sha256": "b95e25319ce9edef125c8122ac6ee92aaf5a71eaa0511f046c1954e43a130f58"
     },
     {
+      "path": "results/tables/representation_sensitivity_tables.md",
+      "bytes": 1944,
+      "sha256": "bc66a40c9bacce7ed08c174f5c57140a7224e0381dda8dc713d4b597ec4a790b"
+    },
+    {
       "path": "results/tables/risk_coverage_tables.md",
       "bytes": 839,
       "sha256": "4669ddc20639c2acf60fbc2f7df96643ee388819da88bc0e252add458935b81f"
     },
     {
+      "path": "results/tables/support_failure_table.md",
+      "bytes": 436,
+      "sha256": "2ba7fadc3c1f68b4a42c767bcb873776c2273dde15d8b96012f140af0f048031"
+    },
+    {
+      "path": "results/tables/main_synthetic_table.tex",
+      "bytes": 964,
+      "sha256": "973d9dd0cd85692bae0f0a9d109ac0b5ea4984c7317b2b2a61516320ba4abfc2"
+    },
+    {
       "path": "results/tables/paper_results_tables.tex",
-      "bytes": 1642,
-      "sha256": "4636a57639d3619a2cfd1c8599bc4a4878c102b9a561cd2cbc9a1e6456083807"
+      "bytes": 1648,
+      "sha256": "2f5ca765562f5e8180ff263bed26631e4ec95818498bbcade584108c739868f8"
     },
     {
-      "path": "docs/final_experiment_report.md",
-      "bytes": 7913,
-      "sha256": "902c1b3abf3377add35b2d53f9c70b146c75346f82d6c688149937d78a73a9c9"
+      "path": "results/tables/support_failure_table.tex",
+      "bytes": 579,
+      "sha256": "dcae4c3481e35e8fba7d5d574171925fd6a7f9084896c85ab6cbdba5495154f6"
     },
     {
-      "path": "docs/paper_results_section.md",
-      "bytes": 4484,
-      "sha256": "d95d38385e19d2fb0350f95a0974f49e540e51a28ced86570f4e164e65f249e9"
+      "path": "docs/paper/final_experiment_report.md",
+      "bytes": 8159,
+      "sha256": "88300318717b632d6b5b28e21a10a6afd436b2ac8804e3e338e0698c3e03f777"
     },
     {
-      "path": "docs/nsw_experiment.md",
-      "bytes": 6649,
-      "sha256": "a1ab378f4b534ef6c77895200d4b74de0d0eac7d88fd805b69833d6e12aafd7b"
+      "path": "docs/paper/paper_results_section.md",
+      "bytes": 4499,
+      "sha256": "41f6e1d983da3c6fc3d497df890d80720c1f35b208a7558f1746cbbdbecfea0c"
+    },
+    {
+      "path": "docs/stages/nsw_experiment.md",
+      "bytes": 6653,
+      "sha256": "a7c00a638c15cf00282f2ae6e8306f666a89c67df3847a49e6d185e7b8df7ca2"
     }
   ],
   "verification_commands": [
     "python -m unittest discover -s tests -v",
-    "python scripts/run_risk_coverage_experiment.py",
-    "python scripts/run_calibration_curve_experiment.py",
-    "python scripts/run_partial_identification_experiment.py",
-    "python scripts/run_minimax_experiment.py",
-    "python scripts/run_bridge_experiment.py",
-    "python scripts/run_bridge_optimality_experiment.py",
-    "python scripts/run_nsw_experiment.py",
-    "python scripts/build_final_report.py"
+    "python scripts/run/run_risk_coverage_experiment.py",
+    "python scripts/run/run_calibration_curve_experiment.py",
+    "python scripts/run/run_partial_identification_experiment.py",
+    "python scripts/run/run_minimax_experiment.py",
+    "python scripts/run/run_bridge_experiment.py",
+    "python scripts/run/run_bridge_budget_path_experiment.py",
+    "python scripts/run/run_bridge_optimality_experiment.py",
+    "python scripts/run/run_nsw_experiment.py",
+    "python scripts/run/run_representation_sensitivity.py",
+    "python scripts/run/run_certificate_diagnostics.py",
+    "python scripts/build/build_paper_figures.py",
+    "python scripts/build/build_final_report.py"
   ]
 }

@@ -187,6 +187,43 @@ class NswSummaryRow:
 
 
 @dataclass(frozen=True)
+class NswArchiveMapRow:
+    """One local object projected onto a deterministic two-dimensional PCA map."""
+
+    object_id: str
+    pc1: float
+    pc2: float
+    atlas_holdout_evaluations: int
+    atlas_acceptance_rate: float | None
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class NswDiagnosticRow:
+    """Target-level held-out reconstruction and certificate diagnostic."""
+
+    seed_batch: int
+    replicate: int
+    split_seed: int
+    target_object_id: str
+    pc1: float
+    pc2: float
+    heldout_local_contrast: float
+    reconstructed_contrast: float
+    absolute_reconstruction_error: float
+    accepted: bool
+    certificate_radius: float
+    support_component: float
+    statistical_component: float
+    interval_width: float
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class NswExperimentResult:
     """Local archive, blind predictions, and pooled reconstruction metrics."""
 
@@ -621,6 +658,81 @@ def run_nsw_experiment(
         records=tuple(records),
         rows=rows,
     )
+
+
+def nsw_archive_map_rows(
+    result: NswExperimentResult,
+) -> tuple[NswArchiveMapRow, ...]:
+    """Project public causal representations and attach holdout release rates."""
+
+    matrix = np.vstack(
+        [item.causal_representation for item in result.archive.objects]
+    )
+    centered = matrix - matrix.mean(axis=0)
+    _, _, right = np.linalg.svd(centered, full_matrices=False)
+    components = right[:2].copy()
+    for index in range(components.shape[0]):
+        pivot = int(np.argmax(np.abs(components[index])))
+        if components[index, pivot] < 0.0:
+            components[index] *= -1.0
+    scores = centered @ components.T
+    atlas_records = [record for record in result.records if record.method == "atlas"]
+    rows = []
+    for index, item in enumerate(result.archive.objects):
+        heldout = [
+            record
+            for record in atlas_records
+            if record.target_object_id == item.object_id
+        ]
+        rows.append(
+            NswArchiveMapRow(
+                object_id=item.object_id,
+                pc1=float(scores[index, 0]),
+                pc2=float(scores[index, 1]),
+                atlas_holdout_evaluations=len(heldout),
+                atlas_acceptance_rate=(
+                    float(np.mean([record.prediction.accepted for record in heldout]))
+                    if heldout
+                    else None
+                ),
+            )
+        )
+    return tuple(rows)
+
+
+def nsw_diagnostic_rows(
+    result: NswExperimentResult,
+) -> tuple[NswDiagnosticRow, ...]:
+    """Return ATLAS target records for paper diagnostics without refitting."""
+
+    map_rows = {row.object_id: row for row in nsw_archive_map_rows(result)}
+    rows = []
+    for record in result.records:
+        if record.method != "atlas":
+            continue
+        prediction = record.prediction
+        location = map_rows[record.target_object_id]
+        rows.append(
+            NswDiagnosticRow(
+                seed_batch=record.seed_batch,
+                replicate=record.replicate,
+                split_seed=record.split_seed,
+                target_object_id=record.target_object_id,
+                pc1=location.pc1,
+                pc2=location.pc2,
+                heldout_local_contrast=record.target_effect_reference,
+                reconstructed_contrast=prediction.predicted_effect,
+                absolute_reconstruction_error=abs(
+                    prediction.predicted_effect - record.target_effect_reference
+                ),
+                accepted=prediction.accepted,
+                certificate_radius=prediction.certificate_radius,
+                support_component=prediction.representation_term,
+                statistical_component=prediction.statistical_term,
+                interval_width=prediction.interval_upper - prediction.interval_lower,
+            )
+        )
+    return tuple(rows)
 
 
 def _summarize_method(

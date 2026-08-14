@@ -76,6 +76,15 @@ class MinimalDGPTests(unittest.TestCase):
             all(item["satisfied"] for item in minimal_assumption_report(generated).values())
         )
 
+    def test_hidden_only_shift_remains_inside_certified_mechanism_space(self) -> None:
+        generated = generate_minimal_archive(
+            SimulationConfig(target_hidden_shift_fraction=0.8),
+            seed=2026,
+        )
+        report = minimal_assumption_report(generated)
+        self.assertTrue(all(item["satisfied"] for item in report.values()))
+        self.assertGreater(generated.support_residual(), 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()

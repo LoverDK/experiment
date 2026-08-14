@@ -96,6 +96,7 @@ class SimulationConfig:
     moderator_proxy_half_width: float = 0.10
     archive_moderator_radius_spread: float = 0.0
     target_shift_fraction: float = 0.0
+    target_hidden_shift_fraction: float = 0.0
     target_shift_anchor: tuple[float, float, float, float] = (1.0, -1.0, 1.0, -1.0)
 
     def __post_init__(self) -> None:
@@ -121,6 +122,8 @@ class SimulationConfig:
             )
         if not 0.0 <= self.target_shift_fraction <= 1.0:
             raise ValueError("target_shift_fraction must lie in [0, 1].")
+        if not 0.0 <= self.target_hidden_shift_fraction <= 1.0:
+            raise ValueError("target_hidden_shift_fraction must lie in [0, 1].")
         if len(self.target_shift_anchor) != 4 or not all(
             MECHANISM_LOWER_BOUND <= value <= MECHANISM_UPPER_BOUND
             for value in self.target_shift_anchor
@@ -284,10 +287,18 @@ def generate_minimal_archive(
     )
     # A convex move towards an in-domain anchor creates controlled semantic
     # mismatch without leaving the compact mechanism space of Assumption 3.3.
-    target_mechanism = Mechanism.from_array(
+    target_anchor = np.asarray(config.target_shift_anchor, dtype=float)
+    target_values = (
         (1.0 - config.target_shift_fraction) * supported_target
-        + config.target_shift_fraction * np.asarray(config.target_shift_anchor, dtype=float)
+        + config.target_shift_fraction * target_anchor
     )
+    # The representation-sensitivity experiment needs a clean hidden-only
+    # perturbation. Its default is zero, so all existing protocols are unchanged.
+    target_values[2] = (
+        (1.0 - config.target_hidden_shift_fraction) * target_values[2]
+        + config.target_hidden_shift_fraction * target_anchor[2]
+    )
+    target_mechanism = Mechanism.from_array(target_values)
 
     archive = tuple(
         _generate_experiment(

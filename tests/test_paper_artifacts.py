@@ -46,7 +46,7 @@ class PaperArtifactsTests(unittest.TestCase):
             artifact["path"]
             for artifact in build_artifact_manifest(PROJECT_ROOT)["artifacts"]
         }
-        self.assertIn("docs/paper_results_section.md", paths)
+        self.assertIn("docs/paper/paper_results_section.md", paths)
         self.assertIn("results/tables/paper_results_tables.tex", paths)
         self.assertIn("results/risk_coverage_summary.csv", paths)
         self.assertIn("results/bridge_optimality_summary.csv", paths)

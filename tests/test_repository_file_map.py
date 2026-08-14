@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-FILE_MAP = PROJECT_ROOT / "docs" / "repository_file_map.md"
+FILE_MAP = PROJECT_ROOT / "docs" / "reference" / "repository_file_map.md"
 
 
 class RepositoryFileMapTests(unittest.TestCase):
@@ -27,7 +27,9 @@ class RepositoryFileMapTests(unittest.TestCase):
             text=True,
         )
         expected_paths = {
-            line for line in completed.stdout.splitlines() if line.strip()
+            line
+            for line in completed.stdout.splitlines()
+            if line.strip() and (PROJECT_ROOT / line).is_file()
         }
         contents = FILE_MAP.read_text(encoding="utf-8")
         mapped_paths = {

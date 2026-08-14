@@ -21,6 +21,8 @@ from causal_atlas_sim.nsw_experiment import (
     NswExperimentConfig,
     build_nsw_local_archive,
     fit_nsw_method,
+    nsw_archive_map_rows,
+    nsw_diagnostic_rows,
     run_nsw_experiment,
 )
 
@@ -82,6 +84,15 @@ class NswExperimentTests(unittest.TestCase):
         )
         self.assertEqual(len(result.records), expected_records)
         self.assertEqual(len(result.rows), len(NSW_METHODS))
+        map_rows = nsw_archive_map_rows(result)
+        diagnostic_rows = nsw_diagnostic_rows(result)
+        self.assertEqual(len(map_rows), self.small_config.n_local_objects)
+        self.assertEqual(
+            len(diagnostic_rows),
+            self.small_config.holdout_count
+            * self.small_config.repetitions_per_seed,
+        )
+        self.assertTrue(all(np.isfinite(row.pc1) for row in map_rows))
         grouped = {}
         for record in result.records:
             key = (record.replicate, record.target_object_id)
@@ -134,7 +145,7 @@ class NswExperimentTests(unittest.TestCase):
                 "results/nsw_experiment_metadata.json",
                 "results/figures/nsw_experiment_overview.png",
                 "results/tables/nsw_experiment_tables.md",
-                "docs/nsw_experiment.md",
+                "docs/stages/nsw_experiment.md",
             }.issubset(paths)
         )
         self.assertEqual(

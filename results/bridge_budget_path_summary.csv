@@ -1,0 +1,16 @@
+scenario_key,scenario_label,policy_key,policy_label,budget,repetitions,finite_repetitions,mean_diameter
+severe,severe mismatch,causal_greedy,causal-support greedy,0,90,90,7.02265376535186
+severe,severe mismatch,causal_greedy,causal-support greedy,1,90,90,2.7146678177863506
+severe,severe mismatch,causal_greedy,causal-support greedy,2,90,90,2.131386900999197
+severe,severe mismatch,causal_greedy,causal-support greedy,3,90,90,1.9179336401660556
+severe,severe mismatch,causal_greedy,causal-support greedy,4,90,90,1.8811005344785465
+severe,severe mismatch,semantic_greedy,semantic-only greedy,0,90,90,7.02265376535186
+severe,severe mismatch,semantic_greedy,semantic-only greedy,1,90,90,3.3322077377778183
+severe,severe mismatch,semantic_greedy,semantic-only greedy,2,90,90,2.807866847690957
+severe,severe mismatch,semantic_greedy,semantic-only greedy,3,90,90,2.5084756499031475
+severe,severe mismatch,semantic_greedy,semantic-only greedy,4,90,90,2.3174087483684227
+severe,severe mismatch,random,random bridge,0,90,90,7.02265376535186
+severe,severe mismatch,random,random bridge,1,90,90,3.8811977220237734
+severe,severe mismatch,random,random bridge,2,90,90,2.915333493376958
+severe,severe mismatch,random,random bridge,3,90,90,2.5311804747182745
+severe,severe mismatch,random,random bridge,4,90,90,2.264990398458672
