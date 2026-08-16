@@ -220,6 +220,16 @@
       "sha256": "8308f363308f0863d134f4bb756c7a4a2f13e14076b110b686415760a2811ab4"
     },
     {
+      "path": "results/figures/legacy_layout_nsw_validation.png",
+      "bytes": 1101674,
+      "sha256": "18aa9cf202c836359e9b3d7cf1cb5645549e5e655abf6eeb5d7a7b1115cd34d7"
+    },
+    {
+      "path": "results/figures/legacy_layout_synthetic_validation.png",
+      "bytes": 590786,
+      "sha256": "68eef40465bd99eedc9acb64a7640f44b9df13c997445b2a07ef8bbd010f40a0"
+    },
+    {
       "path": "results/figures/main_experiment_acceptance.png",
       "bytes": 39380,
       "sha256": "b72bdf2e3b7c1c0101eb732d7844c15dc18a8c9039be3fafc3447e6e95ab8c0e"
@@ -268,6 +278,16 @@
       "path": "results/figures/synthetic_composability_overview.png",
       "bytes": 564808,
       "sha256": "3fb296d0cfe39974ea1a42bb44080ae6cb54aaa19d70dacec1a954159174d26d"
+    },
+    {
+      "path": "results/figures/legacy_layout_nsw_validation.pdf",
+      "bytes": 113473,
+      "sha256": "8fb60f27df562b74d9438763aea907b2c01ca93885bb26ed1e48ac60f173a717"
+    },
+    {
+      "path": "results/figures/legacy_layout_synthetic_validation.pdf",
+      "bytes": 80107,
+      "sha256": "b7b6d1ba2a511b1a88eedb0255685d7c8879616e56f7f673d882a45fb0eeb872"
     },
     {
       "path": "results/figures/nsw_diagnostics_overview.pdf",
@@ -320,6 +340,21 @@
       "sha256": "37133d9c6099de177838df96593146514d443b807207bba7e0c2a1f868ebe1fb"
     },
     {
+      "path": "results/tables/legacy_layout_table1_synthetic.md",
+      "bytes": 607,
+      "sha256": "64c8875dba45a0681a0f33cb9524f25e63352bb474e637f740cacf31b7b5d368"
+    },
+    {
+      "path": "results/tables/legacy_layout_table2_bridge.md",
+      "bytes": 359,
+      "sha256": "9669a9eefddd448275b2e4c4942673bfc8bbba146212e9f6fc9cccd6665b491d"
+    },
+    {
+      "path": "results/tables/legacy_layout_table3_nsw.md",
+      "bytes": 548,
+      "sha256": "70a263264a701bd55cf44f6690a84bc87e933554b3f42eb15cae80914c522ef4"
+    },
+    {
       "path": "results/tables/main_synthetic_table.md",
       "bytes": 1008,
       "sha256": "97da67fb3ad55bdab1481a53ce9d551c188da3ad334a81af31675f7d282a174d"
@@ -353,6 +388,21 @@
       "path": "results/tables/support_failure_table.md",
       "bytes": 436,
       "sha256": "2ba7fadc3c1f68b4a42c767bcb873776c2273dde15d8b96012f140af0f048031"
+    },
+    {
+      "path": "results/tables/legacy_layout_table1_synthetic.tex",
+      "bytes": 867,
+      "sha256": "56ccb5d5bcba703044748defb334a1895f6e787a40d4a84ad7fd21795922c9c7"
+    },
+    {
+      "path": "results/tables/legacy_layout_table2_bridge.tex",
+      "bytes": 570,
+      "sha256": "db691914392dcc6b7045ea70ec7fba4c32fbb83b7bce120a6ff74f577889094f"
+    },
+    {
+      "path": "results/tables/legacy_layout_table3_nsw.tex",
+      "bytes": 748,
+      "sha256": "d0dfe2123a5a97a9524995a27d82e2516caeaa11ed6cf0f7ddae8d803c483be4"
     },
     {
       "path": "results/tables/main_synthetic_table.tex",

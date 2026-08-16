@@ -53,7 +53,10 @@ def build_paper_figures(results_dir: Path) -> tuple[Path, ...]:
         *_build_selective_uncertainty(results_dir, figures_dir),
         *_build_rejection_bridge(results_dir, figures_dir),
         *_build_nsw_diagnostics(results_dir, figures_dir),
+        *_build_legacy_synthetic_validation(results_dir, figures_dir),
+        *_build_legacy_nsw_validation(results_dir, figures_dir),
         *_write_support_failure_tables(results_dir, tables_dir),
+        *_write_legacy_layout_tables(results_dir, tables_dir),
     ]
     return tuple(outputs)
 
@@ -151,6 +154,308 @@ def _build_synthetic_overview(results_dir: Path, figures_dir: Path) -> tuple[Pat
 
     fig.suptitle("Figure 2. Why causal composability requires more than semantic similarity", fontsize=14, fontweight="bold")
     return finalize_figure(fig, figures_dir / "synthetic_composability_overview")
+
+
+def _build_legacy_synthetic_validation(
+    results_dir: Path,
+    figures_dir: Path,
+) -> tuple[Path, ...]:
+    """Recreate the original four-panel synthetic layout with current results."""
+
+    diagnostics = _read_csv(results_dir / "certificate_diagnostics_summary.csv")
+    sensitivity = _read_csv(results_dir / "representation_sensitivity_summary.csv")
+    paths = _read_csv(results_dir / "bridge_budget_path_summary.csv")
+    fig, axes = plt.subplots(2, 2, figsize=(13.2, 9.2))
+
+    ax = axes[0, 0]
+    ranked = sorted(
+        diagnostics,
+        key=lambda row: -(
+            abs(
+                _number(row["target_hidden_moderator"])
+                - _number(row["nearest_semantic_hidden_moderator"])
+            )
+            / (
+                np.hypot(
+                    _number(row["target_s1"])
+                    - _number(row["nearest_semantic_s1"]),
+                    _number(row["target_s2"])
+                    - _number(row["nearest_semantic_s2"]),
+                )
+                + 0.03
+            )
+        ),
+    )[:36]
+    hidden_values = [
+        *[_number(row["nearest_semantic_hidden_moderator"]) for row in ranked],
+        *[_number(row["target_hidden_moderator"]) for row in ranked],
+    ]
+    norm = plt.Normalize(min(hidden_values), max(hidden_values))
+    for row in ranked:
+        x0 = _number(row["nearest_semantic_s1"])
+        y0 = _number(row["nearest_semantic_s2"])
+        x1 = _number(row["target_s1"])
+        y1 = _number(row["target_s2"])
+        ax.plot(
+            [x0, x1],
+            [y0, y1],
+            color=PALETTE["neutral_light"],
+            linewidth=0.7,
+            zorder=1,
+        )
+        ax.scatter(
+            x0,
+            y0,
+            c=[_number(row["nearest_semantic_hidden_moderator"])],
+            cmap="coolwarm",
+            norm=norm,
+            s=30,
+            marker="o",
+            edgecolor="black",
+            linewidth=0.3,
+            zorder=2,
+        )
+        target = ax.scatter(
+            x1,
+            y1,
+            c=[_number(row["target_hidden_moderator"])],
+            cmap="coolwarm",
+            norm=norm,
+            s=42,
+            marker="^",
+            edgecolor="black",
+            linewidth=0.3,
+            zorder=3,
+        )
+        if not _boolean(row["atlas_accepted"]):
+            ax.scatter(x1, y1, marker="x", color="black", s=27, linewidth=0.9, zorder=4)
+    fig.colorbar(target, ax=ax, label="Hidden moderator", fraction=0.046, pad=0.04)
+    ax.set(xlabel="Semantic coordinate $s_1$", ylabel="Semantic coordinate $s_2$")
+    ax.set_title("A  Semantic proximity can hide moderator gaps", loc="left", fontweight="bold")
+    ax.text(
+        0.02,
+        0.02,
+        "circle: nearest archive object   triangle: target   x: rejected",
+        transform=ax.transAxes,
+        fontsize=7.5,
+    )
+
+    ax = axes[0, 1]
+    error_columns = (
+        ("atlas", "atlas_absolute_error", True),
+        ("atlas_no_rejection", "atlas_no_rejection_absolute_error", False),
+        ("semantic_forced", "semantic_forced_absolute_error", False),
+        ("nearest_semantic", "nearest_semantic_absolute_error", False),
+        ("global_mean", "global_mean_absolute_error", False),
+        ("oracle_latent_support", "oracle_latent_support_absolute_error", False),
+    )
+    violin_values: list[np.ndarray] = []
+    labels: list[str] = []
+    methods: list[str] = []
+    for method, column, released_only in error_columns:
+        rows = (
+            [row for row in diagnostics if _boolean(row["atlas_accepted"])]
+            if released_only
+            else diagnostics
+        )
+        violin_values.append(np.asarray([_number(row[column]) for row in rows]))
+        methods.append(method)
+        labels.append(
+            {
+                "atlas": "ATLAS\n(released)",
+                "atlas_no_rejection": "ATLAS\nno rejection",
+                "semantic_forced": "Semantic\nforced",
+                "nearest_semantic": "Nearest\nsemantic",
+                "global_mean": "Global\nmean",
+                "oracle_latent_support": "Oracle latent\nsupport",
+            }[method]
+        )
+    parts = ax.violinplot(violin_values, showmeans=False, showmedians=False, widths=0.78)
+    for body, method in zip(parts["bodies"], methods, strict=True):
+        body.set_facecolor(METHOD_COLORS[method])
+        body.set_edgecolor("white")
+        body.set_alpha(0.76)
+    for index, values in enumerate(violin_values, start=1):
+        lower, median, upper = np.quantile(values, [0.25, 0.50, 0.75])
+        ax.plot([index - 0.20, index + 0.20], [median, median], color="black", linewidth=1.3)
+        ax.plot([index, index], [lower, upper], color="black", linewidth=1.0)
+    ax.set_xticks(range(1, len(labels) + 1), labels, fontsize=7.5)
+    ax.set(ylabel="Absolute error against known target effect", ylim=(0.0, None))
+    ax.set_title("B  Causal support improves reconstruction", loc="left", fontweight="bold")
+
+    ax = axes[1, 0]
+    severe_paths = [row for row in paths if row["scenario_key"] == "severe"]
+    policy_labels = {
+        "causal_greedy": "Causal-support greedy",
+        "semantic_greedy": "Semantic-only greedy",
+        "random": "Random bridge",
+    }
+    for policy in ("causal_greedy", "semantic_greedy", "random"):
+        selected = sorted(
+            (row for row in severe_paths if row["policy_key"] == policy),
+            key=lambda row: int(row["budget"]),
+        )
+        ax.plot(
+            [int(row["budget"]) for row in selected],
+            [_number(row["mean_diameter"]) for row in selected],
+            color=POLICY_COLORS[policy],
+            marker="o",
+            linewidth=2.0,
+            label=policy_labels[policy],
+        )
+    ax.set_xticks([0, 1, 2, 3, 4])
+    ax.set(xlabel="Bridge-experiment budget", ylabel="Mean partial-ID diameter")
+    ax.set_title("C  Targeted bridges shrink the unidentified region fastest", loc="left", fontweight="bold")
+    ax.legend(fontsize=8)
+
+    ax = axes[1, 1]
+    hidden_grid = sorted({_number(row["hidden_shift_fraction"]) for row in sensitivity})
+    proxy_grid = sorted({_number(row["proxy_uncertainty"]) for row in sensitivity})
+    matrix = np.full((len(proxy_grid), len(hidden_grid)), np.nan)
+    for row in sensitivity:
+        matrix[
+            proxy_grid.index(_number(row["proxy_uncertainty"])),
+            hidden_grid.index(_number(row["hidden_shift_fraction"])),
+        ] = _number(row["representation_advantage"])
+    bound = max(abs(np.nanmin(matrix)), abs(np.nanmax(matrix)), 1e-8)
+    image = ax.imshow(matrix, origin="lower", aspect="auto", cmap="RdBu_r", vmin=-bound, vmax=bound)
+    ax.set_xticks(range(len(hidden_grid)), [f"{value:.1f}" for value in hidden_grid])
+    ax.set_yticks(range(len(proxy_grid)), [f"{value:.2f}" for value in proxy_grid])
+    ax.set(xlabel="Hidden-moderator shift", ylabel="Proxy uncertainty")
+    ax.set_title("D  Advantage concentrates where semantics mislead", loc="left", fontweight="bold")
+    fig.colorbar(image, ax=ax, label="Semantic MAE - ATLAS MAE", fraction=0.046, pad=0.04)
+
+    fig.suptitle(
+        "Original-layout companion: synthetic validation with the current protocol",
+        fontsize=14,
+        fontweight="bold",
+    )
+    return finalize_figure(fig, figures_dir / "legacy_layout_synthetic_validation")
+
+
+def _build_legacy_nsw_validation(
+    results_dir: Path,
+    figures_dir: Path,
+) -> tuple[Path, ...]:
+    """Recreate the original NSW four-panel layout with current saved results."""
+
+    archive = _read_csv(results_dir / "nsw_archive_map_summary.csv")
+    diagnostics = _read_csv(results_dir / "nsw_diagnostics_summary.csv")
+    summary = _read_csv(results_dir / "nsw_experiment_summary.csv")
+    coordinates = {row["object_id"]: (_number(row["pc1"]), _number(row["pc2"])) for row in archive}
+    effect_values: dict[str, list[float]] = {}
+    for row in diagnostics:
+        effect_values.setdefault(row["target_object_id"], []).append(_number(row["heldout_local_contrast"]))
+    mean_effect = {key: float(np.mean(values)) for key, values in effect_values.items()}
+    fig, axes = plt.subplots(2, 2, figsize=(13.2, 9.2))
+
+    ax = axes[0, 0]
+    colors = [mean_effect.get(row["object_id"], 0.0) for row in archive]
+    bound = max(abs(min(colors)), abs(max(colors)), 1e-8)
+    points = ax.scatter(
+        [_number(row["pc1"]) for row in archive],
+        [_number(row["pc2"]) for row in archive],
+        c=colors,
+        cmap="coolwarm",
+        vmin=-bound,
+        vmax=bound,
+        s=40,
+        alpha=0.76,
+        edgecolor="white",
+        linewidth=0.35,
+    )
+    split = [row for row in diagnostics if row["seed_batch"] == "0" and row["replicate"] == "0"]
+    for accepted, label, color, marker in (
+        (True, "accepted holdout", PALETTE["blue_main"], "D"),
+        (False, "rejected holdout", "black", "x"),
+    ):
+        selected = [row for row in split if _boolean(row["accepted"]) == accepted]
+        ax.scatter(
+            [coordinates[row["target_object_id"]][0] for row in selected],
+            [coordinates[row["target_object_id"]][1] for row in selected],
+            color=color,
+            marker=marker,
+            s=42,
+            linewidth=1.0,
+            label=label,
+            zorder=4,
+        )
+    fig.colorbar(points, ax=ax, label="Mean held-out local contrast ($1000s)", fraction=0.046, pad=0.04)
+    ax.set(xlabel="PCA mechanism coordinate 1", ylabel="PCA mechanism coordinate 2")
+    ax.set_title("A  Local contrasts form a heterogeneous archive", loc="left", fontweight="bold")
+    ax.legend(fontsize=8)
+
+    ax = axes[0, 1]
+    method_order = ("atlas", "atlas_no_rejection", "semantic_forced", "nearest_semantic", "global_mean")
+    labels = {
+        "atlas": "ATLAS",
+        "atlas_no_rejection": "ATLAS\nno rejection",
+        "semantic_forced": "Semantic\nforced",
+        "nearest_semantic": "Nearest\nsemantic",
+        "global_mean": "Global\nmean",
+    }
+    summary_by_method = {row["method"]: row for row in summary}
+    for index, method in enumerate(method_order):
+        row = summary_by_method[method]
+        ax.errorbar(
+            index,
+            _number(row["mae"]),
+            yerr=_number(row["between_seed_mae_sd"]),
+            fmt="o",
+            markersize=7,
+            capsize=3,
+            linewidth=1.5,
+            color=METHOD_COLORS[method],
+        )
+    ax.set_xticks(range(len(method_order)), [labels[method] for method in method_order], fontsize=7.5)
+    ax.set(ylabel="Mean absolute reconstruction error", ylim=(0.0, None))
+    ax.set_title("B  Design-enriched support improves reconstruction", loc="left", fontweight="bold")
+    ax.text(0.02, 0.96, "whiskers: between-seed SD", transform=ax.transAxes, fontsize=7.5, va="top")
+
+    ax = axes[1, 0]
+    for accepted, label, color, marker in (
+        (True, "accepted", PALETTE["blue_main"], "o"),
+        (False, "rejected", PALETTE["red"], "x"),
+    ):
+        selected = [row for row in diagnostics if _boolean(row["accepted"]) == accepted]
+        ax.scatter(
+            [_number(row["heldout_local_contrast"]) for row in selected],
+            [_number(row["reconstructed_contrast"]) for row in selected],
+            s=14,
+            alpha=0.22,
+            color=color,
+            marker=marker,
+            label=label,
+        )
+    values = [
+        *[_number(row["heldout_local_contrast"]) for row in diagnostics],
+        *[_number(row["reconstructed_contrast"]) for row in diagnostics],
+    ]
+    low, high = min(values), max(values)
+    ax.plot([low, high], [low, high], linestyle="--", color=PALETTE["neutral"], linewidth=1.2)
+    ax.set(xlabel="Held-out local contrast ($1000s)", ylabel="Reconstructed contrast ($1000s)")
+    ax.set_title("C  Calibration against noisy held-out contrasts", loc="left", fontweight="bold")
+    ax.legend(fontsize=8)
+
+    ax = axes[1, 1]
+    points = ax.scatter(
+        [_number(row["support_component"]) for row in diagnostics],
+        [_number(row["interval_width"]) for row in diagnostics],
+        c=[_number(row["absolute_reconstruction_error"]) for row in diagnostics],
+        cmap="magma_r",
+        s=18,
+        alpha=0.48,
+    )
+    ax.set(xlabel="Support component of certificate", ylabel="Reported interval width")
+    ax.set_title("D  Diagnostics expose where support is weak", loc="left", fontweight="bold")
+    fig.colorbar(points, ax=ax, label="Absolute reconstruction error", fraction=0.046, pad=0.04)
+
+    fig.suptitle(
+        "Original-layout companion: NSW local-contrast validation with the current protocol",
+        fontsize=14,
+        fontweight="bold",
+    )
+    return finalize_figure(fig, figures_dir / "legacy_layout_nsw_validation")
 
 
 def _build_selective_uncertainty(results_dir: Path, figures_dir: Path) -> tuple[Path, ...]:
@@ -319,6 +624,146 @@ def _write_support_failure_tables(results_dir: Path, tables_dir: Path) -> tuple[
             f"{_number(row['partial_id_nonempty_rate']):.3f} & {_number(row['partial_id_coverage_on_rejected']):.3f} & "
             f"{_number(row['mean_partial_id_width_on_rejected']):.3f} \\\\"
         )
+    latex.extend(["\\bottomrule", "\\end{tabular}", "\\end{table}"])
+    tex_path.write_text("\n".join(latex) + "\n", encoding="utf-8")
+    return md_path, tex_path
+
+
+def _write_legacy_layout_tables(
+    results_dir: Path,
+    tables_dir: Path,
+) -> tuple[Path, ...]:
+    """Write current-protocol analogues of the original paper's Tables 1--3."""
+
+    method_names = {
+        "atlas": "Causal ATLAS",
+        "atlas_no_rejection": "ATLAS, no rejection",
+        "semantic_forced": "Semantic forced",
+        "nearest_semantic": "Nearest semantic",
+        "global_mean": "Global mean",
+        "oracle_latent_support": "Oracle latent support*",
+    }
+    synthetic = _read_csv(results_dir / "synthetic_benchmark_summary.csv")
+    table1_rows = [
+        (
+            method_names[row["method"]],
+            f"{_number(row['release_rate']):.3f}",
+            f"{_number(row['mae']):.3f}",
+            f"{_number(row['rmse']):.3f}",
+            f"{_number(row['sign_accuracy']):.3f}",
+            f"{_number(row['interval_coverage']):.3f}",
+            f"{_number(row['mean_interval_width']):.3f}",
+        )
+        for row in synthetic
+    ]
+    outputs = [
+        *_write_dual_format_table(
+            tables_dir / "legacy_layout_table1_synthetic",
+            title="Original Table 1 analogue: synthetic reconstruction (current protocol)",
+            headers=("Method", "Release", "MAE", "RMSE", "Sign", "Coverage", "Width"),
+            rows=table1_rows,
+            caption=(
+                "Current-protocol analogue of the original synthetic holdout table. "
+                "ATLAS errors are conditional on release; the latent-support oracle is evaluation-only."
+            ),
+            label="tab:legacy-layout-synthetic",
+        )
+    ]
+
+    bridge = _read_csv(results_dir / "bridge_experiment_summary.csv")
+    bridge_names = {
+        "causal_greedy": "Causal-support greedy",
+        "semantic_greedy": "Semantic-only greedy",
+        "random": "Random bridge",
+    }
+    severe = [row for row in bridge if row["scenario_key"] == "severe"]
+    table2_rows = [
+        (
+            bridge_names[row["policy_key"]],
+            f"{_number(row['mean_initial_diameter']):.3f}",
+            f"{_number(row['mean_final_diameter']):.3f}",
+            f"{_number(row['shrinkage_fraction']):.3f}",
+            f"{_number(row['budget_completion_rate']):.3f}",
+        )
+        for row in severe
+    ]
+    outputs.extend(
+        _write_dual_format_table(
+            tables_dir / "legacy_layout_table2_bridge",
+            title="Original Table 2 analogue: severe-mismatch bridge design (current protocol)",
+            headers=("Method", "Initial diameter", "Final diameter", "Shrinkage", "Completion"),
+            rows=table2_rows,
+            caption=(
+                "Current-protocol analogue of the original bridge-design ablation in the severe-mismatch scenario."
+            ),
+            label="tab:legacy-layout-bridge",
+        )
+    )
+
+    nsw = _read_csv(results_dir / "nsw_experiment_summary.csv")
+    table3_rows = [
+        (
+            method_names[row["method"]],
+            f"{_number(row['mae']):.3f}",
+            f"{_number(row['median_absolute_error']):.3f}",
+            f"{_number(row['sign_accuracy']):.3f}",
+            f"{_number(row['interval_coverage']):.3f}",
+            f"{_number(row['mean_interval_width']):.3f}",
+            f"{_number(row['rejection_rate']):.3f}",
+        )
+        for row in nsw
+    ]
+    outputs.extend(
+        _write_dual_format_table(
+            tables_dir / "legacy_layout_table3_nsw",
+            title="Original Table 3 analogue: NSW local-contrast reconstruction (current protocol)",
+            headers=("Method", "MAE", "Median AE", "Sign", "Inclusion", "Width", "Rejection"),
+            rows=table3_rows,
+            caption=(
+                "Current-protocol analogue of the original NSW table. Inclusion refers to the noisy held-out local contrast."
+            ),
+            label="tab:legacy-layout-nsw",
+        )
+    )
+    return tuple(outputs)
+
+
+def _write_dual_format_table(
+    output_base: Path,
+    *,
+    title: str,
+    headers: tuple[str, ...],
+    rows: list[tuple[str, ...]],
+    caption: str,
+    label: str,
+) -> tuple[Path, Path]:
+    output_base.parent.mkdir(parents=True, exist_ok=True)
+    md_path = output_base.with_suffix(".md")
+    tex_path = output_base.with_suffix(".tex")
+
+    markdown = [
+        f"# {title}",
+        "",
+        "| " + " | ".join(headers) + " |",
+        "| " + " | ".join(["---", *["---:"] * (len(headers) - 1)]) + " |",
+    ]
+    markdown.extend("| " + " | ".join(row) + " |" for row in rows)
+    md_path.write_text("\n".join(markdown) + "\n", encoding="utf-8")
+
+    alignment = "l" + "r" * (len(headers) - 1)
+    latex = [
+        "% Generated by scripts/build/build_paper_figures.py; do not edit.",
+        "\\begin{table}[t]",
+        "\\centering",
+        "\\small",
+        f"\\caption{{{caption}}}",
+        f"\\label{{{label}}}",
+        f"\\begin{{tabular}}{{{alignment}}}",
+        "\\toprule",
+        " & ".join(headers) + " \\\\",
+        "\\midrule",
+    ]
+    latex.extend(" & ".join(row) + " \\\\" for row in rows)
     latex.extend(["\\bottomrule", "\\end{tabular}", "\\end{table}"])
     tex_path.write_text("\n".join(latex) + "\n", encoding="utf-8")
     return md_path, tex_path

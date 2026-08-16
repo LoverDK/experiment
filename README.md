@@ -72,8 +72,8 @@ Algorithm 1 的核心实现跨阶段 1、3、9、11；其余阶段用于验证�
    `m(e)`；它不进入任何可部署方法、接受判定或 bridge 选择。
 3. `certificate_diagnostics` 保存 300 个目标的证书半径、实际绝对误差、发布状态
    和五个证书分量，并生成六方法主基准表。
-4. `build_paper_figures.py` 只读取已有 CSV/JSON，生成 Figure 2--5 的 PNG/PDF
-   和可直接给 Overleaf 使用的 Markdown/LaTeX 表格。
+4. `build_paper_figures.py` 只读取已有 CSV/JSON，生成 Figure 2--5、原论文 Figure 2--3
+   布局兼容图的 PNG/PDF，以及可直接给 Overleaf 使用的 Markdown/LaTeX 表格。
 
 ## 严格实现要点
 
@@ -183,4 +183,5 @@ SHA-256 清单位于 `results/`。
 `results/bridge_optimality_summary.csv` 和小规模穷举对照表；
 `results/representation_sensitivity_summary.csv`、
 `results/certificate_diagnostics_summary.csv`、`results/synthetic_benchmark_summary.csv`
-以及 `results/figures/*_overview.{png,pdf}` 论文组合图。
+以及 `results/figures/*_overview.{png,pdf}` 论文组合图。原论文实验图表的当前协议
+复现见 `docs/paper/original_experiment_artifacts.md`。

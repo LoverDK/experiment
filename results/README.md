@@ -26,6 +26,8 @@
 
 ## 图、表与清单
 
-- `figures/`：阶段图和 Figure 2--5；最终组合图同时提供 PNG 与 PDF。
-- `tables/`：Markdown 阅读版和可由 Overleaf `\input{}` 的 LaTeX 表。
+- `figures/`：阶段图和 Figure 2--5；最终组合图同时提供 PNG 与 PDF。以
+  `legacy_layout_` 开头的两张图复现原论文四面板布局，但使用当前协议数值。
+- `tables/`：Markdown 阅读版和可由 Overleaf `\input{}` 的 LaTeX 表；
+  `legacy_layout_table1`--`table3` 是原论文三张实验表的当前协议版本。
 - `experiment_manifest.json`：结果文件大小、SHA-256 和预期行数。

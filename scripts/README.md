@@ -67,5 +67,5 @@ python scripts/build/build_paper_artifacts.py
 python scripts/build/build_paper_figures.py
 ```
 
-这三条命令不重新抽样。最后一条从 CSV/JSON 生成 Figure 2--5 的 PNG/PDF 以及
-两张 Markdown/LaTeX 表。
+这三条命令不重新抽样。最后一条从 CSV/JSON 生成 Figure 2--5、两张原论文布局
+兼容图的 PNG/PDF，以及当前论文表和原论文 Table 1--3 的 Markdown/LaTeX 版本。

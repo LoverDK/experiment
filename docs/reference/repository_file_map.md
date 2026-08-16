@@ -41,6 +41,7 @@
 | docs/paper/main_text_gap_catalog/05_bridge_additional_evidence.md | 正文遗漏目录 | 整理 bridge 跨场景结果、规划不一致、oracle 支持缩减和 focused 路径计数。 |
 | docs/paper/main_text_gap_catalog/06_nsw_additional_evidence.md | 正文遗漏目录 | 整理 NSW 表示分工、local object、holdout 口径和 no-rejection 指标解释。 |
 | docs/paper/main_text_gap_catalog/README.md | 正文遗漏总索引 | 汇总仓库已做而当前 Section 6 未写或只写部分的实验，按 P0--P2 给出正文取舍。 |
+| docs/paper/original_experiment_artifacts.md | 原论文图表对照 | 将原论文 Figure 2--3、Table 1--3 映射为当前固定协议的兼容图表，并说明旧数值边界。 |
 | docs/paper/paper_experiment_extension.md | 论文扩展说明 | 说明 Oracle、表示敏感性、证书诊断和 Figure 2--5 的设计、边界与复现方式。 |
 | docs/paper/paper_results_section.md | 阶段 8 产物 | 面向论文写作的中文结果段落，由 scripts/build/build_paper_artifacts.py 生成。 |
 | docs/reference/algorithm1_alignment.md | 算法对照 | 将论文 Algorithm 1 逐行映射到统一代码入口、阶段、公式、分支和肉眼可见产出。 |
@@ -72,6 +73,10 @@
 | results/figures/calibration_curve.png | 校准曲线图 | 展示多个名义置信水平下各策略的经验覆盖率与平均区间宽度。 |
 | results/figures/bridge_experiment_overview.png | 阶段 11 图 | 比较 causal greedy、semantic greedy 和 random bridge 的最终直径及预算路径。 |
 | results/figures/formal_experiment_overview.png | 阶段 5 图 | 展示正式多种子基准中的发布率、消融与已发布点 MAE。 |
+| results/figures/legacy_layout_nsw_validation.pdf | 原论文布局矢量图 | 用当前 NSW 协议复现原 Figure 3 的 archive、重建、校准和支持诊断四面板布局。 |
+| results/figures/legacy_layout_nsw_validation.png | 原论文布局预览图 | 当前 NSW 协议的原 Figure 3 布局位图版本。 |
+| results/figures/legacy_layout_synthetic_validation.pdf | 原论文布局矢量图 | 用当前合成协议复现原 Figure 2 的近邻、误差、bridge 和敏感性四面板布局。 |
+| results/figures/legacy_layout_synthetic_validation.png | 原论文布局预览图 | 当前合成协议的原 Figure 2 布局位图版本。 |
 | results/figures/main_experiment_acceptance.png | 阶段 4 图 | 展示四项参数扫描下各方法的发布率。 |
 | results/figures/main_experiment_mae.png | 阶段 4 图 | 展示四项参数扫描下各方法的已发布点 MAE。 |
 | results/figures/minimax_experiment_overview.png | 阶段 10 图 | 并列展示 Theorem 5.5 两个构造下界分量及其与代表性估计器最坏风险的关系。 |
@@ -116,6 +121,12 @@
 | results/tables/calibration_curve_tables.md | 校准曲线表 | 多置信水平下 coverage、width 和发布率的联合表。 |
 | results/tables/final_summary_tables.md | 阶段 7 产物 | 紧凑的正式基准与失效边界摘要表，由 build_final_report.py 生成。 |
 | results/tables/formal_experiment_tables.md | 阶段 5 产物 | Markdown 形式的正式多种子实验与消融表。 |
+| results/tables/legacy_layout_table1_synthetic.md | 原 Table 1 阅读版 | 当前三种子合成主基准的原论文表格布局 Markdown 版本。 |
+| results/tables/legacy_layout_table1_synthetic.tex | 原 Table 1 LaTeX | 当前协议的合成重建表，可由 Overleaf 直接输入。 |
+| results/tables/legacy_layout_table2_bridge.md | 原 Table 2 阅读版 | 当前 severe 场景三种 bridge 策略的紧凑 Markdown 表。 |
+| results/tables/legacy_layout_table2_bridge.tex | 原 Table 2 LaTeX | 当前 severe bridge 消融表的 Overleaf 输入版本。 |
+| results/tables/legacy_layout_table3_nsw.md | 原 Table 3 阅读版 | 当前 NSW local-contrast 五方法结果的紧凑 Markdown 表。 |
+| results/tables/legacy_layout_table3_nsw.tex | 原 Table 3 LaTeX | 当前 NSW 重建表的 Overleaf 输入版本。 |
 | results/tables/main_synthetic_table.md | 论文主表预览 | 六种合成方法的发布率、误差、符号、覆盖率与宽度。 |
 | results/tables/main_synthetic_table.tex | 论文主表 LaTeX | 可由 Overleaf 直接输入的合成基准表，含 Oracle 评价限定。 |
 | results/tables/minimax_experiment_tables.md | 阶段 10 产物 | Markdown 形式的 Theorem 5.5 下界分量与代表性估计器风险表。 |

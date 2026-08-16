@@ -14,6 +14,8 @@
 - `paper_results_section.md`：可继续改写成论文 Section 6 的结果稿。
 - `main_text_gap_catalog/`：逐项对照仓库实验与当前 Section 6，列出正文遗漏、
   需修正的解释、对应证据文件、推荐插入位置和英文候选正文；当前只处理正文取舍。
+- `original_experiment_artifacts.md`：把原论文 Figure 2--3、Table 1--3 映射到
+  当前固定实验协议生成的兼容图表，并说明旧数值不得与新协议混用。
 
 ## `reference/`：维护与对照
 
