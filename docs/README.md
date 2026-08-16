@@ -12,6 +12,8 @@
   的新增协议、信息边界与解释。
 - `final_experiment_report.md`：全部合成阶段的中文总报告。
 - `paper_results_section.md`：可继续改写成论文 Section 6 的结果稿。
+- `main_text_gap_catalog/`：逐项对照仓库实验与当前 Section 6，列出正文遗漏、
+  需修正的解释、对应证据文件、推荐插入位置和英文候选正文；当前只处理正文取舍。
 
 ## `reference/`：维护与对照
 

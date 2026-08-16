@@ -34,6 +34,13 @@
 | data/nsw_dw.dta | 阶段 12 数据 | NBER 发布的 Dehejia-Wahba NSW 随机实验原始快照；运行前按固定 SHA-256 校验。 |
 | docs/README.md | 文档导航 | 按 stages、reference 和 paper 三个区域解释文档结构与阅读顺序。 |
 | docs/paper/final_experiment_report.md | 阶段 7 产物 | 汇总全部合成仿真实验的中文报告，由 scripts/build/build_final_report.py 生成。 |
+| docs/paper/main_text_gap_catalog/01_foundational_checks.md | 正文遗漏目录 | 对照 DGP 假设校验、早期 oracle Monte Carlo 和方法演示，判断是否仍应进入正文。 |
+| docs/paper/main_text_gap_catalog/02_synthetic_sweeps_and_ablations.md | 正文遗漏目录 | 整理合成扫描、正式多种子压力场景、消融、表示网格，并修正选择效应与表示效应的解释。 |
+| docs/paper/main_text_gap_catalog/03_certificate_diagnostics.md | 正文遗漏目录 | 整理证书分量、异质隐藏半径和完整校准政策，给出正文候选文本与附录边界。 |
+| docs/paper/main_text_gap_catalog/04_partial_identification_and_minimax.md | 正文遗漏目录 | 整理多权重交集、oracle 非识别诊断和 Theorem 5.5 minimax 数值实验。 |
+| docs/paper/main_text_gap_catalog/05_bridge_additional_evidence.md | 正文遗漏目录 | 整理 bridge 跨场景结果、规划不一致、oracle 支持缩减和 focused 路径计数。 |
+| docs/paper/main_text_gap_catalog/06_nsw_additional_evidence.md | 正文遗漏目录 | 整理 NSW 表示分工、local object、holdout 口径和 no-rejection 指标解释。 |
+| docs/paper/main_text_gap_catalog/README.md | 正文遗漏总索引 | 汇总仓库已做而当前 Section 6 未写或只写部分的实验，按 P0--P2 给出正文取舍。 |
 | docs/paper/paper_experiment_extension.md | 论文扩展说明 | 说明 Oracle、表示敏感性、证书诊断和 Figure 2--5 的设计、边界与复现方式。 |
 | docs/paper/paper_results_section.md | 阶段 8 产物 | 面向论文写作的中文结果段落，由 scripts/build/build_paper_artifacts.py 生成。 |
 | docs/reference/algorithm1_alignment.md | 算法对照 | 将论文 Algorithm 1 逐行映射到统一代码入口、阶段、公式、分支和肉眼可见产出。 |
