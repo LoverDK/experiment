@@ -54,6 +54,7 @@ class PaperFigureTests(unittest.TestCase):
             "bridge_budget_path_summary.csv": 15,
             "nsw_diagnostics_summary.csv": 1_680,
             "nsw_archive_map_summary.csv": 112,
+            "nsw_method_error_records.csv": 8_400,
         }
         for filename, expected_rows in expected.items():
             with self.subTest(filename=filename):

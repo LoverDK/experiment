@@ -47,7 +47,8 @@ python scripts/run/run_bridge_budget_path_experiment.py
 python scripts/run/run_nsw_experiment.py
 ```
 
-除五方法主表外，还保存 ATLAS 的逐目标诊断和 112 个局部对象的 PCA 地图数据。
+除五方法主表外，还保存 ATLAS 的逐目标诊断、112 个局部对象的 PCA 地图数据，
+以及五种方法共享 target 的 8,400 条逐目标误差记录。
 
 ## 5. 论文级新增评价
 

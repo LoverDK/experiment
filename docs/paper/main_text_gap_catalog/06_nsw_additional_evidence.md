@@ -124,6 +124,7 @@ Section 6.6 当前只写“covariate neighborhoods with minimum treated and cont
 | 文件 | 用途 |
 | --- | --- |
 | `results/nsw_experiment_seed_summary.csv` | 五种方法的逐种子结果 |
+| `results/nsw_method_error_records.csv` | 五种方法在共享 holdout 上的逐目标误差与区间记录 |
 | `results/nsw_diagnostics_summary.csv` | target 级重建、接受状态和证书分量 |
 | `results/nsw_archive_map_summary.csv` | archive map 数据 |
 | `results/figures/nsw_diagnostics_overview.pdf` | 正文 Figure 5 的矢量版本 |

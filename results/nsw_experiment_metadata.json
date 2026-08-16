@@ -95,5 +95,11 @@
     "global_mean": "uniform mean of all remaining local effects"
   },
   "metric_scope": "MAE, sign, and coverage use the noisy held-out local contrast as the reference; they are not ground-truth subgroup-effect metrics",
+  "target_level_outputs": {
+    "method_error_file": "results/nsw_method_error_records.csv",
+    "method_error_rows": 8400,
+    "records_per_method": 1680,
+    "scope": "shared held-out targets for all five methods; used to plot empirical absolute-error distributions"
+  },
   "reproduction_scope": "the focal paper does not report neighborhood size, anchor selection, coordinate split, split seeds, or certificate tuning; this fixed protocol reproduces the experiment structure, not Table 3 values exactly"
 }

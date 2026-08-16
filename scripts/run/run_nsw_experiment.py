@@ -20,6 +20,7 @@ from causal_atlas_sim.nsw_experiment import (
     _summarize_method,
     nsw_archive_map_rows,
     nsw_diagnostic_rows,
+    nsw_method_error_rows,
     run_nsw_experiment,
 )
 
@@ -70,6 +71,9 @@ def main() -> None:
                 "archive_map": str(
                     RESULTS_DIR / "nsw_archive_map_summary.csv"
                 ),
+                "method_error_records": str(
+                    RESULTS_DIR / "nsw_method_error_records.csv"
+                ),
                 "metadata": str(RESULTS_DIR / "nsw_experiment_metadata.json"),
                 "tables": str(TABLES_DIR / "nsw_experiment_tables.md"),
                 "figure": str(FIGURES_DIR / "nsw_experiment_overview.png"),
@@ -94,6 +98,7 @@ def _write_diagnostic_csvs(result: NswExperimentResult) -> None:
     for filename, rows in (
         ("nsw_diagnostics_summary.csv", nsw_diagnostic_rows(result)),
         ("nsw_archive_map_summary.csv", nsw_archive_map_rows(result)),
+        ("nsw_method_error_records.csv", nsw_method_error_rows(result)),
     ):
         values = [row.as_dict() for row in rows]
         with (RESULTS_DIR / filename).open(
@@ -180,6 +185,15 @@ def _write_metadata(result: NswExperimentResult) -> None:
             "MAE, sign, and coverage use the noisy held-out local contrast as the "
             "reference; they are not ground-truth subgroup-effect metrics"
         ),
+        "target_level_outputs": {
+            "method_error_file": "results/nsw_method_error_records.csv",
+            "method_error_rows": len(result.records),
+            "records_per_method": len(result.records) // len(NSW_METHODS),
+            "scope": (
+                "shared held-out targets for all five methods; used to plot "
+                "empirical absolute-error distributions"
+            ),
+        },
         "reproduction_scope": (
             "the focal paper does not report neighborhood size, anchor selection, "
             "coordinate split, split seeds, or certificate tuning; this fixed "

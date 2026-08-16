@@ -35,12 +35,13 @@
 兼容图保留原 Figure 3 的四条视觉主线：
 
 1. 112 个 local objects 的机制表示地图，并标出一组固定 holdout 的接受/拒绝；
-2. 五种方法的 MAE 和跨种子标准差；
+2. 五种方法各 1,680 个共享 holdout 的绝对误差分布、中位数与四分位区间；
 3. ATLAS 重建值与 noisy held-out local contrast 的校准散点；
 4. 支持证书分量、区间宽度与重建误差之间的关系。
 
-数值来自 `nsw_archive_map_summary.csv`、`nsw_experiment_summary.csv` 和
-`nsw_diagnostics_summary.csv`。
+数值来自 `nsw_archive_map_summary.csv`、`nsw_method_error_records.csv` 和
+`nsw_diagnostics_summary.csv`。B 面板的 violin 使用全部逐目标误差，叠加散点只是
+固定的可视化抽样，不参与中位数或四分位数计算。
 
 ## 3. 与原论文旧数值的关系
 

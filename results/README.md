@@ -17,6 +17,8 @@
 - `bridge_budget_path_summary.csv`：严重失配场景的 0--4 预算路径诊断。
 - `nsw_diagnostics_summary.csv`：1,680 条 ATLAS NSW held-out 诊断。
 - `nsw_archive_map_summary.csv`：112 个 NSW 局部对象的 PCA 坐标与发布频率。
+- `nsw_method_error_records.csv`：五种方法在共享 holdout 上的 8,400 条逐目标误差，
+  用于原论文布局 NSW 图的完整误差分布面板。
 
 ## 理论与真实数据
 

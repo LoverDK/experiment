@@ -224,6 +224,29 @@ class NswDiagnosticRow:
 
 
 @dataclass(frozen=True)
+class NswMethodErrorRow:
+    """One method-target error record for distributional comparisons."""
+
+    method: str
+    seed_batch: int
+    replicate: int
+    split_seed: int
+    target_object_id: str
+    heldout_local_contrast: float
+    reconstructed_contrast: float
+    signed_reconstruction_error: float
+    absolute_reconstruction_error: float
+    accepted: bool
+    interval_lower: float
+    interval_upper: float
+    interval_includes_reference: bool
+    certificate_radius: float
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class NswExperimentResult:
     """Local archive, blind predictions, and pooled reconstruction metrics."""
 
@@ -730,6 +753,42 @@ def nsw_diagnostic_rows(
                 support_component=prediction.representation_term,
                 statistical_component=prediction.statistical_term,
                 interval_width=prediction.interval_upper - prediction.interval_lower,
+            )
+        )
+    return tuple(rows)
+
+
+def nsw_method_error_rows(
+    result: NswExperimentResult,
+) -> tuple[NswMethodErrorRow, ...]:
+    """Return all shared-target method errors without refitting any estimator."""
+
+    rows = []
+    for record in result.records:
+        prediction = record.prediction
+        signed_error = (
+            prediction.predicted_effect - record.target_effect_reference
+        )
+        rows.append(
+            NswMethodErrorRow(
+                method=record.method,
+                seed_batch=record.seed_batch,
+                replicate=record.replicate,
+                split_seed=record.split_seed,
+                target_object_id=record.target_object_id,
+                heldout_local_contrast=record.target_effect_reference,
+                reconstructed_contrast=prediction.predicted_effect,
+                signed_reconstruction_error=signed_error,
+                absolute_reconstruction_error=abs(signed_error),
+                accepted=prediction.accepted,
+                interval_lower=prediction.interval_lower,
+                interval_upper=prediction.interval_upper,
+                interval_includes_reference=(
+                    prediction.interval_lower
+                    <= record.target_effect_reference
+                    <= prediction.interval_upper
+                ),
+                certificate_radius=prediction.certificate_radius,
             )
         )
     return tuple(rows)

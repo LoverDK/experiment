@@ -107,6 +107,7 @@
 | results/nsw_experiment_metadata.json | 阶段 12 产物 | 保存原始数据校验值、local object 协议、表示分工、种子、方法和指标边界。 |
 | results/nsw_experiment_seed_summary.csv | 阶段 12 产物 | 按基准种子汇总 NSW reconstruction 指标，用于检查对象拆分稳定性。 |
 | results/nsw_experiment_summary.csv | 阶段 12 产物 | 五种方法的 MAE、median AE、sign、coverage、width 和 rejection 主表。 |
+| results/nsw_method_error_records.csv | 阶段 12 逐目标产物 | 保存五种方法在共享 holdout 上的 8,400 条误差、区间与接受记录，支持分布图。 |
 | results/partial_identification_metadata.json | 阶段 9 产物 | 保存部分识别场景、种子、总失败概率和权重族配置。 |
 | results/partial_identification_seed_summary.csv | 阶段 9 产物 | 按基准种子汇总部分识别覆盖率、非空率、宽度和支持距离。 |
 | results/partial_identification_summary.csv | 阶段 9 产物 | 4 个支持场景的正式汇总，是阶段 9 的主结果表。 |

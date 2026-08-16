@@ -175,6 +175,7 @@ from .nsw_experiment import (
     NswExperimentConfig,
     NswExperimentResult,
     NswLocalContrast,
+    NswMethodErrorRow,
     NswPrediction,
     NswRecord,
     NswSummaryRow,
@@ -182,6 +183,7 @@ from .nsw_experiment import (
     fit_nsw_method,
     nsw_archive_map_rows,
     nsw_diagnostic_rows,
+    nsw_method_error_rows,
     run_nsw_experiment,
 )
 
@@ -331,6 +333,7 @@ __all__ = [
     "NswExperimentConfig",
     "NswExperimentResult",
     "NswLocalContrast",
+    "NswMethodErrorRow",
     "NswPrediction",
     "NswRecord",
     "NswSummaryRow",
@@ -338,5 +341,6 @@ __all__ = [
     "fit_nsw_method",
     "nsw_archive_map_rows",
     "nsw_diagnostic_rows",
+    "nsw_method_error_rows",
     "run_nsw_experiment",
 ]

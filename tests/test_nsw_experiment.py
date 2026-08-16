@@ -23,6 +23,7 @@ from causal_atlas_sim.nsw_experiment import (
     fit_nsw_method,
     nsw_archive_map_rows,
     nsw_diagnostic_rows,
+    nsw_method_error_rows,
     run_nsw_experiment,
 )
 
@@ -86,11 +87,20 @@ class NswExperimentTests(unittest.TestCase):
         self.assertEqual(len(result.rows), len(NSW_METHODS))
         map_rows = nsw_archive_map_rows(result)
         diagnostic_rows = nsw_diagnostic_rows(result)
+        method_error_rows = nsw_method_error_rows(result)
         self.assertEqual(len(map_rows), self.small_config.n_local_objects)
         self.assertEqual(
             len(diagnostic_rows),
             self.small_config.holdout_count
             * self.small_config.repetitions_per_seed,
+        )
+        self.assertEqual(len(method_error_rows), expected_records)
+        self.assertSetEqual(
+            {row.method for row in method_error_rows},
+            set(NSW_METHODS),
+        )
+        self.assertTrue(
+            all(row.absolute_reconstruction_error >= 0.0 for row in method_error_rows)
         )
         self.assertTrue(all(np.isfinite(row.pc1) for row in map_rows))
         grouped = {}
@@ -118,17 +128,44 @@ class NswExperimentTests(unittest.TestCase):
         summary_path = PROJECT_ROOT / "results" / "nsw_experiment_summary.csv"
         seed_path = PROJECT_ROOT / "results" / "nsw_experiment_seed_summary.csv"
         metadata_path = PROJECT_ROOT / "results" / "nsw_experiment_metadata.json"
+        method_records_path = PROJECT_ROOT / "results" / "nsw_method_error_records.csv"
         if not summary_path.exists():
             self.skipTest("Stage 12 artifacts have not been generated yet.")
         with summary_path.open(newline="", encoding="utf-8") as source:
             rows = list(csv.DictReader(source))
         with seed_path.open(newline="", encoding="utf-8") as source:
             seed_rows = list(csv.DictReader(source))
+        with method_records_path.open(newline="", encoding="utf-8") as source:
+            method_records = list(csv.DictReader(source))
         metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
         self.assertEqual(len(rows), 5)
         self.assertEqual(len(seed_rows), 15)
+        self.assertEqual(len(method_records), 8_400)
         self.assertEqual({row["method"] for row in rows}, set(NSW_METHODS))
         self.assertEqual(metadata["source"]["source_sha256"], NSW_SOURCE_SHA256)
+        self.assertEqual(
+            metadata["target_level_outputs"]["method_error_rows"],
+            8_400,
+        )
+        for summary in rows:
+            method_errors = np.asarray(
+                [
+                    float(record["absolute_reconstruction_error"])
+                    for record in method_records
+                    if record["method"] == summary["method"]
+                ]
+            )
+            self.assertEqual(len(method_errors), 1_680)
+            self.assertAlmostEqual(
+                float(method_errors.mean()),
+                float(summary["mae"]),
+                places=12,
+            )
+            self.assertAlmostEqual(
+                float(np.median(method_errors)),
+                float(summary["median_absolute_error"]),
+                places=12,
+            )
 
     def test_manifest_includes_source_and_stage_twelve_artifacts(self) -> None:
         manifest = json.loads(
@@ -142,6 +179,7 @@ class NswExperimentTests(unittest.TestCase):
                 "data/nsw_dw.dta",
                 "results/nsw_experiment_summary.csv",
                 "results/nsw_experiment_seed_summary.csv",
+                "results/nsw_method_error_records.csv",
                 "results/nsw_experiment_metadata.json",
                 "results/figures/nsw_experiment_overview.png",
                 "results/tables/nsw_experiment_tables.md",

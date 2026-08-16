@@ -498,6 +498,7 @@ def build_artifact_manifest(project_root: Path) -> dict[str, Any]:
             "bridge_budget_path_summary.csv": 15,
             "nsw_diagnostics_summary.csv": 1680,
             "nsw_archive_map_summary.csv": 112,
+            "nsw_method_error_records.csv": 8400,
         },
         "artifacts": artifacts,
         "verification_commands": [

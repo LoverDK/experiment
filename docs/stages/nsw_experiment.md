@@ -125,6 +125,7 @@ python -m unittest tests.test_nsw_experiment -v
 
 - `results/nsw_experiment_summary.csv`；
 - `results/nsw_experiment_seed_summary.csv`；
+- `results/nsw_method_error_records.csv`：五种方法共享 target 的 8,400 条逐目标误差；
 - `results/nsw_experiment_metadata.json`；
 - `results/tables/nsw_experiment_tables.md`；
 - `results/figures/nsw_experiment_overview.png`。

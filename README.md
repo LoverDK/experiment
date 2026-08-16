@@ -182,6 +182,7 @@ SHA-256 清单位于 `results/`。
 `results/calibration_curve_summary.csv` 和 coverage--width 图；
 `results/bridge_optimality_summary.csv` 和小规模穷举对照表；
 `results/representation_sensitivity_summary.csv`、
-`results/certificate_diagnostics_summary.csv`、`results/synthetic_benchmark_summary.csv`
+`results/certificate_diagnostics_summary.csv`、`results/synthetic_benchmark_summary.csv`、
+`results/nsw_method_error_records.csv`
 以及 `results/figures/*_overview.{png,pdf}` 论文组合图。原论文实验图表的当前协议
 复现见 `docs/paper/original_experiment_artifacts.md`。

@@ -49,6 +49,7 @@ logs/
 !results/bridge_budget_path_metadata.json
 !results/nsw_diagnostics_summary.csv
 !results/nsw_archive_map_summary.csv
+!results/nsw_method_error_records.csv
 !results/figures/
 !results/figures/*.png
 !results/figures/*.pdf

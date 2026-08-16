@@ -341,7 +341,7 @@ def _build_legacy_nsw_validation(
 
     archive = _read_csv(results_dir / "nsw_archive_map_summary.csv")
     diagnostics = _read_csv(results_dir / "nsw_diagnostics_summary.csv")
-    summary = _read_csv(results_dir / "nsw_experiment_summary.csv")
+    method_errors = _read_csv(results_dir / "nsw_method_error_records.csv")
     coordinates = {row["object_id"]: (_number(row["pc1"]), _number(row["pc2"])) for row in archive}
     effect_values: dict[str, list[float]] = {}
     for row in diagnostics:
@@ -394,23 +394,66 @@ def _build_legacy_nsw_validation(
         "nearest_semantic": "Nearest\nsemantic",
         "global_mean": "Global\nmean",
     }
-    summary_by_method = {row["method"]: row for row in summary}
-    for index, method in enumerate(method_order):
-        row = summary_by_method[method]
-        ax.errorbar(
-            index,
-            _number(row["mae"]),
-            yerr=_number(row["between_seed_mae_sd"]),
-            fmt="o",
-            markersize=7,
-            capsize=3,
-            linewidth=1.5,
-            color=METHOD_COLORS[method],
+    distributions = [
+        np.asarray(
+            [
+                _number(row["absolute_reconstruction_error"])
+                for row in method_errors
+                if row["method"] == method
+            ]
         )
-    ax.set_xticks(range(len(method_order)), [labels[method] for method in method_order], fontsize=7.5)
-    ax.set(ylabel="Mean absolute reconstruction error", ylim=(0.0, None))
-    ax.set_title("B  Design-enriched support improves reconstruction", loc="left", fontweight="bold")
-    ax.text(0.02, 0.96, "whiskers: between-seed SD", transform=ax.transAxes, fontsize=7.5, va="top")
+        for method in method_order
+    ]
+    parts = ax.violinplot(
+        distributions,
+        positions=np.arange(len(method_order)),
+        showmeans=False,
+        showmedians=False,
+        showextrema=False,
+        widths=0.78,
+    )
+    for body, method in zip(parts["bodies"], method_order, strict=True):
+        body.set_facecolor(METHOD_COLORS[method])
+        body.set_edgecolor(METHOD_COLORS[method])
+        body.set_alpha(0.22)
+    jitter_rng = np.random.default_rng(20260816)
+    for index, (method, values) in enumerate(
+        zip(method_order, distributions, strict=True)
+    ):
+        sample_size = min(180, len(values))
+        sample = jitter_rng.choice(values, size=sample_size, replace=False)
+        jitter = jitter_rng.uniform(-0.18, 0.18, size=sample_size)
+        ax.scatter(
+            np.full(sample_size, index) + jitter,
+            sample,
+            s=9,
+            alpha=0.24,
+            color=METHOD_COLORS[method],
+            edgecolor="none",
+        )
+        lower, median, upper = np.quantile(values, [0.25, 0.50, 0.75])
+        ax.plot([index, index], [lower, upper], color="black", linewidth=1.4)
+        ax.plot(
+            [index - 0.18, index + 0.18],
+            [median, median],
+            color="black",
+            linewidth=1.6,
+        )
+    ax.set_xticks(
+        range(len(method_order)),
+        [labels[method] for method in method_order],
+        fontsize=7.5,
+    )
+    ax.set(ylabel="Absolute error against held-out local contrast", ylim=(0.0, None))
+    ax.set_title("B  Full holdout error distributions", loc="left", fontweight="bold")
+    ax.text(
+        0.02,
+        0.96,
+        "points: fixed visual sample   bars: median and IQR",
+        transform=ax.transAxes,
+        fontsize=7.5,
+        va="top",
+    )
 
     ax = axes[1, 0]
     for accepted, label, color, marker in (
