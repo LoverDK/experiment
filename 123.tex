@@ -329,6 +329,26 @@ The archive estimate and its variance component are
 \end{equation}
 where \(\widehat\eta_i^{(-\ell)}\) denotes a nuisance fit trained without unit \(\ell\)'s fold.  In a randomized experiment with known propensity, \(\widehat\pi_i=\pi_i\); each evaluation-fold average is conditionally unbiased, and therefore \eqref{eq:aipw-estimator} is unbiased after averaging over folds.  If no covariates are used, it reduces to the Horvitz--Thompson difference-in-means estimator.
 
+When the propensity is estimated, the uncertainty certificate stores
+\(\abs{b_i}\le\mathfrak b_i\), where the cross-fitted product-error bound is
+\begin{equation}
+\label{eq:nuisance-remainder}
+  \mathfrak b_i
+  =
+  \sum_{k=1}^K\frac{|I_{ik}|}{n_i}
+  \E\!\left[
+    \frac{\norm{\widehat\pi_i^{(-k)}-\pi_i}_{2,i}}{\pi_0}
+    \left\{
+      \norm{\widehat\mu_{i,1}^{(-k)}-\mu_{i,1}}_{2,i}
+      +\norm{\widehat\mu_{i,0}^{(-k)}-\mu_{i,0}}_{2,i}
+    \right\}
+  \right].
+\end{equation}
+This is a standard AIPW orthogonality calculation rather than a standalone
+theoretical contribution.  Appendix~\ref{app:aipw-calculation} gives the full
+conditional-expectation and Cauchy--Schwarz derivation because
+\(\mathfrak b_i\) enters the composition radius.
+
 \subsection{Support Testing and Transport}
 
 For a target \(e_\star\), the atlas first retrieves a candidate set \(C\) using semantic and metadata filters.  Retrieval is deliberately permissive.  Identification is performed by the next layer.  In implementation, every experiment is assigned a versioned design signature containing the treatment contrast and control condition, outcome definition and units, exposure mapping, sampling frame and time horizon, and the assumptions needed to identify its stored effect.  The compatibility check is applied before outcomes enter the weighting program.  We set \(\kappa(e_j,e_\star)=1\) only when each required field either matches the target or has an analyst-approved deterministic map to the target scale; that map is applied to \(\widehat\tau_j\), \(\widehat v_j\), and the nuisance-bias certificate before composition.  Missing required metadata, an unverified scale conversion, or contradictory assumption profiles are fail-closed conditions: the candidate is removed and the reason is stored in the audit record.  If no compatible candidate remains, the support optimization is skipped and the target is routed directly to partial identification and bridge design.
@@ -437,7 +457,7 @@ After each proposed bridge is added, its estimated effect and uncertainty certif
 
 The results are organized to mirror the operational logic of the causal atlas.  Section~\ref{sec:theory} first establishes the validity of the experiment-level evidence, then determines when those certified effects can be composed, and finally characterizes what the atlas should report when composition fails.
 
-The first subsection, \emph{Debiased Archive Estimation}, establishes that each archived experiment can contribute a valid effect estimate.  Proposition~\ref{prop:unbiased} states the core orthogonality conclusion: exact unbiasedness under known randomization and a second-order nuisance remainder when propensities are estimated.  The auxiliary variance calculation used by the composition analysis is separated as Lemma~\ref{lem:variance-envelope}.
+The first subsection, \emph{Debiased Archive Estimation}, records only the auxiliary variance envelope used by the composition analysis.  The standard AIPW unbiasedness and nuisance-remainder calculations are part of the method in Section~\ref{sec:method} and are derived in Appendix~\ref{app:aipw-calculation}, rather than being presented as a separate proposition.
 
 The second subsection, \emph{Finite-Sample Composition}, establishes the central transport certificate.  Lemma~\ref{lem:wellposed} shows that the intersection of compatible certified intervals is a well-defined interval whenever the certificates are mutually consistent.  Theorem~\ref{thm:composition} then bounds the error of a transported composition by separating causal-support error, local curvature, hidden-moderator sensitivity, nuisance bias, and statistical noise.  The familiar fully observed affine identity is recorded only as a boundary case of this theorem rather than as a separate formal result.
 
@@ -451,46 +471,13 @@ The final subsection, \emph{Bridge Experiment Design}, turns the remaining unide
 
 \subsection{Debiased Archive Estimation}
 
-\begin{proposition}[Debiased archive effect]
-\label{prop:unbiased}
-Suppose Assumption~\ref{ass:identified} holds and the nuisance estimates in
-\eqref{eq:aipw-score} are cross-fitted, with
-\(\widehat\pi_i\in[\pi_0,1-\pi_0]\).  Let \(I_{ik}\) be evaluation fold
-\(k\) and \(\mathcal T_{ik}\) its nuisance-training data.  If the design or
-logging propensity is known, then
-\[
-  \E\left\{
-    \frac{1}{|I_{ik}|}\sum_{\ell\in I_{ik}}
-    \phi_i(W_{i\ell};\widehat\eta_i^{(-k)})
-    \,\middle|\,\mathcal T_{ik}
-  \right\}
-  =\tau_i,
-  \qquad
-  \E(\widehat\tau_i)=\tau_i.
-\]
-If the propensity is estimated instead, orthogonality removes first-order
-plug-in bias and yields
-\[
-  \abs{\E(\widehat\tau_i-\tau_i)}
-  \le
-  \sum_{k=1}^K\frac{|I_{ik}|}{n_i}
-  \E\!\left[
-    \frac{\norm{\widehat\pi_i^{(-k)}-\pi_i}_{2,i}}{\pi_0}
-    \left\{
-      \norm{\widehat\mu_{i,1}^{(-k)}-\mu_{i,1}}_{2,i}
-      +\norm{\widehat\mu_{i,0}^{(-k)}-\mu_{i,0}}_{2,i}
-    \right\}
-  \right]
-  \defeq \mathfrak b_i.
-\]
-\end{proposition}
-
 \begin{lemma}[Archive variance envelope]
 \label{lem:variance-envelope}
-Under the conditions of Proposition~\ref{prop:unbiased}, additionally suppose
-\(\abs{Y_i}\le M\), \(\widehat\mu_{i,a}\in[-M,M]\), and the evaluation
+Suppose Assumption~\ref{ass:identified} holds, the nuisance estimates are
+cross-fitted with \(\widehat\pi_i\in[\pi_0,1-\pi_0]\),
+\(\abs{Y_i}\le M\), and \(\widehat\mu_{i,a}\in[-M,M]\).  If the evaluation
 scores are conditionally independent given a common external nuisance-training
-sample.  For independent archive experiments and any \(\alpha\in\Delta_C\),
+sample, then for independent archive experiments and any \(\alpha\in\Delta_C\),
 \[
   \Var\left(
     \sum_{j\in C}\alpha_j\widehat\tau_j
@@ -506,7 +493,9 @@ For ordinary fold-specific cross-fitting, the operational analogue is the
 uncertainty certificate in Assumption~\ref{ass:noise}.
 \end{lemma}
 
-The proposition has a simple implication.  The archive should not store raw coefficients when the original design permits a debiased certificate.  A biased plug-in estimate is first converted into an AIPW or Horvitz--Thompson object; any remaining bias is explicitly recorded as the second-order term \(\mathfrak b_i\).
+Thus the archive stores a debiased effect together with its nuisance and
+variance certificates; the standard experiment-level facts serve the later
+composition theorem without being presented as contributions of their own.
 
 \subsection{Finite-Sample Composition}
 
@@ -611,7 +600,7 @@ where
 \]
 This remainder condition is the precise aggregate nuisance-rate
 requirement used in the proof; it is typically obtained from cross-fitting
-and the product-rate bound in Proposition~\ref{prop:unbiased}. Assume the
+and the product-rate calculation in Appendix~\ref{app:aipw-calculation}. Assume the
 independent influence-function summands satisfy the Lindeberg condition
 \[
   \frac{1}{V_{\alpha,n}}
@@ -923,10 +912,10 @@ Symbol & Meaning \\
 
 
 
-The appendix follows the logical order of the main results.  It first proves
-the conditional unbiasedness and nuisance-error claim in
-Proposition~\ref{prop:unbiased}, followed by the auxiliary variance envelope
-in Lemma~\ref{lem:variance-envelope}.  It then verifies the interval
+The appendix follows the logical order of the main results.  It first gives
+the standard conditional-unbiasedness and nuisance-error calculation used to
+construct \(\mathfrak b_i\), followed by the proof of the auxiliary variance
+envelope in Lemma~\ref{lem:variance-envelope}.  It then verifies the interval
 construction in Lemma~\ref{lem:wellposed} and proves the finite-sample
 composition certificate in Theorem~\ref{thm:composition}.  The classical
 affine boundary case needs no separate proof.  The normalized triangular-array
@@ -935,8 +924,8 @@ Theorem~\ref{thm:asymptotic}.  The remaining subsections prove the semantic
 boundary, partial-identification, minimax, and bridge-design results in their
 order of appearance.
 
-\subsection{Proof of Proposition~\ref{prop:unbiased}}
-\label{app:proof-prop-unbiased}
+\subsection{AIPW Orthogonality and Nuisance-Remainder Calculation}
+\label{app:aipw-calculation}
 
 \paragraph{Proof strategy.} We condition on the nuisance-training folds first.  The proof then evaluates one score at a time, derives its conditional mean, and controls the second-order remainder used in the composition radius.
 
@@ -1133,8 +1122,10 @@ Here \(\norm{U}_{2}=\E(U^2)^{1/2}\), with the expectation taken under the evalua
 =:\mathfrak b.
 \end{aligned}
 \end{equation}
-This is the stated second-order remainder and completes the proof of
-Proposition~\ref{prop:unbiased}.
+This is the product-error certificate in
+\eqref{eq:nuisance-remainder}.  Together with the known-propensity
+calculation above, it supplies the standard experiment-level facts used by
+the composition and asymptotic arguments.
 
 \subsection{Proof of Lemma~\ref{lem:variance-envelope}}
 \label{app:proof-lem-variance}
@@ -1419,7 +1410,7 @@ Let \(\psi_{j\ell}=\phi_j(W_{j\ell};\eta_j)-\tau_j,\, r_{j,n}=\frac1{n_j}\sum_{\
 &=\sum_{j\in C_n}\sum_{\ell=1}^{n_j}\frac{\alpha_{n,j}}{n_jV_{\alpha,n}^{1/2}}\psi_{j\ell}+\frac1{V_{\alpha,n}^{1/2}}\sum_{j\in C_n}\alpha_{n,j}r_{j,n}
 \end{aligned}
 \end{equation}
-where \(\eta_j\) denotes the true nuisance functions.  The theorem explicitly assumes the aggregate asymptotic-linear remainder condition \(\sum_j\alpha_{n,j}r_{j,n}=o_{\Pbb}(V_{\alpha,n}^{1/2})\); cross-fitting and the product-rate calculation in Proposition~\ref{prop:unbiased} are standard sufficient ingredients for verifying it.  Therefore
+where \(\eta_j\) denotes the true nuisance functions.  The theorem explicitly assumes the aggregate asymptotic-linear remainder condition \(\sum_j\alpha_{n,j}r_{j,n}=o_{\Pbb}(V_{\alpha,n}^{1/2})\); cross-fitting and the product-rate calculation in Appendix~\ref{app:aipw-calculation} are standard sufficient ingredients for verifying it.  Therefore
 \begin{equation}
 \label{eq:app-proof-028}
 \frac1{V_{\alpha,n}^{1/2}}\sum_{j\in C_n}\alpha_{n,j}r_{j,n}\xrightarrow{P}0
