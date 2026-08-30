@@ -104,7 +104,7 @@
 \maketitle
 
 \begin{abstract}
-Modern experimentation is no longer scarce.  Platform science, policy evaluation, and AI evaluation systems routinely produce archives containing many randomized or quasi-randomized contrasts, but these contrasts are usually stored as isolated point estimates.  This paper asks when such an archive can be upgraded into a \emph{causal atlas}: a structured map that composes old experiments only when their mechanisms, designs, and uncertainty certificates license transport to a target contrast; refuses composition when the archive lacks support; and selects bridge experiments that shrink the remaining unidentified region.  The key object is therefore not semantic similarity between study descriptions, but a rejectable certificate of causal composability.  We formalize each archive element as a treatment--outcome--context--design object endowed with an assumption profile, a mechanism representation, and an experiment-level debiased estimator.  Under local smoothness, design compatibility, support, and moderator-sensitivity conditions, we prove a finite-sample composition inequality whose terms separate causal support error, curvature, statistical noise, nuisance-debiasing error, and hidden-moderator residuals.  We further prove exact unbiasedness of the Horvitz--Thompson/AIPW archive estimator under known randomization, a finite-sample variance bound, asymptotic normality and honest confidence intervals for atlas compositions, an impossibility theorem showing that semantic proximity alone cannot certify transport under hidden moderators, a valid partial-identification construction after rejection, a minimax lower bound showing that unsupported targets cannot be estimated faster than the certified gap permits, and a weak-submodular guarantee for greedy bridge design.  Synthetic experiments with known mechanisms and a real-data NSW job-training local-contrast archive show that causal support improves reconstruction, restores interval coverage, and selects bridges that reduce unidentified regions more efficiently than semantic baselines.
+Modern experimentation is no longer scarce.  Platform science, policy evaluation, and AI evaluation systems routinely produce archives containing many randomized or quasi-randomized contrasts, but these contrasts are usually stored as isolated point estimates.  This paper asks when such an archive can be upgraded into a \emph{causal atlas}: a structured map that composes old experiments only when their mechanisms, designs, and uncertainty certificates license transport to a target contrast; refuses composition when the archive lacks support; and selects bridge experiments that shrink the remaining unidentified region.  The key object is therefore not semantic similarity between study descriptions, but a rejectable certificate of causal composability.  We formalize each archive element as a treatment--outcome--context--design object endowed with an assumption profile, a mechanism representation, and an experiment-level debiased estimator.  Under local smoothness, design compatibility, support, and moderator-sensitivity conditions, we prove a finite-sample composition inequality whose terms separate causal support error, curvature, statistical noise, nuisance-debiasing error, and hidden-moderator residuals.  The construction retains the standard exact unbiasedness of Horvitz--Thompson/AIPW estimation under known randomization and carries its nuisance remainder and variance certificate into the atlas analysis.  We further establish asymptotic normality and honest confidence intervals for atlas compositions, an impossibility theorem showing that semantic proximity alone cannot certify transport under hidden moderators, a valid partial-identification construction after rejection, a minimax lower bound showing that unsupported targets cannot be estimated faster than the certified gap permits, and a weak-submodular guarantee for greedy bridge design.  Synthetic experiments with known mechanisms and a real-data NSW job-training local-contrast archive show that causal support improves reconstruction, restores interval coverage, and selects bridges that reduce unidentified regions more efficiently than semantic baselines.
 \end{abstract}
 
 \section{Introduction}
@@ -122,7 +122,7 @@ Classical meta-analysis starts after a common estimand has been declared.  Trans
 Consider a policy platform containing three apparently nearby interventions: a motivational email for job seekers, a peer-comparison message about job-search intensity, and a hiring-signal badge shown to employers.  A language model may place all three close to a proposed target intervention, because the descriptions share vocabulary about encouragement, salience, or social proof.  Yet their effects can depend on moderators not present in the text, such as baseline motivation or local labor-market tightness.  They may also differ in experiment design: the treatment contrast, control-condition intensity, measurement scale, timing, exposure mapping, or institutional setting may not be aligned.  These are distinct failure modes: moderators can change the treatment effect within a common causal scale, whereas design differences can place reported effects on different causal scales.  A forced semantic composition may then report a confident effect for the target even though no archived design is directly comparable to the target contrast.  In practice, the consequence is misallocated experimental budget or harmful policy transfer.  In theory, the same failure appears as non-identification: two mechanisms can be arbitrarily close in the observed representation and still differ by a constant causal effect if a relevant moderator has been collapsed.
 
 \paragraph{The proposed framework.}
-We replace semantic support by a \emph{rejectable causal-composition certificate}.  Each experiment is represented as a treatment--outcome--context--design object with an uncertainty certificate and an assumption profile.  A target is composed only after three checks: design compatibility, local mechanism support, and moderator sensitivity.  If these checks pass, the atlas returns a debiased transported estimate and an honest interval whose radius decomposes into statistical and approximation terms.  If they fail, the atlas returns a partial-identification interval and defines bridge value by the expected reduction in that interval's diameter. It then selects a new experiment targeted at the specific causal-support gap that prevented point identification.  The framework is intentionally conservative in the only place where conservatism is scientific: it refuses point estimates when the archive lacks identifying support.
+We replace semantic support by a \emph{rejectable causal-composition certificate}.  Each experiment is represented as a treatment--outcome--context--design object with an uncertainty certificate and an assumption profile.  A target is composed only after three checks: design compatibility, local mechanism support, and moderator sensitivity.  If these checks pass, the atlas returns a debiased transported estimate and an honest interval whose radius decomposes into statistical and approximation terms.  If they fail, the atlas returns a partial-identification interval.  We call the resulting follow-up problem \emph{bridge design}: choosing the next experiment by its expected reduction of that interval's diameter, so that the new evidence targets the specific causal-support gap that prevented point identification.  The framework is intentionally conservative in the only place where conservatism is scientific: it refuses point estimates when the archive lacks identifying support.
 
 \paragraph{Why the contribution is not a sum of existing tools.}
 A simple combination of meta-analysis, embeddings, and active learning would still miss the endogenous difficulty of this problem.  Meta-analysis presumes comparability; embeddings propose similarity but do not identify causal effects; active learning typically values prediction accuracy rather than shrinkage of an unidentified causal set.  The causal-atlas operation couples all three: semantic retrieval proposes candidates, causal support certifies or rejects composition, and bridge design is driven by the diameter of the partial-identification region.  The technically nontrivial point is that the same support certificate controls finite-sample transport error, asymptotic inference, impossibility under hidden moderators, and minimax lower bounds.  Thus rejection is not a heuristic filter.  It is the statistical object that turns an archive into an identification device.
@@ -130,7 +130,7 @@ A simple combination of meta-analysis, embeddings, and active learning would sti
 \paragraph{Main contributions.}
 \begin{enumerate}[leftmargin=2.2em]
 \item \textbf{Causal experiment objects and assumptions with diagnostics.}  We define an archive element as a treatment--outcome--context--design object carrying a target estimand, a design scale, an assumption profile, a mechanism representation, and an uncertainty certificate.  The earlier semantic-atlas setting is recovered as the special case in which the representation is causally sufficient and all designs are compatible.
-\item \textbf{Debiased archive estimators.}  We replace raw plug-in effects by Horvitz--Thompson or AIPW experiment-level estimates.  We prove exact unbiasedness under known randomization or logging propensities, give a product-bias formula under estimated propensities, and derive finite-sample variance and concentration bounds after clipping and overlap.
+\item \textbf{Debiased archive estimators.}  We replace raw plug-in effects by Horvitz--Thompson or AIPW experiment-level estimates.  Their standard exact unbiasedness under known randomization is retained, while the product nuisance remainder and an auxiliary variance envelope are carried explicitly into the composition certificate.
 \item \textbf{Finite-sample causal composition.}  We prove an atlas composition inequality separating support residual, curvature, statistical noise, nuisance-debiasing error, and hidden-moderator residual.  This gives a certificate rather than a score.
 \item \textbf{Asymptotic inference.}  We prove asymptotic normality for accepted atlas compositions and construct honest confidence intervals that remain valid when approximation bias is not negligible.
 \item \textbf{Boundary results and minimax optimality.}  We show that semantic proximity alone cannot certify causal transport under hidden moderators, and prove a minimax lower bound: unsupported targets incur an unavoidable error of the same order as the causal support gap, while statistical noise contributes the usual information-limited term.
@@ -156,7 +156,7 @@ Robins--Rotnitzky--Zhao estimators and modern double/debiased machine learning u
 Partial identification treats unidentifiable quantities as sets rather than points \citep{manski2003partial}.  Sensitivity analysis makes violations of assumptions explicit.  Our contribution is to operationalize this logic inside an experimental archive.  The diameter of the target's partial-identification set is both an uncertainty measure and an experimental-design objective.  A gap is therefore not merely a warning; it is a measurable scientific opportunity.
 
 \paragraph{Representation learning and experimental atlases.}
-Language models and embeddings can organize large scientific archives.  Recent experimental-atlas work uses semantic representations to link, reconcile, and bridge studies \citep{zhang2026atlas}.  We adopt the atlas ambition but change the mathematical criterion.  Text can retrieve candidates, summarize mechanisms, and propose bridges.  It cannot, by itself, certify that all relevant moderators and design scales have been represented.  Our impossibility theorem formalizes this boundary, while the semantic-special-case corollary states exactly when semantic composition becomes valid.
+Language models and embeddings can organize large scientific archives.  Recent experimental-atlas work uses semantic representations to link, reconcile, and bridge studies \citep{zhang2026atlas}.  We adopt the atlas ambition but change the mathematical criterion.  Text can retrieve candidates, summarize mechanisms, and propose bridges.  It cannot, by itself, certify that all relevant moderators and design scales have been represented.  Our impossibility theorem formalizes this boundary, while the affine boundary case following Theorem~\ref{thm:composition} states exactly when semantic composition becomes valid.
 
 \paragraph{Active design and submodular optimization.}
 Greedy selection under submodularity is a classical approximation principle \citep{nemhauser1978analysis}.  In our setting, the objective is not prediction information or semantic novelty.  It is expected shrinkage of a causal partial-identification interval.  This distinction changes the selected experiment: the best bridge is the one that closes an identifying support gap, not necessarily the one whose description is most novel.
@@ -327,11 +327,13 @@ The archive estimate and its variance component are
     \phi_i(W_{i\ell};\widehat\eta_i^{(-\ell)})-\widehat\tau_i
   \right\}^2,
 \end{equation}
-where \(\widehat\eta_i^{(-\ell)}\) denotes a nuisance fit trained without unit \(\ell\)'s fold.  In a randomized experiment with known propensity, \(\widehat\pi_i=\pi_i\), and \eqref{eq:aipw-estimator} is exactly unbiased conditional on the nuisance-training folds.  If no covariates are used, it reduces to the Horvitz--Thompson difference-in-means estimator.
+where \(\widehat\eta_i^{(-\ell)}\) denotes a nuisance fit trained without unit \(\ell\)'s fold.  In a randomized experiment with known propensity, \(\widehat\pi_i=\pi_i\); each evaluation-fold average is conditionally unbiased, and therefore \eqref{eq:aipw-estimator} is unbiased after averaging over folds.  If no covariates are used, it reduces to the Horvitz--Thompson difference-in-means estimator.
 
 \subsection{Support Testing and Transport}
 
-For a target \(e_\star\), the atlas first retrieves a candidate set \(C\) using semantic and metadata filters.  Retrieval is deliberately permissive.  Identification is performed by the next layer.  After removing candidates with \(\kappa(e_j,e_\star)=0\), the atlas solves
+For a target \(e_\star\), the atlas first retrieves a candidate set \(C\) using semantic and metadata filters.  Retrieval is deliberately permissive.  Identification is performed by the next layer.  In implementation, every experiment is assigned a versioned design signature containing the treatment contrast and control condition, outcome definition and units, exposure mapping, sampling frame and time horizon, and the assumptions needed to identify its stored effect.  The compatibility check is applied before outcomes enter the weighting program.  We set \(\kappa(e_j,e_\star)=1\) only when each required field either matches the target or has an analyst-approved deterministic map to the target scale; that map is applied to \(\widehat\tau_j\), \(\widehat v_j\), and the nuisance-bias certificate before composition.  Missing required metadata, an unverified scale conversion, or contradictory assumption profiles are fail-closed conditions: the candidate is removed and the reason is stored in the audit record.  If no compatible candidate remains, the support optimization is skipped and the target is routed directly to partial identification and bridge design.
+
+After this deterministic screening, let \(C\) denote the retained set.  The atlas solves
 \begin{equation}
 \label{eq:support-program}
   \widehat\alpha
@@ -409,11 +411,15 @@ After each proposed bridge is added, its estimated effect and uncertainty certif
 \Ensure Certified estimate, partial-identification interval, and/or selected bridge set.
 \State Debias each archive effect using \eqref{eq:aipw-estimator}; store \((r_i,D_i,\cA_i,\widehat\tau_i,\cU_i)\).
 \State Retrieve candidate set \(C\subseteq[N]\) by semantic and metadata screening.
-\State Remove every \(j\in C\) with \(\kappa(e_j,e_\star)=0\).
+\State Build the design signature for each candidate; apply every approved scale map to its estimate and uncertainty certificate.
+\State Remove every \(j\in C\) with \(\kappa(e_j,e_\star)=0\), recording the failed field or missing map.
+\If{\(C=\varnothing\)}
+  \State \Return rejection with the broad target-effect bounds encoded by \(\cF_A\), and invoke bridge design.
+\EndIf
 \State Compute \(\widehat\alpha\) by the support program \eqref{eq:support-program}.
 \State Compute the certificate radius \(Rad(\widehat\alpha,\zeta)\) from Theorem~\ref{thm:composition}.
 \If{support residual, nuisance remainder, and moderator sensitivity imply \(Rad(\widehat\alpha,\zeta)\le \delta_{\rm sup}\)}
-  \State \Return \(\widehat\theta_{\widehat\alpha}=\sum_{j\in C}\widehat\alpha_j\widehat\tau_j\) and the honest interval in Corollary~\ref{cor:honest-ci}.
+  \State \Return \(\widehat\theta_{\widehat\alpha}=\sum_{j\in C}\widehat\alpha_j\widehat\tau_j\) and the honest interval in Theorem~\ref{thm:asymptotic}.
 \Else
   \State Construct \(\widehat\Theta_A(e_\star)\) from Theorem~\ref{thm:partial-id}.
   \State Initialize \(S_0=\varnothing\).
@@ -431,11 +437,11 @@ After each proposed bridge is added, its estimated effect and uncertainty certif
 
 The results are organized to mirror the operational logic of the causal atlas.  Section~\ref{sec:theory} first establishes the validity of the experiment-level evidence, then determines when those certified effects can be composed, and finally characterizes what the atlas should report when composition fails.
 
-The first subsection, \emph{Debiased Archive Estimation}, establishes that each archived experiment can contribute a valid effect estimate.  Proposition~\ref{prop:unbiased} proves exact unbiasedness under known randomization, gives the second-order nuisance-bias bound when propensities are estimated, and derives the finite-sample variance control needed for later composition.
+The first subsection, \emph{Debiased Archive Estimation}, establishes that each archived experiment can contribute a valid effect estimate.  Proposition~\ref{prop:unbiased} states the core orthogonality conclusion: exact unbiasedness under known randomization and a second-order nuisance remainder when propensities are estimated.  The auxiliary variance calculation used by the composition analysis is separated as Lemma~\ref{lem:variance-envelope}.
 
-The second subsection, \emph{Finite-Sample Composition}, establishes the central transport certificate.  Lemma~\ref{lem:wellposed} shows that the intersection of compatible certified intervals is a well-defined interval whenever the certificates are mutually consistent.  Theorem~\ref{thm:composition} then bounds the error of a transported composition by separating causal-support error, local curvature, hidden-moderator sensitivity, nuisance bias, and statistical noise.  Corollary~\ref{cor:semantic-special} identifies the fully observed affine case in which the composition is exact apart from estimation noise.
+The second subsection, \emph{Finite-Sample Composition}, establishes the central transport certificate.  Lemma~\ref{lem:wellposed} shows that the intersection of compatible certified intervals is a well-defined interval whenever the certificates are mutually consistent.  Theorem~\ref{thm:composition} then bounds the error of a transported composition by separating causal-support error, local curvature, hidden-moderator sensitivity, nuisance bias, and statistical noise.  The familiar fully observed affine identity is recorded only as a boundary case of this theorem rather than as a separate formal result.
 
-The third subsection, \emph{Asymptotic Normality and Honest Confidence Intervals}, establishes the large-sample inferential behavior of an accepted composition.  Theorem~\ref{thm:asymptotic} proves asymptotic normality around the composed archive estimand and specifies when the approximation radius is small enough for inference about the target effect itself.  Corollary~\ref{cor:honest-ci} converts this result into a confidence interval that remains valid when approximation error is non-negligible by explicitly inflating the interval with the certified deterministic radius.
+The third subsection, \emph{Asymptotic Normality and Honest Confidence Intervals}, establishes the large-sample inferential behavior of an accepted composition.  Theorem~\ref{thm:asymptotic} gives both asymptotic normality and the resulting confidence interval, explicitly inflating the interval by the certified deterministic radius when approximation error is non-negligible.
 
 The fourth subsection, \emph{Semantic Failure and Partial Identification}, establishes the boundary of semantic retrieval and the valid fallback after rejection.  Theorem~\ref{thm:impossibility} proves that observed-representation proximity alone cannot uniformly certify causal transport when relevant moderators are hidden.  The archive-induced partial-identification region and Theorem~\ref{thm:partial-id} then show that failed point composition can still produce a coverage-valid set of target effects rather than an unsupported point estimate.
 
@@ -445,83 +451,46 @@ The final subsection, \emph{Bridge Experiment Design}, turns the remaining unide
 
 \subsection{Debiased Archive Estimation}
 
-\begin{proposition}[Unbiasedness, nuisance remainder, and finite-sample variance]
+\begin{proposition}[Debiased archive effect]
 \label{prop:unbiased}
-Suppose Assumption~\ref{ass:identified} holds. Let the nuisance estimates in
-\eqref{eq:aipw-score} be cross-fitted and uniformly clipped so that
-\(\widehat\pi_i\in[\pi_0,1-\pi_0]\) and
-\(\widehat\mu_{i,a}\in[-M,M]\). Then:
-\begin{enumerate}[label=(\roman*),leftmargin=2em]
-\item Let \(I_{ik}\) be evaluation fold \(k\), and let
-\(\mathcal T_{ik}\) denote the data used to fit
-\(\widehat\eta_i^{(-k)}\). If
-\(\widehat\pi_i^{(-k)}=\pi_i\) is the known design or logging propensity,
-then the fold estimator is conditionally unbiased:
+Suppose Assumption~\ref{ass:identified} holds and the nuisance estimates in
+\eqref{eq:aipw-score} are cross-fitted, with
+\(\widehat\pi_i\in[\pi_0,1-\pi_0]\).  Let \(I_{ik}\) be evaluation fold
+\(k\) and \(\mathcal T_{ik}\) its nuisance-training data.  If the design or
+logging propensity is known, then
 \[
   \E\left\{
     \frac{1}{|I_{ik}|}\sum_{\ell\in I_{ik}}
     \phi_i(W_{i\ell};\widehat\eta_i^{(-k)})
     \,\middle|\,\mathcal T_{ik}
   \right\}
-  =
-  \tau_i.
+  =\tau_i,
+  \qquad
+  \E(\widehat\tau_i)=\tau_i.
 \]
-Consequently, averaging over folds and applying the tower property gives
-\(\E(\widehat\tau_i)=\tau_i\). If all nuisance functions are trained on one
-external sample independent of every evaluation observation, the stronger
-full-sample conditional identity also holds:
-\[
-  \E\{\widehat\tau_i\mid
-  \widehat\eta_i^{(-1)},\ldots,\widehat\eta_i^{(-n_i)}\}
-  =
-  \tau_i.
-\]
-In particular, the Horvitz--Thompson difference-in-means estimator is
-exactly unbiased in a randomized experiment.
-
-\item If \(\widehat\pi_i\) is estimated, the following conditional bound
-holds fold by fold, with every fitted nuisance function interpreted as the
-fit trained outside that fold:
-\[
-\begin{aligned}
-  \abs{\E(\widehat\tau_{ik}-\tau_i\mid\mathcal T_{ik})}
-  &\le
-  \frac{1}{\pi_0}
-  \norm{\widehat\pi_i^{(-k)}-\pi_i}_{2,i}
-  \left\{
-  \norm{\widehat\mu_{i,1}^{(-k)}-\mu_{i,1}}_{2,i}
-  +
-  \norm{\widehat\mu_{i,0}^{(-k)}-\mu_{i,0}}_{2,i}
-  \right\}
-  \defeq \mathfrak b_{ik}.
-\end{aligned}
-\]
-Hence
+If the propensity is estimated instead, orthogonality removes first-order
+plug-in bias and yields
 \[
   \abs{\E(\widehat\tau_i-\tau_i)}
   \le
-  \sum_{k=1}^K\frac{|I_{ik}|}{n_i}\E(\mathfrak b_{ik})
-  \defeq
-  \mathfrak b_i.
+  \sum_{k=1}^K\frac{|I_{ik}|}{n_i}
+  \E\!\left[
+    \frac{\norm{\widehat\pi_i^{(-k)}-\pi_i}_{2,i}}{\pi_0}
+    \left\{
+      \norm{\widehat\mu_{i,1}^{(-k)}-\mu_{i,1}}_{2,i}
+      +\norm{\widehat\mu_{i,0}^{(-k)}-\mu_{i,0}}_{2,i}
+    \right\}
+  \right]
+  \defeq \mathfrak b_i.
 \]
-Thus the first-order plug-in bias is removed by the orthogonal score.
+\end{proposition}
 
-\item Suppose additionally that \(\abs{Y_i}\le M\) almost surely and that
-the evaluation scores are conditionally independent given a common
-nuisance-training sample, as under independent external nuisance training.
-Then
-\[
-  \Var(\widehat\tau_i\mid\widehat\eta_i)
-  =
-  \frac{1}{n_i}
-  \Var_i\{\phi_i(W_i;\widehat\eta_i)\mid\widehat\eta_i\}
-  \le
-  \frac{C_M^2}{n_i},
-  \qquad
-  C_M=2M+\frac{2M}{\pi_0}.
-\]
-Consequently, for any \(\alpha\in\Delta_C\) and independent archive
-experiments,
+\begin{lemma}[Archive variance envelope]
+\label{lem:variance-envelope}
+Under the conditions of Proposition~\ref{prop:unbiased}, additionally suppose
+\(\abs{Y_i}\le M\), \(\widehat\mu_{i,a}\in[-M,M]\), and the evaluation
+scores are conditionally independent given a common external nuisance-training
+sample.  For independent archive experiments and any \(\alpha\in\Delta_C\),
 \[
   \Var\left(
     \sum_{j\in C}\alpha_j\widehat\tau_j
@@ -529,13 +498,13 @@ experiments,
     \widehat\eta
   \right)
   \le
-  \sum_{j\in C}\alpha_j^2\frac{C_M^2}{n_j}.
+  \sum_{j\in C}\alpha_j^2\frac{C_M^2}{n_j},
+  \qquad
+  C_M=2M+\frac{2M}{\pi_0}.
 \]
-For ordinary fold-specific cross-fitting, part (iii) is applied foldwise;
-the archive-level finite-sample dependence is summarized by the uncertainty
-certificate in Assumption~\ref{ass:noise}.
-\end{enumerate}
-\end{proposition}
+For ordinary fold-specific cross-fitting, the operational analogue is the
+uncertainty certificate in Assumption~\ref{ass:noise}.
+\end{lemma}
 
 The proposition has a simple implication.  The archive should not store raw coefficients when the original design permits a debiased certificate.  A biased plug-in estimate is first converted into an AIPW or Horvitz--Thompson object; any remaining bias is explicitly recorded as the second-order term \(\mathfrak b_i\).
 
@@ -591,22 +560,25 @@ If the archive experiments have a certified sub-Gaussian proxy matrix \(\Sigma\)
 \noindent\textbf{Scientific reading.}
 The theorem says that reuse is valid only when five quantities are controlled.  The target must lie in causal support, the effect surface must be nearly linear over the local hull, the archived estimates must be precise, the debiasing remainder must be small, and omitted moderators must be certified.  It does not say that semantic neighbors are valid; semantic retrieval merely supplies candidates.
 
-\begin{corollary}[Semantic atlas as a special case]
-\label{cor:semantic-special}
-Suppose \(r(e)=m(e)\), \(R_{\rm hid}(\alpha)=0\), \(\mathfrak b_j=0\), \(\kappa(C,\star)=1\), and \(\mu\) is affine on \(\conv\{m_\star,m_j:j\in C\}\).  If \(m_\star=\sum_{j\in C}\alpha_jm_j\), then
+\paragraph{Affine boundary case.}
+The familiar semantic-atlas identity follows directly from
+Theorem~\ref{thm:composition}, so we do not elevate it to a separate result.
+If \(r(e)=m(e)\), \(R_{\rm hid}(\alpha)=0\), \(\mathfrak b_j=0\),
+\(\kappa(C,\star)=1\), \(\mu\) is affine on the relevant convex hull, and
+\(m_\star=\sum_{j\in C}\alpha_jm_j\), then
 \[
   \tau_\star=\sum_{j\in C}\alpha_j\tau_j.
 \]
-With estimated archive effects, the only remaining error in \(\sum_j\alpha_j\widehat\tau_j\) is the statistical term in \eqref{eq:composition-bound}.
-\end{corollary}
-
-The corollary clarifies the relationship to semantic-atlas methods.  They are not wrong in the favorable case.  They are incomplete as a general identification strategy because they assume away the very moderators and design incompatibilities that the atlas must diagnose.
+With estimated archive effects, the only remaining term in
+\eqref{eq:composition-bound} is statistical.  This boundary case clarifies
+why semantic composition can work under causal sufficiency without presenting
+the classical affine identity as a standalone contribution.
 
 \subsection{Asymptotic Normality and Honest Confidence Intervals}
 
 Let \(\theta_\alpha=\sum_{j\in C}\alpha_j\tau_j\) and \(V_{\alpha,n}=\sum_{j\in C}\alpha_j^2v_j/n_j\).  The next theorem separates statistical normality around the composed archive estimand \(\theta_\alpha\) from approximation bias relative to \(\tau_\star\).
 
-\begin{theorem}[Asymptotic distribution of an accepted atlas composition]
+\begin{theorem}[Asymptotic distribution and honest interval for an accepted composition]
 \label{thm:asymptotic}
 Consider a triangular sequence of archives with candidate sets \(C_n\) and
 weights \(\alpha_n\). Suppose Assumptions~\ref{ass:identified}--
@@ -673,11 +645,8 @@ deterministic approximation radius
   \rightsquigarrow
   \Normal(0,1).
 \]
-\end{theorem}
-
-\begin{corollary}[Honest atlas confidence interval]
-\label{cor:honest-ci}
-Under the conditions of Theorem~\ref{thm:asymptotic}, the interval
+Suppressing the sequence index in the following display, and without requiring
+\(D(\alpha_n)=o(V_{\alpha,n}^{1/2})\), define
 \begin{equation}
 \label{eq:honest-ci}
   \operatorname{CI}_{1-\zeta}(\alpha)
@@ -691,7 +660,7 @@ Under the conditions of Theorem~\ref{thm:asymptotic}, the interval
     +\widehat D(\alpha)
   \right]
 \end{equation}
-has asymptotic coverage at least \(1-\zeta\) whenever the one-sided radius
+This interval has asymptotic coverage at least \(1-\zeta\) whenever the one-sided radius
 underestimation is negligible:
 \[
   \frac{\{D(\alpha)-\widehat D(\alpha)\}_+}
@@ -703,7 +672,7 @@ This condition permits conservative overestimation of \(D(\alpha)\) and
 rules out only first-order underestimation. If
 \(D(\alpha)=o(V_\alpha^{1/2})\), the shorter Wald interval without
 \(\widehat D(\alpha)\) is valid.
-\end{corollary}
+\end{theorem}
 
 This is the inferential boundary of the atlas.  A target in sufficiently good causal support receives an ordinary asymptotic confidence interval.  A target with nonnegligible support or moderator error receives an honest interval inflated by \(\widehat D(\alpha)\).  A target whose inflated interval is too wide is routed to partial identification and bridge design.
 
@@ -718,7 +687,7 @@ Let \(x(e)\) be an observed representation for which there exist two admissible 
 for a constant \(c>0\) determined by the moderator range and the Lipschitz radius.  Hence no procedure based only on \(x\)-distance can uniformly certify causal composability over this model class.
 \end{theorem}
 
-A common objection is that a sufficiently strong embedding could include the moderator.  That objection is correct and is precisely why the theorem is useful.  If the representation is causally sufficient, the theorem does not apply and Corollary~\ref{cor:semantic-special} describes the favorable case.  The impossibility concerns representations that are many-to-one over moderators relevant to treatment effects.
+A common objection is that a sufficiently strong embedding could include the moderator.  That objection is correct and is precisely why the theorem is useful.  If the representation is causally sufficient, the theorem does not apply and the affine boundary case following Theorem~\ref{thm:composition} describes the favorable setting.  The impossibility concerns representations that are many-to-one over moderators relevant to treatment effects.
 
 \begin{definition}[Archive-induced partial-identification region]
 Let \(\cF_A\) be the class of effect surfaces satisfying the stated smoothness, design-compatibility, moderator, and uncertainty certificates.  The archive-induced partial-identification region for the target is
@@ -954,33 +923,28 @@ Symbol & Meaning \\
 
 
 
-The appendix follows the logical order of the main results.  The conditional
-unbiasedness and nuisance-error calculations are proved in
-Proposition~\ref{app:proof-prop-unbiased}; the interval construction is
-checked in Lemma~\ref{app:proof-lem-wellposed}; and the finite-sample
-composition certificate from Theorem~\ref{thm:composition} is established in
-Theorem~\ref{app:proof-thm-composition}.  The special affine case is recorded
-in Corollary~\ref{app:proof-cor-semantic}.  The normalized triangular-array
-argument and the confidence-interval argument appear in
-Theorems~\ref{app:proof-thm-asymptotic} and
-\ref{app:proof-cor-honest-ci}, respectively.  Finally,
-Theorem~\ref{app:proof-thm-impossibility} proves the boundary result,
-Theorem~\ref{app:proof-thm-partial-id} proves partial identification,
-Theorem~\ref{app:proof-thm-minimax} proves the minimax lower bound, and
-Theorem~\ref{app:proof-thm-bridge} proves the bridge-design guarantee used in
-Section~\ref{sec:theory}.
+The appendix follows the logical order of the main results.  It first proves
+the conditional unbiasedness and nuisance-error claim in
+Proposition~\ref{prop:unbiased}, followed by the auxiliary variance envelope
+in Lemma~\ref{lem:variance-envelope}.  It then verifies the interval
+construction in Lemma~\ref{lem:wellposed} and proves the finite-sample
+composition certificate in Theorem~\ref{thm:composition}.  The classical
+affine boundary case needs no separate proof.  The normalized triangular-array
+and confidence-interval arguments are presented together as the proof of
+Theorem~\ref{thm:asymptotic}.  The remaining subsections prove the semantic
+boundary, partial-identification, minimax, and bridge-design results in their
+order of appearance.
 
 \subsection{Proof of Proposition~\ref{prop:unbiased}}
 \label{app:proof-prop-unbiased}
 
-\paragraph{Proof strategy.} We condition on the nuisance-training folds first.  The proof then evaluates one score at a time, derives its conditional mean, controls the second-order remainder, and finally establishes the variance bound.
+\paragraph{Proof strategy.} We condition on the nuisance-training folds first.  The proof then evaluates one score at a time, derives its conditional mean, and controls the second-order remainder used in the composition radius.
 
 The score used throughout this proof is the AIPW score in
 \eqref{eq:aipw-score}, while its cross-fitted average is the estimator in
 \eqref{eq:aipw-estimator}.  We first establish the conditional-unbiasedness
 claim in \eqref{eq:app-proof-002}, then derive the nuisance product remainder
-in \eqref{eq:app-proof-010}, and finally obtain the variance envelope in
-\eqref{eq:app-proof-012}.
+in \eqref{eq:app-proof-010}.
 
 Fix an experiment \(i\) and suppress the subscript.  Let \(I_1,\ldots,I_K\) be its evaluation folds, let \(\mathcal T_k\) be the data used to train the nuisance functions applied on \(I_k\), and write \(\widehat\tau_k\) for the fold average.  Cross-fitting ensures that, conditional on \(\mathcal T_k\), the fitted functions are fixed and the observations in \(I_k\) retain their evaluation law.  Write \(\mu_a(x)=\E(Y\mid A=a,X=x)=\E\{Y(a)\mid X=x\}\), where the last equality follows from consistency and ignorability.  Conditional on the cross-fitting training folds, the nuisance functions entering the score are fixed functions of \(x\).  For arbitrary fixed functions \(\widehat\mu_0,\widehat\mu_1\) and the true propensity \(\pi\), define
 \begin{equation}
@@ -992,7 +956,7 @@ Fix an experiment \(i\) and suppress the subscript.  Let \(I_1,\ldots,I_K\) be i
   -\frac{(1-A)\{Y-\widehat\mu_0(X)\}}{1-\pi(X)}.
 \end{equation}
 The display in \eqref{eq:app-proof-001} defines the single-observation score.
-For part (i), the precise claim needed for ordinary cross-fitting is the foldwise conditional identity 
+For known propensities, the precise claim needed for ordinary cross-fitting is the foldwise conditional identity 
 \begin{equation}
 \label{eq:app-proof-002}
 \E\{\widehat\tau_k\mid\mathcal T_k\}=\tau,
@@ -1087,11 +1051,11 @@ recorded in \eqref{eq:app-proof-008}.
 \end{aligned}
 \end{equation}
 Averaging the identity in \eqref{eq:app-proof-008} over \(X\) gives
-\(\E\{\phi(W;\widehat\mu_0,\widehat\mu_1,\pi)\}=\tau\).  Taking expectations over each training sample and then forming the fold-size-weighted average gives the second line of \eqref{eq:app-proof-008}, so part (i) follows.  A conditional identity given all fitted nuisances requires the stronger external-training setup stated in the proposition; it is not needed for ordinary cross-fitting.  The Horvitz--Thompson estimator is obtained by taking
+\(\E\{\phi(W;\widehat\mu_0,\widehat\mu_1,\pi)\}=\tau\).  Taking expectations over each training sample and then forming the fold-size-weighted average gives the second line of \eqref{eq:app-proof-008}, proving the first conclusion.  A stronger identity conditional on every fitted nuisance requires external training and is not needed for ordinary cross-fitting.  The Horvitz--Thompson estimator is obtained by taking
 \(\widehat\mu_0=\widehat\mu_1=0\), so its unbiasedness follows as a special
 case.
 
-For part (ii), let \(\widehat\pi\) be a clipped estimated propensity.  Conditional on \(X\) and the nuisance training folds,
+When the propensity is estimated, let \(\widehat\pi\) be its clipped estimate.  Conditional on \(X\) and the nuisance training folds,
 \begin{equation}
 \label{eq:app-proof-104}
 \begin{aligned}
@@ -1169,9 +1133,15 @@ Here \(\norm{U}_{2}=\E(U^2)^{1/2}\), with the expectation taken under the evalua
 =:\mathfrak b.
 \end{aligned}
 \end{equation}
-This is the stated second-order remainder.  For part (iii), independent external nuisance training makes the evaluation scores conditionally independent and identically distributed, giving the variance reduction in \eqref{eq:app-proof-011}; the
-clipped-score envelope in \eqref{eq:app-proof-012} then supplies the claimed
-finite-sample variance bound.
+This is the stated second-order remainder and completes the proof of
+Proposition~\ref{prop:unbiased}.
+
+\subsection{Proof of Lemma~\ref{lem:variance-envelope}}
+\label{app:proof-lem-variance}
+
+\paragraph{Proof strategy.} Independent external nuisance training makes the
+evaluation scores conditionally independent and identically distributed.
+We combine the resulting variance reduction with a clipped-score envelope.
 
 Under that common external-training setup, conditional independence of evaluation units gives
 \begin{equation}
@@ -1419,26 +1389,6 @@ conditioning variables proves the unconditional claim.  The proxy-matrix-certifi
 proxy matrix \(\Sigma\) has the one-dimensional proxy
 \(\alpha^\top\Sigma\alpha\) in direction \(\alpha\).
 
-\subsection{Proof of Corollary~\ref{cor:semantic-special}}
-\label{app:proof-cor-semantic}
-
-\paragraph{Proof strategy.} Under the stated special-case assumptions, the mechanism representation is exact and the effect surface is affine, so the composition identity follows by direct algebra.
-
-This is precisely the zero-support-residual and zero-hidden-moderator case of
-Theorem~\ref{thm:composition}; the exact identity to be shown is the main
-paper's semantic-special conclusion in Corollary~\ref{cor:semantic-special}.
-
-If \(r(e)=m(e)\), \(R_{\rm hid}(\alpha)=0\), and \(m_\star=\sum_j\alpha_jm_j\), then \(\rho_\star(\alpha)=0\).  If \(\mu\) is affine on the relevant convex hull, Jensen's identity for affine functions gives
-\begin{equation}
-\label{eq:app-proof-025}
-\mu(m_\star)=\mu\left(\sum_j\alpha_jm_j\right)=\sum_j\alpha_j\mu(m_j).
-\end{equation}
-The affine cancellation is the identity in \eqref{eq:app-proof-025}.  Since
-\(\tau_\star=\mu(m_\star)\) and \(\tau_j=\mu(m_j)\), it proves the exact
-identity in Corollary~\ref{cor:semantic-special}.  Replacing \(\tau_j\) by
-\(\widehat\tau_j\) introduces only the weighted estimation error controlled
-in Theorem~\ref{thm:composition}.
-
 \subsection{Proof of Theorem~\ref{thm:asymptotic}}
 \label{app:proof-thm-asymptotic}
 
@@ -1568,10 +1518,10 @@ Equation~\eqref{eq:app-proof-038} is the target-scale asymptotic normality
 statement in Theorem~\ref{thm:asymptotic}; the preceding studentization
 argument gives its feasible-variance version.
 
-\subsection{Proof of Corollary~\ref{cor:honest-ci}}
-\label{app:proof-cor-honest-ci}
-
-\paragraph{Proof strategy.} The confidence statement follows by combining a statistical event for the centered estimator with a one-sided event ensuring that the estimated approximation radius is not too small.
+\paragraph{Confidence-interval conclusion.} The confidence statement in the
+same theorem follows by combining a statistical event for the centered
+estimator with a one-sided event ensuring that the estimated approximation
+radius is not too small.
 
 The interval being justified is the honest interval in
 \eqref{eq:honest-ci}.  The centered studentized statistic is controlled by
