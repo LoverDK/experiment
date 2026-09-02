@@ -72,8 +72,25 @@ Algorithm 1 的核心实现跨阶段 1、3、9、11；其余阶段用于验证�
    `m(e)`；它不进入任何可部署方法、接受判定或 bridge 选择。
 3. `certificate_diagnostics` 保存 300 个目标的证书半径、实际绝对误差、发布状态
    和五个证书分量，并生成六方法主基准表。
-4. `build_paper_figures.py` 只读取已有 CSV/JSON，生成 Figure 2--5、原论文 Figure 2--3
-   布局兼容图的 PNG/PDF，以及可直接给 Overleaf 使用的 Markdown/LaTeX 表格。
+4. `build_paper_figures.py` 只读取已有 CSV/JSON，生成重新编排后的 Figure 2--5、两张
+   附录证书诊断图、原论文 Figure 2--3 布局兼容图的 PNG/PDF，以及可直接给 Overleaf
+   使用的 Markdown/LaTeX 表格。
+
+### 正文图的固定职责
+
+- `figure2_synthetic_validation`：语义邻近的机制直觉、六方法误差 ECDF、表示敏感性
+  热图和隐藏偏移一维压力测试。它回答“为什么 causal support 比 semantic similarity
+  更重要”。`synthetic_composability_overview` 是同一内容的兼容别名。
+- `selective_uncertainty_overview`：风险--发布率、覆盖--宽度前沿、证书分量和失配边界，
+  说明发布规则如何控制风险以及拒绝由什么驱动。
+- `rejection_bridge_overview`：拒绝后的 PI 直径、bridge 预算路径、evaluation-only
+  真机制凸包距离和 greedy/ex-post exhaustive value ratio，说明拒绝如何推进实验设计。
+- `nsw_diagnostics_overview`：NSW archive map、全量 raw reconstruction 散点和全量误差
+  ECDF；ATLAS 与 no-rejection 的点误差曲线重合，差异只在发布/认证。
+
+目标级 certificate--error 散点已降到 `appendix_certificate_diagnostic`（Appendix B.4），
+NSW 对应散点已降到 `appendix_nsw_certificate_diagnostic`（Appendix B.8）。旧的
+`legacy_layout_*` 文件仍保留作回退与原布局对照。
 
 ## 严格实现要点
 
@@ -116,8 +133,9 @@ bridge 不是按单候选距离排序。每轮对所有剩余候选计算“当�
 - 严重失配的 bridge 实验中，causal greedy 把平均直径从 6.9423 降至 1.8772，
   缩减 72.96%；四个场景均完成全部预算。语义策略出现 0.67%--6.00% 的规划证书
   不一致，均被明确记录而非当作零直径。
-- NSW 描述性 holdout 中，ATLAS MAE 为 0.8615 千美元、覆盖率 0.9744、拒绝率
-  0.2321；该阶段不声称逐数值复刻论文 Table 3。
+- NSW 描述性 holdout 中，ATLAS all-target MAE 为 0.8615 千美元，released-only MAE
+  为 0.8640，覆盖率 0.9744、拒绝率 0.2321；released-only 数值直接来自
+  `nsw_method_error_records.csv` 的 1,290 条 released 记录，该阶段不声称逐数值复刻论文 Table 3。
 - risk--coverage 补实验在同一批 300 个 target 上显示：阈值 1.65 时发布率
   0.5000、条件 MAE 0.1163；阈值 2.00 时发布率 0.9433、条件 MAE 0.1327；
   acceptance=1 的 no-rejection 端点 MAE 为 0.1365。

@@ -86,7 +86,7 @@ Section 6.6 当前只写“covariate neighborhoods with minimum treated and cont
 | ATLAS | 0.8615 | 0.6989 | 0.8542 | 0.9744 | 5.6303 | 0.2321 |
 | ATLAS no-rejection | 0.8615 | 0.6989 | 0.8542 | 0.9696 | 5.2749 | 0.0000 |
 
-原因不是两种方法“偶然一样好”，而是实现有意让 no-rejection 使用与 ATLAS 完全相同的点权重和 raw prediction。两者只在是否执行拒绝，以及 no-rejection 区间保留的预设表示偏差比例上不同。NSW 表中 ATLAS 即使拒绝也仍保留 raw prediction 参加统一的全体 target 点误差评价，所以三个点指标数学上必然相同。
+两种方法使用完全相同的点权重和 raw prediction；两者的区别在于是否执行拒绝，以及 no-rejection 区间保留的预设表示偏差比例。NSW 表中 ATLAS 即使拒绝也仍保留 raw prediction 参加统一的全体 target 点误差评价，所以三个 all-target 点指标相同。新增的 released-only MAE 只对 ATLAS 通过 release rule 的 1,290 个目标计算；no-rejection 与强制基线释放全部目标，因此等于 all-target MAE。
 
 这和合成主表的口径不同：合成主表中的 ATLAS MAE 是已发布目标的条件 MAE，而 no-rejection MAE 是全部目标 MAE，不能直接把两者差值解释为表示收益。
 
@@ -127,7 +127,7 @@ Section 6.6 当前只写“covariate neighborhoods with minimum treated and cont
 | `results/nsw_method_error_records.csv` | 五种方法在共享 holdout 上的逐目标误差与区间记录 |
 | `results/nsw_diagnostics_summary.csv` | target 级重建、接受状态和证书分量 |
 | `results/nsw_archive_map_summary.csv` | archive map 数据 |
-| `results/figures/nsw_diagnostics_overview.pdf` | 正文 Figure 5 的矢量版本 |
+| `results/figures/nsw_diagnostics_overview.pdf` | 正文 Figure 5 的矢量版本（map、raw scatter、error ECDF） |
 | `results/tables/nsw_experiment_tables.md` | 完整 NSW 指标表 |
 | `scripts/run/run_nsw_experiment.py` | 正式复现入口 |
 

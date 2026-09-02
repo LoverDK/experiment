@@ -45,10 +45,15 @@ MAE 为 0.1350，只应解释为当前 DGP 下潜在机制完全可见时的评�
 
 ## 4. 最终论文图表
 
-- Figure 2：语义几何、六方法误差 ECDF、表示优势热图、证书与实际误差。
-- Figure 3：risk--coverage、名义与经验覆盖、coverage--width、失配边界。
-- Figure 4：支持恶化、发布率、拒绝点部分识别宽度和 bridge 预算路径。
-- Figure 5：NSW PCA archive map、held-out reconstruction 和证书诊断。
+- Figure 2：语义几何、六方法误差 ECDF、表示优势热图、隐藏偏移压力测试；证书与实际
+  误差散点移至 Appendix B.4。
+- Figure 3：risk--coverage、coverage--width、证书分量和失配边界。
+- Figure 4：拒绝点 PI 直径、bridge 预算路径、evaluation-only 真机制凸包距离和
+  greedy/ex-post exhaustive value ratio；主图不显示 exact-set match rate，避免把集合命中率
+  误读为性能准确率。
+- Figure 5：NSW PCA archive map、全量 raw reconstruction 和全量绝对误差 ECDF；证书与
+  实际误差散点移至 Appendix B.8。Table 3 同时报告 all-target MAE 与从 target-level records 汇总的
+  released-only MAE。
 - Table 1：六方法合成主表，含 evaluation-only oracle 脚注。
 - Table 2：支持恶化、拒绝与部分识别汇总。
 
@@ -63,4 +68,4 @@ python scripts/build/build_paper_figures.py
 ```
 
 最后一个构建器只读取既有 CSV/JSON。以后修改字体、panel 布局或图注时，不必重新
-运行 Monte Carlo。
+运行 Monte Carlo；旧图仍在 `results/figures/legacy_layout_*` 中保留。

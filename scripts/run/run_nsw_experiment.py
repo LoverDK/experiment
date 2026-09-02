@@ -53,7 +53,7 @@ def main() -> None:
     _write_seed_csv(result)
     _write_diagnostic_csvs(result)
     _write_metadata(result)
-    _write_markdown_tables(result.rows)
+    _write_markdown_tables(result.rows, result.records)
     _write_overview_figure(result.rows)
     print(
         json.dumps(
@@ -206,7 +206,23 @@ def _write_metadata(result: NswExperimentResult) -> None:
     )
 
 
-def _write_markdown_tables(rows: tuple[NswSummaryRow, ...]) -> None:
+def _write_markdown_tables(
+    rows: tuple[NswSummaryRow, ...], records: tuple
+) -> None:
+    released_mae = {}
+    for method in NSW_METHODS:
+        selected = [
+            record
+            for record in records
+            if record.method == method
+            and (method != "atlas" or record.prediction.accepted)
+        ]
+        if not selected:
+            raise ValueError(f"No released NSW records supplied for {method}.")
+        released_mae[method] = sum(
+            abs(record.prediction.predicted_effect - record.target_effect_reference)
+            for record in selected
+        ) / len(selected)
     lines = [
         "# NSW real-data local-contrast reconstruction",
         "",
@@ -214,10 +230,10 @@ def _write_markdown_tables(rows: tuple[NswSummaryRow, ...]) -> None:
         "base seeds. The target local contrast is a noisy evaluation reference, not",
         "a ground-truth subgroup effect.",
         "",
-        "| method | MAE | median AE | sign accuracy | coverage | mean width | rejection |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| method | all-target MAE | released MAE | median AE | sign accuracy | coverage | mean width | rejection |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
         *[
-            f"| {row.method} | {row.mae:.4f} | "
+            f"| {row.method} | {row.mae:.4f} | {released_mae[row.method]:.4f} | "
             f"{row.median_absolute_error:.4f} | {row.sign_accuracy:.4f} | "
             f"{row.interval_coverage:.4f} | {row.mean_interval_width:.4f} | "
             f"{row.rejection_rate:.4f} |"
@@ -226,7 +242,10 @@ def _write_markdown_tables(rows: tuple[NswSummaryRow, ...]) -> None:
         "",
         "The Causal ATLAS and no-rejection rows use identical point weights. Their",
         "difference is the rejection decision and the prespecified certificate",
-        "ablation, so their MAE, median AE, and sign accuracy should match.",
+        "ablation, so their all-target MAE, median AE, and sign accuracy match.",
+        "Released MAE is computed only on records passing the ATLAS release rule;",
+        "no-rejection and forced baselines release all targets, so released MAE equals",
+        "all-target MAE for those methods.",
         "",
         "Coverage here means that the reported interval contains the held-out local",
         "contrast estimate. It does not establish coverage of an unobserved true local",

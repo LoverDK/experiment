@@ -73,9 +73,13 @@ causal-support greedy 和 random 在这四个场景的规划不一致率均为 0
 
 > As an evaluation-only mechanism check, the severe-scenario oracle distance from the target to the expanded archive hull falls from 1.001 to 0.032 after causal-support bridge selection. True mechanism coordinates are not read by the planner; they are used only after selection to verify that the chosen experiments fill the intended support gap.
 
-## 4. Figure 4C 的路径数量需要写清楚
+## 4. Figure 4B 的路径数量需要写清楚
 
 `bridge_budget_path_summary.csv` 有 15 行，即 3 个策略 × 5 个预算点。每个策略的曲线由 3 个种子 × 30 次 = 90 条路径汇总，因此：
+
+Figure 4C 是 evaluation-only mechanism diagnostic，纵轴为 log-scaled true-mechanism
+hull distance。三种 bridge policy 都可能缩小该距离；正式性能比较仍以 PI diameter 为准，
+该 panel 只用于检查 bridge 是否填补了真实机制支持缺口。
 
 - causal greedy：90 条；
 - semantic greedy：90 条；
@@ -90,7 +94,7 @@ causal-support greedy 和 random 在这四个场景的规划不一致率均为 0
 | --- | --- |
 | `results/bridge_budget_path_summary.csv` | 每策略每预算点的 90 次汇总 |
 | `results/bridge_budget_path_metadata.json` | focused 路径的场景、种子、重复数和预算 |
-| `scripts/run/run_bridge_budget_path_experiment.py` | Figure 4C 路径数据入口 |
+| `scripts/run/run_bridge_budget_path_experiment.py` | Figure 4B 路径数据入口 |
 | `src/causal_atlas_sim/paper_figures.py` | Figure 4 的构建与 caption 对应关系 |
 
 ### Caption 修订候选
@@ -99,7 +103,7 @@ causal-support greedy 和 random 在这四个场景的规划不一致率均为 0
 
 ## 5. 小规模 exhaustive 对照已经写入正文，但边界材料更多
 
-Section 6.5 已正确报告预算 1、2、3 时 greedy/exhaustive bridge value 比例为 0.9957、0.9776、0.9857，并明确 exhaustive 使用已实现结果，是 evaluation oracle。仓库还保存了恰好选中最优集合的比例 0.6667、0.3333、0.4333，以及每个预算枚举 12、66、220 个组合。
+Section 6.5 已正确报告预算 1、2、3 时 greedy/ex-post exhaustive bridge value 比例为 0.9957、0.9776、0.9857，并明确 exhaustive 使用已实现结果，是 evaluation-only benchmark。仓库还保存了恰好选中最优集合的比例 0.6667、0.3333、0.4333，以及每个预算枚举 12、66、220 个组合；这些 exact-set match rate 不放在 Figure 4D 主图。
 
 这些细节不必补进正文。正文现在的关键边界是正确的：本实验没有估计弱次模参数，也没有证明 Theorem 5.6 的理论近似系数。精确命中率和全部枚举表后续留附录。
 

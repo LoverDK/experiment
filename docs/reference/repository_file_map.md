@@ -33,6 +33,8 @@
 | README.md | 项目入口 | 说明研究目标、各实验阶段、复现命令和主要产物位置；新增阶段时同步更新。 |
 | data/nsw_dw.dta | 阶段 12 数据 | NBER 发布的 Dehejia-Wahba NSW 随机实验原始快照；运行前按固定 SHA-256 校验。 |
 | docs/README.md | 文档导航 | 按 stages、reference 和 paper 三个区域解释文档结构与阅读顺序。 |
+| docs/algorithm1_alignment.md | 算法对照镜像 | Algorithm 1 的统一入口、代码分支和论文步骤映射；与 docs/reference/algorithm1_alignment.md 保持内容一致。 |
+| docs/bridge_experiment.md | Bridge 实验说明镜像 | Bridge value、三种策略、预算路径和不一致诊断说明；与 docs/stages/bridge_experiment.md 对应。 |
 | docs/paper/final_experiment_report.md | 阶段 7 产物 | 汇总全部合成仿真实验的中文报告，由 scripts/build/build_final_report.py 生成。 |
 | docs/paper/main_text_gap_catalog/01_foundational_checks.md | 正文遗漏目录 | 对照 DGP 假设校验、早期 oracle Monte Carlo 和方法演示，判断是否仍应进入正文。 |
 | docs/paper/main_text_gap_catalog/02_synthetic_sweeps_and_ablations.md | 正文遗漏目录 | 整理合成扫描、正式多种子压力场景、消融、表示网格，并修正选择效应与表示效应的解释。 |
@@ -43,6 +45,7 @@
 | docs/paper/main_text_gap_catalog/README.md | 正文遗漏总索引 | 汇总仓库已做而当前 Section 6 未写或只写部分的实验，按 P0--P2 给出正文取舍。 |
 | docs/paper/original_experiment_artifacts.md | 原论文图表对照 | 将原论文 Figure 2--3、Table 1--3 映射为当前固定协议的兼容图表，并说明旧数值边界。 |
 | docs/paper/paper_experiment_extension.md | 论文扩展说明 | 说明 Oracle、表示敏感性、证书诊断和 Figure 2--5 的设计、边界与复现方式。 |
+| docs/paper/figure_redesign_log.md | 图表重排留档 | 记录 Figure 2--5 的 claim 分工、CSV/JSON 来源、附录诊断去向和回退资产。 |
 | docs/paper/paper_results_section.md | 阶段 8 产物 | 面向论文写作的中文结果段落，由 scripts/build/build_paper_artifacts.py 生成。 |
 | docs/reference/algorithm1_alignment.md | 算法对照 | 将论文 Algorithm 1 逐行映射到统一代码入口、阶段、公式、分支和肉眼可见产出。 |
 | docs/reference/repository_file_map.md | 维护索引 | 本文件；任何项目文件或职责变更时同步更新。 |
@@ -77,20 +80,33 @@
 | results/figures/legacy_layout_nsw_validation.png | 原论文布局预览图 | 当前 NSW 协议的原 Figure 3 布局位图版本。 |
 | results/figures/legacy_layout_synthetic_validation.pdf | 原论文布局矢量图 | 用当前合成协议复现原 Figure 2 的近邻、误差、bridge 和敏感性四面板布局。 |
 | results/figures/legacy_layout_synthetic_validation.png | 原论文布局预览图 | 当前合成协议的原 Figure 2 布局位图版本。 |
+| results/figures/figure2_synthetic_validation.pdf | 正式 Figure 2 矢量图 | 正文 Figure 2：语义机制直觉、六方法误差 ECDF、5x5 表示敏感性热图和隐藏偏移压力测试。 |
+| results/figures/figure2_synthetic_validation.png | 正式 Figure 2 预览图 | `figure2_synthetic_validation.pdf` 的位图版本；只读取已保存 CSV。 |
 | results/figures/main_experiment_acceptance.png | 阶段 4 图 | 展示四项参数扫描下各方法的发布率。 |
 | results/figures/main_experiment_mae.png | 阶段 4 图 | 展示四项参数扫描下各方法的已发布点 MAE。 |
 | results/figures/minimax_experiment_overview.png | 阶段 10 图 | 并列展示 Theorem 5.5 两个构造下界分量及其与代表性估计器最坏风险的关系。 |
-| results/figures/nsw_diagnostics_overview.pdf | Figure 5 矢量图 | NSW archive map、holdout 重建和证书诊断的论文排版版本。 |
-| results/figures/nsw_diagnostics_overview.png | Figure 5 预览图 | NSW archive map、holdout 重建和证书诊断的位图预览。 |
+| results/figures/nsw_diagnostics_overview.pdf | Figure 5 矢量图 | NSW archive map、全量 raw reconstruction 散点和全量绝对误差 ECDF。 |
+| results/figures/nsw_diagnostics_overview.png | Figure 5 预览图 | Figure 5 的位图预览；ATLAS 与 no-rejection 点误差重合。 |
+| results/figures/appendix_certificate_diagnostic.pdf | Appendix B.4 矢量图 | 300 个共同合成目标的 certificate radius--realized error 散点，按 release/reject 标记。 |
+| results/figures/appendix_certificate_diagnostic.png | Appendix B.4 预览图 | 合成 target-level certificate 诊断的位图版本。 |
+| results/figures/appendix_nsw_certificate_diagnostic.pdf | Appendix B.8 矢量图 | NSW target-level certificate radius--reconstruction error 散点。 |
+| results/figures/appendix_nsw_certificate_diagnostic.png | Appendix B.8 预览图 | NSW certificate 诊断的位图版本。 |
 | results/figures/nsw_experiment_overview.png | 阶段 12 图 | 展示五种方法的 NSW holdout MAE、coverage 和 rejection diagnostics。 |
 | results/figures/partial_identification_overview.png | 阶段 9 图 | 展示拒绝率、部分识别非空率、覆盖率和拒绝点区间宽度。 |
-| results/figures/rejection_bridge_overview.pdf | Figure 4 矢量图 | 将支持恶化、部分识别与 bridge 预算路径连成完整流程。 |
-| results/figures/rejection_bridge_overview.png | Figure 4 预览图 | 支持恶化、部分识别与 bridge 预算路径的位图预览。 |
+| results/figures/rejection_bridge_overview.pdf | Figure 4 矢量图 | 2x2 组合图：拒绝后的 PI 直径、bridge 预算路径、evaluation-only 真机制凸包距离和 greedy/ex-post exhaustive 对照。 |
+| results/figures/rejection_bridge_overview.png | Figure 4 预览图 | Figure 4 的位图预览。 |
 | results/figures/risk_coverage_curve.png | 风险--覆盖率图 | 展示证书阈值变化引起的发布率与已发布点条件 MAE frontier。 |
-| results/figures/selective_uncertainty_overview.pdf | Figure 3 矢量图 | 汇总风险--发布率、校准、区间宽度和失效边界。 |
-| results/figures/selective_uncertainty_overview.png | Figure 3 预览图 | 选择性预测与诚实不确定性的位图预览。 |
-| results/figures/synthetic_composability_overview.pdf | Figure 2 矢量图 | 汇总几何直觉、误差 ECDF、二维敏感性和证书诊断。 |
-| results/figures/synthetic_composability_overview.png | Figure 2 预览图 | 合成可组合性四面板论文图的位图预览。 |
+| results/figures/selective_uncertainty_overview.pdf | Figure 3 矢量图 | 2x2 组合图：risk--coverage、coverage--width、证书分量和失配边界。 |
+| results/figures/selective_uncertainty_overview.png | Figure 3 预览图 | Figure 3 的位图预览。 |
+| results/figures/figure3_selective_uncertainty.pdf | 正式 Figure 3 矢量图 | `selective_uncertainty_overview.pdf` 的正式命名版本。 |
+| results/figures/figure3_selective_uncertainty.png | 正式 Figure 3 预览图 | Figure 3 的位图版本。 |
+| results/figures/figure4_rejection_bridge.pdf | 正式 Figure 4 矢量图 | `rejection_bridge_overview.pdf` 的正式命名版本。 |
+| results/figures/figure4_rejection_bridge.png | 正式 Figure 4 预览图 | Figure 4 的位图版本。 |
+| results/figures/figure3_selective_uncertainty_v2.pdf | Figure 3 Overleaf v2 矢量图 | 已上传到 Overleaf 的 Figure 3 轻度重构版本；仅用于避免编译缓存。 |
+| results/figures/figure5_nsw.pdf | 正式 Figure 5 矢量图 | `nsw_diagnostics_overview.pdf` 的正式命名版本。 |
+| results/figures/figure5_nsw.png | 正式 Figure 5 预览图 | Figure 5 的位图版本。 |
+| results/figures/synthetic_composability_overview.pdf | Figure 2 兼容别名 | 与 `figure2_synthetic_validation.pdf` 内容相同，保留旧文件名避免已有引用失效。 |
+| results/figures/synthetic_composability_overview.png | Figure 2 兼容别名 | 正式 Figure 2 的兼容位图版本。 |
 | results/formal_experiment_metadata.json | 阶段 5 产物 | 保存正式多种子协议的场景、估计器、种子与参数配置。 |
 | results/formal_experiment_seed_summary.csv | 阶段 5 产物 | 按基准种子汇总正式实验，支持跨种子变异检查。 |
 | results/formal_experiment_summary.csv | 阶段 5 产物 | 正式实验的 42 行场景和估计器汇总；阶段 7、8 从中读取数值。 |
@@ -126,8 +142,8 @@
 | results/tables/legacy_layout_table1_synthetic.tex | 原 Table 1 LaTeX | 当前协议的合成重建表，可由 Overleaf 直接输入。 |
 | results/tables/legacy_layout_table2_bridge.md | 原 Table 2 阅读版 | 当前 severe 场景三种 bridge 策略的紧凑 Markdown 表。 |
 | results/tables/legacy_layout_table2_bridge.tex | 原 Table 2 LaTeX | 当前 severe bridge 消融表的 Overleaf 输入版本。 |
-| results/tables/legacy_layout_table3_nsw.md | 原 Table 3 阅读版 | 当前 NSW local-contrast 五方法结果的紧凑 Markdown 表。 |
-| results/tables/legacy_layout_table3_nsw.tex | 原 Table 3 LaTeX | 当前 NSW 重建表的 Overleaf 输入版本。 |
+| results/tables/legacy_layout_table3_nsw.md | 原 Table 3 阅读版 | 当前 NSW local-contrast 五方法结果；同时列出 all-target MAE 与 released-only MAE。 |
+| results/tables/legacy_layout_table3_nsw.tex | 原 Table 3 LaTeX | 当前 NSW 重建表的 LaTeX 版本，released-only MAE 从已保存 target-level records 汇总。 |
 | results/tables/main_synthetic_table.md | 论文主表预览 | 六种合成方法的发布率、误差、符号、覆盖率与宽度。 |
 | results/tables/main_synthetic_table.tex | 论文主表 LaTeX | 可由 Overleaf 直接输入的合成基准表，含 Oracle 评价限定。 |
 | results/tables/minimax_experiment_tables.md | 阶段 10 产物 | Markdown 形式的 Theorem 5.5 下界分量与代表性估计器风险表。 |
@@ -141,7 +157,7 @@
 | scripts/README.md | 脚本导航 | 按 run 与 build 两类说明执行顺序、运行成本和输入输出。 |
 | scripts/build/build_final_report.py | 阶段 7 脚本 | 读取保存结果，生成最终报告、摘要表并刷新产物清单。 |
 | scripts/build/build_paper_artifacts.py | 阶段 8 脚本 | 读取保存结果，生成论文写作稿、LaTeX 表格并刷新产物清单。 |
-| scripts/build/build_paper_figures.py | 论文图构建脚本 | 只读取既有 CSV，生成 Figure 2--5、论文主表和扩展表，不重新运行仿真。 |
+| scripts/build/build_paper_figures.py | 论文图构建脚本 | 只读取既有 CSV/JSON，生成重新编排的 Figure 2--5、B.4/B.8 诊断图、兼容图和论文表，不重新运行仿真。 |
 | scripts/run/run_algorithm1.py | 算法快速入口 | 运行一条拒绝、部分识别、两轮条件边际 bridge 的完整 Algorithm 1 路径并打印关键状态。 |
 | scripts/run/run_bridge_budget_path_experiment.py | Bridge 路径脚本 | 在严重失配场景生成预算 0--4 的三策略绘图诊断，不替代 300 次正式 bridge 主表。 |
 | scripts/run/run_bridge_experiment.py | 阶段 11 脚本 | 运行正式严格条件边际 VoI 路径，写入直径、完成率、不一致诊断、JSON、图和表。 |
@@ -176,7 +192,7 @@
 | src/causal_atlas_sim/monte_carlo.py | 阶段 2 源码 | 实现独立种子重复、oracle 对照和 Monte Carlo 指标汇总。 |
 | src/causal_atlas_sim/nsw_experiment.py | 阶段 12 源码 | 实现 NSW 数据校验、局部对比对象、blind reconstruction、证书与多种子汇总。 |
 | src/causal_atlas_sim/paper_artifacts.py | 阶段 8 源码 | 从已保存结果渲染论文写作稿和 LaTeX 表，禁止重新抽样。 |
-| src/causal_atlas_sim/paper_figures.py | 论文图源码 | 从既有 CSV 构建 Figure 2--5 和论文表格，不调用数据生成机制。 |
+| src/causal_atlas_sim/paper_figures.py | 论文图源码 | 从既有 CSV 构建 Figure 2--5、两张附录 certificate 诊断图和论文表格，不调用数据生成机制。 |
 | src/causal_atlas_sim/partial_identification.py | 阶段 9 源码 | 实现仅在拒绝分支构造的 Theorem 5.4 权重区间交集、oracle 凸包评价和多种子协议。 |
 | src/causal_atlas_sim/reporting.py | 阶段 7 源码 | 验证结果行数，渲染最终报告和摘要表，计算产物 SHA-256 清单。 |
 | src/causal_atlas_sim/representation_sensitivity.py | 表示敏感性源码 | 扫描隐藏调节偏移与代理不确定性，分离表示收益与选择性诊断。 |
@@ -196,7 +212,7 @@
 | tests/test_monte_carlo.py | 阶段 2 测试 | 检验 oracle 参考、重复种子、确定性和覆盖率。 |
 | tests/test_nsw_experiment.py | 阶段 12 测试 | 检验原始数据哈希、局部对象有效性、target 防泄漏、确定性和正式产物。 |
 | tests/test_paper_artifacts.py | 阶段 8 测试 | 检验论文写作稿、LaTeX 数值和清单中第 8 步产物的存在。 |
-| tests/test_paper_figures.py | 论文图测试 | 检验 Figure 2--5 双格式、论文表、新结果行数及构图与仿真分离。 |
+| tests/test_paper_figures.py | 论文图测试 | 检验 Figure 2--5 与 B.4/B.8 诊断图双格式、论文表、新结果行数及构图与仿真分离。 |
 | tests/test_partial_identification.py | 阶段 9 测试 | 检验失败概率分配、区间交集、覆盖、凸包距离和协议确定性。 |
 | tests/test_reporting.py | 阶段 7 测试 | 检验结果行数、最终报告、摘要表和清单哈希。 |
 | tests/test_risk_coverage.py | 风险--覆盖率测试 | 检验无拒绝端点、单调发布率和固定协议确定性。 |

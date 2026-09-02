@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import math
 import unittest
 from pathlib import Path
 
@@ -13,6 +14,12 @@ RESULTS_DIR = PROJECT_ROOT / "results"
 class PaperFigureTests(unittest.TestCase):
     def test_submission_figures_exist_in_png_and_pdf(self) -> None:
         stems = (
+            "figure2_synthetic_validation",
+            "figure3_selective_uncertainty",
+            "figure4_rejection_bridge",
+            "figure5_nsw",
+            "appendix_certificate_diagnostic",
+            "appendix_nsw_certificate_diagnostic",
             "synthetic_composability_overview",
             "selective_uncertainty_overview",
             "rejection_bridge_overview",
@@ -75,7 +82,8 @@ class PaperFigureTests(unittest.TestCase):
         )
         self.assertIn("| Causal ATLAS | 0.463 | 0.111 |", synthetic)
         self.assertIn("| Causal-support greedy | 6.942 | 1.877 | 0.730 |", bridge)
-        self.assertIn("| Causal ATLAS | 0.862 | 0.699 |", nsw)
+        self.assertIn("| Method | All-target MAE | Released MAE | Median AE |", nsw)
+        self.assertIn("| Causal ATLAS | 0.862 | 0.864 | 0.699 |", nsw)
 
     def test_figure_builder_does_not_generate_simulation_data(self) -> None:
         source = (
@@ -83,6 +91,21 @@ class PaperFigureTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         self.assertNotIn("generate_minimal_archive", source)
         self.assertNotIn("from .dgp import", source)
+        self.assertNotIn('ax.annotate(f"selection', source)
+        self.assertIn("evaluation-only; log scale", source)
+
+    def test_released_mae_uses_saved_atlas_release_flags(self) -> None:
+        with (RESULTS_DIR / "nsw_method_error_records.csv").open(
+            newline="", encoding="utf-8"
+        ) as source:
+            rows = list(csv.DictReader(source))
+        atlas_released = [
+            float(row["absolute_reconstruction_error"])
+            for row in rows
+            if row["method"] == "atlas" and row["accepted"].lower() == "true"
+        ]
+        self.assertEqual(len(atlas_released), 1290)
+        self.assertTrue(math.isclose(sum(atlas_released) / len(atlas_released), 0.8640, abs_tol=5e-4))
 
 
 if __name__ == "__main__":

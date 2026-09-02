@@ -80,7 +80,7 @@ standard error 都不会传给估计器。自动测试会把这两个评价量�
 从 112 个 objects 中无放回留出 28 个，因此每种方法有 1,680 个 target evaluations，
 五种方法总计 8,400 条记录。
 
-报告 MAE、median absolute error、sign accuracy、interval coverage、mean interval
+报告 all-target MAE、released-only MAE、median absolute error、sign accuracy、interval coverage、mean interval
 width 和 rejection rate。为了与论文 Table 3 的含义一致，点误差和 coverage 的
 reference 是 held-out local contrast estimate，不是不可观测的真实 subgroup effect。
 ATLAS 即使拒绝也保留 raw prediction 和 interval 供统一评价；rejection rate 单独
@@ -88,15 +88,18 @@ ATLAS 即使拒绝也保留 raw prediction 和 interval 供统一评价；reject
 
 ## 6. 正式结果
 
-| 方法 | MAE | Median AE | Sign accuracy | Coverage | Mean width | Rejection |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Causal ATLAS | 0.8615 | 0.6989 | 0.8542 | 0.9744 | 5.6303 | 0.2321 |
-| No-rejection | 0.8615 | 0.6989 | 0.8542 | 0.9696 | 5.2749 | 0.0000 |
-| Semantic forced | 1.1688 | 0.9367 | 0.7536 | 0.6048 | 2.8541 | 0.0000 |
-| Nearest semantic | 1.2422 | 1.0313 | 0.7804 | 0.9923 | 8.3108 | 0.0000 |
-| Global mean | 1.6790 | 1.3490 | 0.7839 | 0.4458 | 2.4746 | 0.0000 |
+| 方法 | All-target MAE | Released MAE | Median AE | Sign accuracy | Coverage | Mean width | Rejection |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Causal ATLAS | 0.8615 | 0.8640 | 0.6989 | 0.8542 | 0.9744 | 5.6303 | 0.2321 |
+| No-rejection | 0.8615 | 0.8615 | 0.6989 | 0.8542 | 0.9696 | 5.2749 | 0.0000 |
+| Semantic forced | 1.1688 | 1.1688 | 0.9367 | 0.7536 | 0.6048 | 2.8541 | 0.0000 |
+| Nearest semantic | 1.2422 | 1.2422 | 1.0313 | 0.7804 | 0.9923 | 8.3108 | 0.0000 |
+| Global mean | 1.6790 | 1.6790 | 1.3490 | 0.7839 | 0.4458 | 2.4746 | 0.0000 |
 
-ATLAS 和 no-rejection 使用相同点权重，所以三个点指标完全一致。完整表示相对
+ATLAS 和 no-rejection 使用相同点权重，所以 all-target MAE、median AE 和 sign
+accuracy 完全一致。Released MAE 只在通过 ATLAS release rule 的 1,290 个目标上
+计算；no-rejection 与强制基线释放全部目标，因此它们的 released MAE 等于 all-target
+MAE。完整表示相对
 semantic-only 与 global pooling 改善 holdout reconstruction；ATLAS 的宽证书获得
 较高的 held-out-reference coverage，同时拒绝约 23% 的高证书目标。nearest
 semantic 的高 coverage 来自最宽的区间，不能单独解释为点预测更好。

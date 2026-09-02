@@ -25,11 +25,11 @@ Section 6.2 已报告证书半径与实际绝对误差的 Spearman 相关系数�
 | `results/certificate_diagnostics_metadata.json` | 固定种子、阈值和证书配置 |
 | `src/causal_atlas_sim/certificate_diagnostics.py` | 分量记录与诊断汇总实现 |
 | `scripts/run/run_certificate_diagnostics.py` | 诊断复现入口 |
-| `results/figures/synthetic_composability_overview.pdf` | 正文 Figure 2D 使用的证书诊断图 |
+| `results/figures/appendix_certificate_diagnostic.pdf` | Appendix B.4 的 target-level 证书诊断图 |
 
 ### 是否进入正文
 
-建议在 Section 6.2 最后一段、Figure 2D 的相关系数解释之后补一至两句。它比再加入一张表更有价值，因为它直接解释“拒绝规则在当前 DGP 中看到了什么”。完整分组表留到附录。
+建议在 Section 6.2 最后一段引用 Appendix B.4 的散点诊断。它直接解释“拒绝规则在当前 DGP 中看到了什么”，而完整分组表和图都留在附录，正文 Figure 2D 改为表示敏感性压力测试。
 
 ### 候选正文
 

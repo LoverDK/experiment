@@ -38,7 +38,7 @@ Bridge Design` 逐行对应到仓库实现。仓库的“阶段 1--12”是开�
 | 11--13 | 每轮选择当前集合条件下边际 VoI 最大的 bridge，并加入集合 | `algorithm1.py::expected_partial_id_diameter`、`run_algorithm1` | 阶段 11；每轮得到候选、边际价值和更新后的直径 |
 | 14 | 达到预算后结束循环 | `Algorithm1Config.bridge_budget` | 阶段 11；正常路径选择 4 个 bridge |
 | 15 | 返回部分识别区间和 bridge 集合 | `Algorithm1Result` | 阶段 11；CSV 保存初始/最终直径、选择数、完成率和不一致诊断 |
-| 16 | 分支结束 | `run_algorithm1` 返回 | 可用 `scripts/run/run_algorithm1.py` 在数秒内查看一条完整路径 |
+| 16 | 分支结束 | `run_algorithm1` 返回 | 可用 `scripts/run_algorithm1.py` 在数秒内查看一条完整路径 |
 
 ## 式 (4.2) 与 Corollary 5.2
 
@@ -61,8 +61,8 @@ Corollary 5.2：
 
 \[
 \widehat\theta_\alpha
-\pm\{z_{1-\zeta/2}\widehat V_\alpha^{1/2}
-+\widehat D(\alpha)\}.
+\pm\left{z_{1-\zeta/2}\widehat V_\alpha^{1/2}
++\widehat D(\alpha)\right}.
 \]
 
 因此“用于决定是否接受的半径”和“接受后报告的渐近诚实区间半径”是两个理论
@@ -98,7 +98,7 @@ target 真值、target 真实机制、候选真实效应和候选真实机制均
 ## 快速核查
 
 ```powershell
-python scripts/run/run_algorithm1.py
+python scripts/run_algorithm1.py
 python -m unittest tests.test_algorithm1 -v
 ```
 

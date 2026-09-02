@@ -206,6 +206,16 @@
       "sha256": "fc8ad004ce1b64a5fa905da0e8d96a43fa5bbebf52ec83d994fe3f51e5c4b7c2"
     },
     {
+      "path": "results/figures/appendix_certificate_diagnostic.png",
+      "bytes": 198236,
+      "sha256": "a9408433850d590d108cd06f9277fe78881b9ee6f5da1dd4c9aa381a04d2ab19"
+    },
+    {
+      "path": "results/figures/appendix_nsw_certificate_diagnostic.png",
+      "bytes": 655839,
+      "sha256": "9f63658bda6cc544c16f06bb6a6b5f9fd690ab5a04ea2dc59fdcc441f16387eb"
+    },
+    {
       "path": "results/figures/bridge_experiment_overview.png",
       "bytes": 36302,
       "sha256": "047a31114d2b69ddb01e7174c73ea4ccdb66bfcebf60de87aff8d30e21e5599f"
@@ -219,6 +229,26 @@
       "path": "results/figures/calibration_experiment_overview.png",
       "bytes": 27820,
       "sha256": "14f7a52e9680142abd9a9b480eda313d6bd3d978ceeec7c0f71ca928bd390d85"
+    },
+    {
+      "path": "results/figures/figure2_synthetic_validation.png",
+      "bytes": 574292,
+      "sha256": "05a0ae1560ec203add08f099afa501893d8c991d0245932daa9bf63ad1ae092a"
+    },
+    {
+      "path": "results/figures/figure3_selective_uncertainty.png",
+      "bytes": 413620,
+      "sha256": "4175bcd5c6f4fb8dc7451a0c028afc846b8fa2580ba739e72dd5ab7318d42d7a"
+    },
+    {
+      "path": "results/figures/figure4_rejection_bridge.png",
+      "bytes": 554240,
+      "sha256": "4c81a6aea72cf424a0b8301e53811a3f05ca0477ce3e11ed88bb88fe75b71106"
+    },
+    {
+      "path": "results/figures/figure5_nsw.png",
+      "bytes": 637463,
+      "sha256": "1ff301d2d45fd7c180bcb5f3a84feeedcce3480d2aef24e684d193dc23d451ad"
     },
     {
       "path": "results/figures/formal_experiment_overview.png",
@@ -252,8 +282,8 @@
     },
     {
       "path": "results/figures/nsw_diagnostics_overview.png",
-      "bytes": 1019213,
-      "sha256": "bd90cac2bd41fd8877f48345b7624976181b8bb702babb069c78062032b8c0e4"
+      "bytes": 637463,
+      "sha256": "1ff301d2d45fd7c180bcb5f3a84feeedcce3480d2aef24e684d193dc23d451ad"
     },
     {
       "path": "results/figures/nsw_experiment_overview.png",
@@ -267,8 +297,8 @@
     },
     {
       "path": "results/figures/rejection_bridge_overview.png",
-      "bytes": 307794,
-      "sha256": "90596fdba4a66e52375465e5118173981a00662ee657b41cbb50a46f5c50adbd"
+      "bytes": 554240,
+      "sha256": "4c81a6aea72cf424a0b8301e53811a3f05ca0477ce3e11ed88bb88fe75b71106"
     },
     {
       "path": "results/figures/risk_coverage_curve.png",
@@ -277,43 +307,78 @@
     },
     {
       "path": "results/figures/selective_uncertainty_overview.png",
-      "bytes": 367450,
-      "sha256": "62702df5c18a01920cb983c1906549d7734ee203844902c63befa320312444a9"
+      "bytes": 413620,
+      "sha256": "4175bcd5c6f4fb8dc7451a0c028afc846b8fa2580ba739e72dd5ab7318d42d7a"
     },
     {
       "path": "results/figures/synthetic_composability_overview.png",
-      "bytes": 564808,
-      "sha256": "3fb296d0cfe39974ea1a42bb44080ae6cb54aaa19d70dacec1a954159174d26d"
+      "bytes": 574292,
+      "sha256": "05a0ae1560ec203add08f099afa501893d8c991d0245932daa9bf63ad1ae092a"
+    },
+    {
+      "path": "results/figures/appendix_certificate_diagnostic.pdf",
+      "bytes": 35234,
+      "sha256": "e42c08cba1979eab98b11ec0076d04207163833806576ef153e28cb271525038"
+    },
+    {
+      "path": "results/figures/appendix_nsw_certificate_diagnostic.pdf",
+      "bytes": 72747,
+      "sha256": "37acfc2311daca2624c0b4788f521585dfa1176aae2033abcfc4ce7542ff58da"
+    },
+    {
+      "path": "results/figures/figure2_synthetic_validation.pdf",
+      "bytes": 79023,
+      "sha256": "ce86941376a4bc5960d24f3fc8aa4cc823431f6b95ea9114b7b92445c70e7880"
+    },
+    {
+      "path": "results/figures/figure3_selective_uncertainty.pdf",
+      "bytes": 41385,
+      "sha256": "e7e2fc7879f2a25d0796d090946c866dabaf17de7fe832ac808395a82b0ac0e3"
+    },
+    {
+      "path": "results/figures/figure3_selective_uncertainty_v2.pdf",
+      "bytes": 41385,
+      "sha256": "efeaf0ff41c58603161f77a01f88a559cec0d320eeaa1dab1c5d23d3e55cf9cb"
+    },
+    {
+      "path": "results/figures/figure4_rejection_bridge.pdf",
+      "bytes": 44622,
+      "sha256": "20d71319f270e2753488ecbe66bbd980c9d52751534a6350748a9ec733791bf4"
+    },
+    {
+      "path": "results/figures/figure5_nsw.pdf",
+      "bytes": 92873,
+      "sha256": "66468e33612618eba8f9ebd5b5a83291289e5e896e4f63e3769bc1bdbcac2ef9"
     },
     {
       "path": "results/figures/legacy_layout_nsw_validation.pdf",
       "bytes": 137998,
-      "sha256": "8845e731dacd31f432de658d4e7ca8ddf9973a2e0825251a1e8682836150b39a"
+      "sha256": "eb328913ebfae58b224d693a38a95ea67e4f212c698b11aa6334d634875359d9"
     },
     {
       "path": "results/figures/legacy_layout_synthetic_validation.pdf",
       "bytes": 80107,
-      "sha256": "b7b6d1ba2a511b1a88eedb0255685d7c8879616e56f7f673d882a45fb0eeb872"
+      "sha256": "d9fa349c3235378d926e2a0adb12ae7d19b4e9ad31bbd8b52594c712b8b4c978"
     },
     {
       "path": "results/figures/nsw_diagnostics_overview.pdf",
-      "bytes": 107629,
-      "sha256": "045cc9df1543a62f221e25ee04939e3303a55134b4c0c8a558a9fb50fdcf3233"
+      "bytes": 92873,
+      "sha256": "66468e33612618eba8f9ebd5b5a83291289e5e896e4f63e3769bc1bdbcac2ef9"
     },
     {
       "path": "results/figures/rejection_bridge_overview.pdf",
-      "bytes": 33343,
-      "sha256": "a18f5c324d96d9d8d0227561ffbc63e520a7a24bf747825cf2d230e8dc86a4d2"
+      "bytes": 44622,
+      "sha256": "20d71319f270e2753488ecbe66bbd980c9d52751534a6350748a9ec733791bf4"
     },
     {
       "path": "results/figures/selective_uncertainty_overview.pdf",
-      "bytes": 33639,
-      "sha256": "352b97e99db963c8e4b14fa821229a04c6cd415ee14019d137d848092322d853"
+      "bytes": 41385,
+      "sha256": "e7e2fc7879f2a25d0796d090946c866dabaf17de7fe832ac808395a82b0ac0e3"
     },
     {
       "path": "results/figures/synthetic_composability_overview.pdf",
-      "bytes": 78463,
-      "sha256": "5a69f913d3cd690071e447c07e561817ed42d5e2e6732fae07dbf29aa8e039dc"
+      "bytes": 79023,
+      "sha256": "ce86941376a4bc5960d24f3fc8aa4cc823431f6b95ea9114b7b92445c70e7880"
     },
     {
       "path": "results/tables/bridge_experiment_tables.md",
@@ -357,8 +422,8 @@
     },
     {
       "path": "results/tables/legacy_layout_table3_nsw.md",
-      "bytes": 548,
-      "sha256": "70a263264a701bd55cf44f6690a84bc87e933554b3f42eb15cae80914c522ef4"
+      "bytes": 621,
+      "sha256": "0bcf596c4b35b519fc77fcdd73a44feb9bde05d2bbdf2ea48c36a1c7c37b536f"
     },
     {
       "path": "results/tables/main_synthetic_table.md",
@@ -372,8 +437,8 @@
     },
     {
       "path": "results/tables/nsw_experiment_tables.md",
-      "bytes": 1171,
-      "sha256": "78b21b3fc5a68f73556e4960e8c77b67db24efe18854f4dd5aedff7256ed0fc3"
+      "bytes": 1429,
+      "sha256": "5bf565d5c60dd8f24c3df719ed1fc1d74bddbad2f79f7388d029487bc7ac5260"
     },
     {
       "path": "results/tables/partial_identification_tables.md",
@@ -407,8 +472,8 @@
     },
     {
       "path": "results/tables/legacy_layout_table3_nsw.tex",
-      "bytes": 748,
-      "sha256": "d0dfe2123a5a97a9524995a27d82e2516caeaa11ed6cf0f7ddae8d803c483be4"
+      "bytes": 1089,
+      "sha256": "093133d57766721ecbe6f1b8626fdd4d7bdffd6e6515757a9698f6b023adc20e"
     },
     {
       "path": "results/tables/main_synthetic_table.tex",
@@ -437,8 +502,8 @@
     },
     {
       "path": "docs/stages/nsw_experiment.md",
-      "bytes": 6754,
-      "sha256": "dd7b4cfb7d8e7eb87c8efb8105d5be76187c4f6f911cace02ec434bdb8daca79"
+      "bytes": 7073,
+      "sha256": "cc6d87d39ae9aaeca817822282ed55cc171c5177368bf1fe044190efba0bf819"
     }
   ],
   "verification_commands": [
