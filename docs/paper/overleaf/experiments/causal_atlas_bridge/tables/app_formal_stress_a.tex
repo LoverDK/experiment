@@ -1,0 +1,35 @@
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Formal sensitivity benchmark across the stated DGP change. An empty MAE indicates complete rejection rather than a failed evaluation.}
+\label{tab:v1-app-formal-stress-a}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrrrrrr}
+\toprule
+Scenario & Method & Release & MAE & RMSE & Sign & Coverage & Width \\
+\midrule
+Semantic shift 0.10 & Causal ATLAS & 0.390 & 0.126 & 0.155 & 0.940 & 1.000 & 3.410 \\
+Semantic shift 0.10 & ATLAS, no rejection & 1.000 & 0.158 & 0.191 & 0.903 & 1.000 & 3.410 \\
+Semantic shift 0.10 & No variance penalty & 0.383 & 0.123 & 0.152 & 0.939 & 1.000 & 3.407 \\
+Semantic shift 0.10 & Top-4 candidates & 0.263 & 0.130 & 0.162 & 0.937 & 1.000 & 3.728 \\
+Semantic shift 0.10 & Semantic forced & 1.000 & 0.298 & 0.360 & 0.770 & 1.000 & 4.680 \\
+Semantic shift 0.10 & Nearest semantic & 1.000 & 0.488 & 0.596 & 0.770 & 1.000 & 4.845 \\
+Semantic shift 0.10 & Global mean & 1.000 & 0.365 & 0.445 & 0.703 & 1.000 & 5.423 \\
+Semantic shift 0.25 & Causal ATLAS & 0.283 & 0.158 & 0.191 & 0.953 & 1.000 & 3.839 \\
+Semantic shift 0.25 & ATLAS, no rejection & 1.000 & 0.231 & 0.281 & 0.883 & 1.000 & 3.839 \\
+Semantic shift 0.25 & No variance penalty & 0.280 & 0.156 & 0.190 & 0.952 & 1.000 & 3.834 \\
+Semantic shift 0.25 & Top-4 candidates & 0.210 & 0.153 & 0.189 & 0.952 & 1.000 & 3.999 \\
+Semantic shift 0.25 & Semantic forced & 1.000 & 0.458 & 0.514 & 0.717 & 1.000 & 5.583 \\
+Semantic shift 0.25 & Nearest semantic & 1.000 & 0.541 & 0.666 & 0.760 & 1.000 & 4.963 \\
+Semantic shift 0.25 & Global mean & 1.000 & 0.569 & 0.625 & 0.597 & 1.000 & 6.498 \\
+Moderator radius 0.40 & Causal ATLAS & 0.000 & -- & -- & -- & 1.000 & 4.579 \\
+Moderator radius 0.40 & ATLAS, no rejection & 1.000 & 0.139 & 0.170 & 0.893 & 1.000 & 4.579 \\
+Moderator radius 0.40 & No variance penalty & 0.000 & -- & -- & -- & 1.000 & 4.579 \\
+Moderator radius 0.40 & Top-4 candidates & 0.000 & -- & -- & -- & 1.000 & 4.866 \\
+Moderator radius 0.40 & Semantic forced & 1.000 & 0.224 & 0.282 & 0.827 & 1.000 & 5.717 \\
+Moderator radius 0.40 & Nearest semantic & 1.000 & 0.456 & 0.568 & 0.787 & 1.000 & 6.049 \\
+Moderator radius 0.40 & Global mean & 1.000 & 0.282 & 0.362 & 0.780 & 1.000 & 6.464 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

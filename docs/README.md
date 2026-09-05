@@ -8,6 +8,9 @@
 
 ## `paper/`：面向论文写作
 
+- `overleaf/`：已在 Overleaf 编译的 01 论文最终源稿、PDF 和全部引用图表。
+- `overleaf_revision_20260906.md`：本次修改范围、在线版本来源、编译与核验记录。
+- `revision_evidence/`：修改前在线源稿、最终编译日志和理论及数值一致性审计。
 - `paper_experiment_extension.md`：Oracle、二维表示敏感性、证书诊断和 Figure 2--5
   的新增协议、信息边界与解释。
 - `final_experiment_report.md`：全部合成阶段的中文总报告。

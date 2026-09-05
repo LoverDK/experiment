@@ -1,0 +1,19 @@
+\begin{table}[H]
+\centering
+\caption{Deliberate certificate misspecification boundary. Understated smoothness is a negative control that violates the declared certificate assumptions.}
+\label{tab:v1-app-failure-boundary}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrrrr}
+\toprule
+Scenario & Policy & Release & Released MAE & Coverage & Above tolerance \\
+\midrule
+Strong mismatch & Certified ATLAS & 0.043 & 0.235 & 1.000 & 0.000 \\
+Strong mismatch & No rejection & 1.000 & 0.555 & 1.000 & 0.957 \\
+Strong mismatch & Understated bounds & 1.000 & 0.555 & 0.833 & 0.000 \\
+Severe mismatch & Certified ATLAS & 0.007 & 0.180 & 1.000 & 0.000 \\
+Severe mismatch & No rejection & 1.000 & 0.741 & 1.000 & 0.993 \\
+Severe mismatch & Understated bounds & 1.000 & 0.741 & 0.723 & 0.000 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

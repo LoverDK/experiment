@@ -1,0 +1,68 @@
+{
+  "source_sha256": "78daca4fd1694783f389e85b3969b78d3138e61d0900fb8a6315ffa460e1b062",
+  "baseline_sha256": "ce49a9e1969771528ad3092a8177f87633f04b932a8ee431fbf9e1d0b9abe597",
+  "text_hash_convention": "UTF-8, normalized LF line endings",
+  "protected_sections_identical": {
+    "preamble": {
+      "characters": 3421,
+      "sha256": "8adde00eac0437fd470ca46621052557366356c5d98f68751d21c1170548917d"
+    },
+    "theory_and_introduction": {
+      "characters": 48950,
+      "sha256": "8412e5e1ec4ec16b4e0d5c48f2f90a66015e8f0baeade2c1543b3ef4108dcbe6"
+    },
+    "discussion_and_proofs": {
+      "characters": 60073,
+      "sha256": "bd51eb992b5cd0a7711b7f36d846aa4eb70d2628c2e51803cf9c7803872aebec"
+    },
+    "references": {
+      "characters": 2637,
+      "sha256": "0fd7261cfce63de58f79d2ffcc778563c4d884e28d71110482c714fbebf7c5f7"
+    }
+  },
+  "paper_assets_sha256": {
+    "experiments/causal_atlas_bridge/figures/appendix_certificate_diagnostic.pdf": "e42c08cba1979eab98b11ec0076d04207163833806576ef153e28cb271525038",
+    "experiments/causal_atlas_bridge/figures/appendix_nsw_certificate_diagnostic.pdf": "37acfc2311daca2624c0b4788f521585dfa1176aae2033abcfc4ce7542ff58da",
+    "experiments/causal_atlas_bridge/figures/figure2_synthetic_validation.pdf": "ce86941376a4bc5960d24f3fc8aa4cc823431f6b95ea9114b7b92445c70e7880",
+    "experiments/causal_atlas_bridge/figures/figure3_selective_uncertainty.pdf": "861ccca34b075277ebef9d464d80f5f25105f1b666fdfa16ac527aa2a4bbb1ef",
+    "experiments/causal_atlas_bridge/figures/figure4_rejection_bridge.pdf": "2e76c2ad5f25c0ba874460e8f9c89c1b18e988fb93a9557fbae6c467b87cc261",
+    "experiments/causal_atlas_bridge/figures/figure5_nsw.pdf": "66468e33612618eba8f9ebd5b5a83291289e5e896e4f63e3769bc1bdbcac2ef9",
+    "experiments/causal_atlas_bridge/tables/app_bridge_all_scenarios.tex": "f86db400c261d4a346108f48f8b1a123d1508c6f036e0bcaf4f74e299e951fd5",
+    "experiments/causal_atlas_bridge/tables/app_bridge_optimality.tex": "b3051638b5b76601d1b526e2f69014697fcc16a11dca81fe5a6cf227efd19f7c",
+    "experiments/causal_atlas_bridge/tables/app_calibration_levels.tex": "ccc08b767c33f2a03c30d75920b28b8e075e4b552a30f7845ad23a07ea223a6b",
+    "experiments/causal_atlas_bridge/tables/app_certificate_components.tex": "2f1c8f839d7c81d8ced07da533cff79474617c6d01c7de372505883ae50d97be",
+    "experiments/causal_atlas_bridge/tables/app_failure_boundary.tex": "65f9c19bc794112abc3aff77d79613af769dcdf7c1ee9d935a31dcae73f45519",
+    "experiments/causal_atlas_bridge/tables/app_formal_nominal.tex": "03957d5652a2f850849dc5c3b7adb2fa18553dfb19e525b807db5a487c3c0ed8",
+    "experiments/causal_atlas_bridge/tables/app_formal_stress_a.tex": "8a7805e05ef0569406a0eec9b3c1334b7218de9913c44a046556ecd2801d0210",
+    "experiments/causal_atlas_bridge/tables/app_formal_stress_b.tex": "a675acdcbb12309652c373d7be86abe095d84be0f8a7f7e4a1cda5976a99abb8",
+    "experiments/causal_atlas_bridge/tables/app_minimax.tex": "63d765a7b55039ce7e502facfcc99c37924364389ce039f15f691311102743fc",
+    "experiments/causal_atlas_bridge/tables/app_nsw_construction.tex": "c546d72f50c2fd51ea95bf65f57735173f067b162e93c86514da26a8b9f22d40",
+    "experiments/causal_atlas_bridge/tables/app_nsw_seedwise.tex": "00ca0913c79df4260eef849235f5c703385fecdd93ea3af8a377ce9fa3339ca1",
+    "experiments/causal_atlas_bridge/tables/app_partial_id_full.tex": "5d07010e37be8ada1b5caa86bfdda69d16145e675e2d5d8f1409ddf9166dbc56",
+    "experiments/causal_atlas_bridge/tables/app_representation_grid.tex": "416a2560471f2c4011fa324e81ed5ea744edbff9ee9623d8872f7c8b3cbf903e",
+    "experiments/causal_atlas_bridge/tables/app_risk_coverage.tex": "9d419855f462d19197932bca80bf3448c55577bd4edf032392921d992a15fac1",
+    "experiments/causal_atlas_bridge/tables/main_nsw.tex": "c5320f568a8bcd728498684b12197c96eb0e4fdb4766e508579d4a9d2cf387ab",
+    "experiments/causal_atlas_bridge/tables/main_partial_id.tex": "1843c08313fbb6ea020421be332ace3e360ab9ffaa73c6cf3880229a2c04e48e",
+    "experiments/causal_atlas_bridge/tables/main_synthetic.tex": "9ec165f78154ad0617ccdeb9a80534ba2f2b309488501c963c2fc83dff51cf32"
+  },
+  "undefined_references": [],
+  "duplicate_labels": [],
+  "overleaf_compile": {
+    "log_sha256": "eb5a0df224873d0b633e02381c9bc7c444b516403b86de8cd4c87ad9b352aa80",
+    "pdf_sha256": "e87d2edcff43c3cbada92c8fa79358544bf73a9d0d780d4f85b48429d089671a",
+    "compiler_header": "This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.10.27)  5 SEP 2026 18:44",
+    "pages": 53,
+    "warnings_errors_and_box_diagnostics": []
+  },
+  "shared_target_statistics": {
+    "targets": 300,
+    "released": 139,
+    "release_rate": 0.4633333333333333,
+    "wilson_95": [
+      0.4077258831288866,
+      0.5198679347609133
+    ],
+    "released_mae": 0.11091933611494123,
+    "released_mae_mcse": 0.006921458466556312
+  }
+}

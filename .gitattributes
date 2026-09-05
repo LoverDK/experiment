@@ -1,0 +1,3 @@
+# Preserve the exact downloaded paper artifacts and their audited hashes.
+docs/paper/overleaf/** -text
+docs/paper/revision_evidence/** -text

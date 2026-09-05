@@ -237,13 +237,13 @@
     },
     {
       "path": "results/figures/figure3_selective_uncertainty.png",
-      "bytes": 413620,
-      "sha256": "4175bcd5c6f4fb8dc7451a0c028afc846b8fa2580ba739e72dd5ab7318d42d7a"
+      "bytes": 411146,
+      "sha256": "968be7d0c6729dcdd221d5451326daa9e488b3c3f4fb53966a96c5198e1b96ca"
     },
     {
       "path": "results/figures/figure4_rejection_bridge.png",
-      "bytes": 554240,
-      "sha256": "4c81a6aea72cf424a0b8301e53811a3f05ca0477ce3e11ed88bb88fe75b71106"
+      "bytes": 546009,
+      "sha256": "3559ac3f1565330030ad8570e51b5bc9feeff5ed138dfeb4ca33e5ae34507fc9"
     },
     {
       "path": "results/figures/figure5_nsw.png",
@@ -297,8 +297,8 @@
     },
     {
       "path": "results/figures/rejection_bridge_overview.png",
-      "bytes": 554240,
-      "sha256": "4c81a6aea72cf424a0b8301e53811a3f05ca0477ce3e11ed88bb88fe75b71106"
+      "bytes": 546009,
+      "sha256": "3559ac3f1565330030ad8570e51b5bc9feeff5ed138dfeb4ca33e5ae34507fc9"
     },
     {
       "path": "results/figures/risk_coverage_curve.png",
@@ -307,8 +307,8 @@
     },
     {
       "path": "results/figures/selective_uncertainty_overview.png",
-      "bytes": 413620,
-      "sha256": "4175bcd5c6f4fb8dc7451a0c028afc846b8fa2580ba739e72dd5ab7318d42d7a"
+      "bytes": 411146,
+      "sha256": "968be7d0c6729dcdd221d5451326daa9e488b3c3f4fb53966a96c5198e1b96ca"
     },
     {
       "path": "results/figures/synthetic_composability_overview.png",
@@ -332,18 +332,18 @@
     },
     {
       "path": "results/figures/figure3_selective_uncertainty.pdf",
-      "bytes": 41385,
-      "sha256": "e7e2fc7879f2a25d0796d090946c866dabaf17de7fe832ac808395a82b0ac0e3"
+      "bytes": 41438,
+      "sha256": "861ccca34b075277ebef9d464d80f5f25105f1b666fdfa16ac527aa2a4bbb1ef"
     },
     {
       "path": "results/figures/figure3_selective_uncertainty_v2.pdf",
-      "bytes": 41385,
-      "sha256": "efeaf0ff41c58603161f77a01f88a559cec0d320eeaa1dab1c5d23d3e55cf9cb"
+      "bytes": 41438,
+      "sha256": "861ccca34b075277ebef9d464d80f5f25105f1b666fdfa16ac527aa2a4bbb1ef"
     },
     {
       "path": "results/figures/figure4_rejection_bridge.pdf",
-      "bytes": 44622,
-      "sha256": "20d71319f270e2753488ecbe66bbd980c9d52751534a6350748a9ec733791bf4"
+      "bytes": 40463,
+      "sha256": "2e76c2ad5f25c0ba874460e8f9c89c1b18e988fb93a9557fbae6c467b87cc261"
     },
     {
       "path": "results/figures/figure5_nsw.pdf",
@@ -367,13 +367,13 @@
     },
     {
       "path": "results/figures/rejection_bridge_overview.pdf",
-      "bytes": 44622,
-      "sha256": "20d71319f270e2753488ecbe66bbd980c9d52751534a6350748a9ec733791bf4"
+      "bytes": 40463,
+      "sha256": "2e76c2ad5f25c0ba874460e8f9c89c1b18e988fb93a9557fbae6c467b87cc261"
     },
     {
       "path": "results/figures/selective_uncertainty_overview.pdf",
-      "bytes": 41385,
-      "sha256": "e7e2fc7879f2a25d0796d090946c866dabaf17de7fe832ac808395a82b0ac0e3"
+      "bytes": 41438,
+      "sha256": "861ccca34b075277ebef9d464d80f5f25105f1b666fdfa16ac527aa2a4bbb1ef"
     },
     {
       "path": "results/figures/synthetic_composability_overview.pdf",

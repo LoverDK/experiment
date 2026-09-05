@@ -593,7 +593,7 @@ def _build_selective_uncertainty(results_dir: Path, figures_dir: Path) -> tuple[
         # Use alternating horizontal and vertical tiers because all four
         # nominal levels for these policies have empirical coverage near one.
         "honest_atlas": [(-18, 10), (6, 22), (-18, -15), (6, -27)],
-        "wald_only": [(7, -13), (7, 7), (7, -13), (7, 7)],
+        "wald_only": [(7, -2), (7, -2), (7, -2), (7, -2)],
         "understated_smoothness": [(-24, 10), (6, 22), (-24, -15), (6, -27)],
         "semantic_forced": [(-24, 10), (6, 22), (-24, -15), (6, -27)],
     }
@@ -615,7 +615,7 @@ def _build_selective_uncertainty(results_dir: Path, figures_dir: Path) -> tuple[
                 bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.78, "pad": 0.35},
                 zorder=6,
             )
-    ax.set(xlabel="Mean interval width", ylabel="Empirical coverage", ylim=(0.15, 1.08))
+    ax.set(xlabel="Mean interval width", ylabel="Empirical coverage", xlim=(-0.1, 5.15), ylim=(0.15, 1.16))
     ax.set_title("B  Coverage--width frontiers", loc="left", fontweight="bold")
     ax.legend(fontsize=8, loc="lower right")
 
@@ -708,7 +708,7 @@ def _build_selective_uncertainty(results_dir: Path, figures_dir: Path) -> tuple[
                     zorder=6,
                 )
     ax.set(xlabel="Release rate", ylabel="Released-target / conditional interval coverage", xlim=(-0.02, 1.03), ylim=(0.65, 1.05))
-    ax.set_title("D  Valid certificates reject rather than undercover", loc="left", fontweight="bold")
+    ax.set_title("D  Release and coverage under misspecification", loc="left", fontweight="bold")
     policy_legend = ax.legend(fontsize=8, loc="lower left", bbox_to_anchor=(0.02, 0.08), title="Policy", title_fontsize=8)
     ax.add_artist(policy_legend)
     scenario_handles = [
@@ -732,7 +732,7 @@ def _build_rejection_bridge(results_dir: Path, figures_dir: Path) -> tuple[Path,
 
     ax = axes[0, 0]
     ax.plot(x, [_number(row["mean_partial_id_width_on_rejected"]) for row in partial], color=PALETTE["red"], marker="s", linewidth=2)
-    ax.set(xlabel=r"Target-shift / support-stress parameter $\rho$ (evaluation only)", ylabel="PI diameter on rejected targets")
+    ax.set(xlabel="Mean true-mechanism hull distance (evaluation only)", ylabel="PI diameter on rejected targets")
     ax.set_title("A  Support stress widens the identified set", loc="left", fontweight="bold")
 
     ax = axes[0, 1]

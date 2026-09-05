@@ -62,3 +62,22 @@ The original-layout assets remain under `results/figures/legacy_layout_*`. The
 previous paper source remains available through Overleaf History for `test.tex`.
 Restoring either the legacy assets or the previous Overleaf revision does not
 modify the saved CSV/JSON records.
+
+## Final Overleaf check (2026-09-06)
+
+The final Figure 3B pass places the Wald labels at a consistent offset and
+extends the axes to leave space around coverage-one annotations. Figure 3D
+now has the descriptive title "Release and coverage under misspecification".
+
+Figure 4A's x-coordinate has always been `mean_oracle_hull_distance` from the
+saved partial-identification results. The old target-shift-parameter label was
+incorrect. The axis now reads "Mean true-mechanism hull distance (evaluation
+only)", and the paper caption describes the same quantity. No plotted value
+was changed.
+
+Figures 3 and 4 and their aliases were rebuilt, and their manifest hashes were
+updated. The six final paper figure PDFs are archived under
+`docs/paper/overleaf/experiments/causal_atlas_bridge/figures/`. The final 53-page
+Overleaf PDF was compiled with zero errors and warnings; rendered main and
+appendix figure pages were visually checked. Full source provenance and the
+compile record are in `docs/paper/overleaf_revision_20260906.md`.

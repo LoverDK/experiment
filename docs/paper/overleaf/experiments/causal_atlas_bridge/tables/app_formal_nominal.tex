@@ -1,0 +1,18 @@
+\begin{table}[ht]
+\centering
+\caption{Complete nominal formal benchmark and estimator ablations under a separately fixed formal-stage protocol. This formal-stage protocol differs from the shared-target diagnostic protocol used for Table 1: it pools its own seeds and generated targets and therefore targets a different numerical diagnostic. Row-wise values need not match Table 1 and should not be read as inconsistencies. Reported errors are conditional on release for rejectable rows.}
+\label{tab:v1-app-formal-nominal}
+\begin{tabular}{lrrrrrr}
+\toprule
+Method & Release & MAE & RMSE & Sign & Coverage & Width \\
+\midrule
+Causal ATLAS & 0.463 & 0.111 & 0.138 & 0.928 & 1.000 & 3.339 \\
+ATLAS, no rejection & 1.000 & 0.139 & 0.170 & 0.893 & 1.000 & 3.339 \\
+No variance penalty & 0.440 & 0.112 & 0.140 & 0.924 & 1.000 & 3.339 \\
+Top-4 candidates & 0.320 & 0.123 & 0.155 & 0.906 & 1.000 & 3.626 \\
+Semantic forced & 1.000 & 0.224 & 0.282 & 0.827 & 1.000 & 4.477 \\
+Nearest semantic & 1.000 & 0.456 & 0.568 & 0.787 & 1.000 & 4.809 \\
+Global mean & 1.000 & 0.282 & 0.362 & 0.780 & 1.000 & 5.224 \\
+\bottomrule
+\end{tabular}
+\end{table}

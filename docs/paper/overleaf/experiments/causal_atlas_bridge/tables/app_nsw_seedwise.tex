@@ -1,0 +1,29 @@
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{NSW reconstruction by held-out-split seed. Every row contains 560 target evaluations; monetary quantities are thousands of U.S. dollars.}
+\label{tab:v1-app-nsw-seedwise}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrr}
+\toprule
+Method & Seed & MAE & Median AE & Sign & Reference inclusion & Width & Rejection \\
+\midrule
+Causal ATLAS & 20261201 & 0.833 & 0.680 & 0.859 & 0.973 & 5.656 & 0.234 \\
+Causal ATLAS & 20261202 & 0.854 & 0.702 & 0.839 & 0.970 & 5.587 & 0.232 \\
+Causal ATLAS & 20261203 & 0.898 & 0.703 & 0.864 & 0.980 & 5.648 & 0.230 \\
+ATLAS, no rejection & 20261201 & 0.833 & 0.680 & 0.859 & 0.970 & 5.299 & 0.000 \\
+ATLAS, no rejection & 20261202 & 0.854 & 0.702 & 0.839 & 0.968 & 5.230 & 0.000 \\
+ATLAS, no rejection & 20261203 & 0.898 & 0.703 & 0.864 & 0.971 & 5.295 & 0.000 \\
+Semantic forced & 20261201 & 1.146 & 0.899 & 0.754 & 0.611 & 2.855 & 0.000 \\
+Semantic forced & 20261202 & 1.162 & 0.926 & 0.745 & 0.620 & 2.855 & 0.000 \\
+Semantic forced & 20261203 & 1.198 & 1.068 & 0.762 & 0.584 & 2.853 & 0.000 \\
+Nearest semantic & 20261201 & 1.255 & 1.051 & 0.791 & 0.986 & 8.192 & 0.000 \\
+Nearest semantic & 20261202 & 1.248 & 1.065 & 0.755 & 0.995 & 8.418 & 0.000 \\
+Nearest semantic & 20261203 & 1.224 & 0.935 & 0.795 & 0.996 & 8.323 & 0.000 \\
+Global mean & 20261201 & 1.640 & 1.387 & 0.795 & 0.436 & 2.473 & 0.000 \\
+Global mean & 20261202 & 1.674 & 1.303 & 0.770 & 0.455 & 2.469 & 0.000 \\
+Global mean & 20261203 & 1.723 & 1.337 & 0.787 & 0.446 & 2.481 & 0.000 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

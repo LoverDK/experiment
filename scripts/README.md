@@ -70,3 +70,13 @@ python scripts/build/build_paper_figures.py
 
 这三条命令不重新抽样。最后一条从 CSV/JSON 生成 Figure 2--5、两张原论文布局
 兼容图的 PNG/PDF，以及当前论文表和原论文 Table 1--3 的 Markdown/LaTeX 版本。
+
+## 7. 核验 Overleaf 留档
+
+```powershell
+python scripts/build/verify_overleaf_revision.py
+```
+
+核验最终源稿与修改前在线版本的理论段落、引用图表和标签，复算保存记录中的
+Wilson 区间与 MAE Monte Carlo SE，并检查最终 Overleaf 编译日志。
+审计结果写入 `docs/paper/revision_evidence/source_and_results_audit.json`。

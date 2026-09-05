@@ -15,6 +15,7 @@
 | 路径 | 类别 | 功能与维护关系 |
 | --- | --- | --- |
 | .gitignore | 仓库配置 | 排除 Python 缓存和临时输出，并显式保留各阶段固定种子 CSV、JSON、图表等可复现产物。 |
+| .gitattributes | 留档配置 | 禁止最终论文与审计材料的自动换行转换，保留下载字节与核验哈希。 |
 | .agents/skills/lean-bisect/SKILL.md | 本地代理技能 | Lean 工具链版本二分工作流说明；不参与本项目仿真运行。 |
 | .agents/skills/lean-mwe/SKILL.md | 本地代理技能 | Lean 错误最小可复现示例工作流说明；不参与本项目仿真运行。 |
 | .agents/skills/lean-pr/SKILL.md | 本地代理技能 | Lean 项目 PR 约定；不参与本项目仿真运行。 |
@@ -31,6 +32,7 @@
 | .agents/skills/scientific-figure-making/references/design-theory.md | 技能参考 | scientific-figure-making 的图表设计原则参考。 |
 | .agents/skills/scientific-figure-making/references/tutorials.md | 技能参考 | scientific-figure-making 的教程参考。 |
 | README.md | 项目入口 | 说明研究目标、各实验阶段、复现命令和主要产物位置；新增阶段时同步更新。 |
+| main_direction_Causal_ATLAS_7papers (6).pdf | 原论文快照 | 用户在 GitHub 上传的论文 PDF；本次最终修订稿另存于 docs/paper/overleaf/。 |
 | data/nsw_dw.dta | 阶段 12 数据 | NBER 发布的 Dehejia-Wahba NSW 随机实验原始快照；运行前按固定 SHA-256 校验。 |
 | docs/README.md | 文档导航 | 按 stages、reference 和 paper 三个区域解释文档结构与阅读顺序。 |
 | docs/algorithm1_alignment.md | 算法对照镜像 | Algorithm 1 的统一入口、代码分支和论文步骤映射；与 docs/reference/algorithm1_alignment.md 保持内容一致。 |
@@ -47,6 +49,36 @@
 | docs/paper/paper_experiment_extension.md | 论文扩展说明 | 说明 Oracle、表示敏感性、证书诊断和 Figure 2--5 的设计、边界与复现方式。 |
 | docs/paper/figure_redesign_log.md | 图表重排留档 | 记录 Figure 2--5 的 claim 分工、CSV/JSON 来源、附录诊断去向和回退资产。 |
 | docs/paper/paper_results_section.md | 阶段 8 产物 | 面向论文写作的中文结果段落，由 scripts/build/build_paper_artifacts.py 生成。 |
+| docs/paper/overleaf_revision_20260906.md | 在线修订记录 | 记录修改范围、在线基线恢复、图表修正、编译诊断和验证证据。 |
+| docs/paper/overleaf/README.md | 最终稿入口 | 说明独立编译设置、图表路径和验证材料位置。 |
+| docs/paper/overleaf/01_causal_atlas_bridge.tex | 最终论文源稿 | 与在线 01 源稿一致；从在线基线合并实验修订，理论和证明保持原文。 |
+| docs/paper/overleaf/01_causal_atlas_bridge.pdf | 最终论文 PDF | Overleaf XeLaTeX 编译的 53 页论文，零错误和警告。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/figures/figure2_synthetic_validation.pdf | 正文 Figure 2 | 正式合成比较图的在线留档，与 results/figures/ 同名文件一致。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/figures/figure3_selective_uncertainty.pdf | 正文 Figure 3 | 选择性发布和不确定性图，标签间距与面板标题已核验。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/figures/figure4_rejection_bridge.pdf | 正文 Figure 4 | 部分识别与 bridge 图，横轴名称和实际 hull-distance 数据一致。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/figures/figure5_nsw.pdf | 正文 Figure 5 | NSW reconstruction 图的在线留档，与正式结果图一致。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/figures/appendix_certificate_diagnostic.pdf | 附录 Figure 6 | 合成目标级证书诊断的在线留档。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/figures/appendix_nsw_certificate_diagnostic.pdf | 附录 Figure 7 | NSW 目标级证书诊断的在线留档。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/main_synthetic.tex | 正文 Table 1 | 共同目标合成方法比较的 Overleaf 输入表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/main_partial_id.tex | 正文 Table 2 | 拒绝与部分识别的 Overleaf 输入表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/main_nsw.tex | 正文 Table 3 | NSW 全目标与发布目标 MAE 等指标；局部列间距消除溢出。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_formal_nominal.tex | 附录正式基准 | 名义场景下方法与消融的论文输入表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_formal_stress_a.tex | 附录压力基准 | 正式压力场景与消融的第一组论文表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_formal_stress_b.tex | 附录压力基准 | 正式压力场景与消融的第二组论文表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_representation_grid.tex | 附录表示网格 | 表示敏感性网格的论文输入表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_certificate_components.tex | 附录证书分量 | 接受与拒绝目标的证书分解表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_risk_coverage.tex | 附录选择性阈值 | 不同阈值下风险与发布率的论文输入表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_calibration_levels.tex | 附录区间校准 | 名义水平、覆盖与宽度的论文输入表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_failure_boundary.tex | 附录失效边界 | 界失配下覆盖和拒绝行为的论文输入表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_partial_id_full.tex | 附录部分识别 | 四种支持情景下完整部分识别结果表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_minimax.tex | 附录 minimax | 已有数值下界与风险结果的论文输入表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_bridge_all_scenarios.tex | 附录 bridge 场景 | 正式跨场景三策略 bridge 结果表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_bridge_optimality.tex | 附录 bridge 穷举 | 小候选库 ex-post exhaustive 对照结果表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_nsw_construction.tex | 附录 NSW 协议 | 局部对象构造、拆分和样本计数表。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_nsw_seedwise.tex | 附录 NSW 稳定性 | 三个种子的分方法重建指标表。 |
+| docs/paper/revision_evidence/01_before_20260906.tex | 在线基线 | 修改前在线论文，用于证明理论部分未改动。 |
+| docs/paper/revision_evidence/overleaf_compile.log | 编译证据 | 最终 01 论文的原始 XeLaTeX 日志，记录主文件与页数。 |
+| docs/paper/revision_evidence/source_and_results_audit.json | 审计产物 | 保护段落、图表、PDF 和日志哈希，引用检查及共同目标统计量。 |
 | docs/reference/algorithm1_alignment.md | 算法对照 | 将论文 Algorithm 1 逐行映射到统一代码入口、阶段、公式、分支和肉眼可见产出。 |
 | docs/reference/repository_file_map.md | 维护索引 | 本文件；任何项目文件或职责变更时同步更新。 |
 | docs/stages/bridge_experiment.md | 阶段 11 文档 | 说明 Definition 5.2 条件边际期望部分识别直径、三种策略、不一致诊断和 Theorem 5.6 边界。 |
@@ -158,6 +190,7 @@
 | scripts/build/build_final_report.py | 阶段 7 脚本 | 读取保存结果，生成最终报告、摘要表并刷新产物清单。 |
 | scripts/build/build_paper_artifacts.py | 阶段 8 脚本 | 读取保存结果，生成论文写作稿、LaTeX 表格并刷新产物清单。 |
 | scripts/build/build_paper_figures.py | 论文图构建脚本 | 只读取既有 CSV/JSON，生成重新编排的 Figure 2--5、B.4/B.8 诊断图、兼容图和论文表，不重新运行仿真。 |
+| scripts/build/verify_overleaf_revision.py | 在线留档核验 | 比较保护段落、核验图表和引用、复算统计量并检查最终编译日志。 |
 | scripts/run/run_algorithm1.py | 算法快速入口 | 运行一条拒绝、部分识别、两轮条件边际 bridge 的完整 Algorithm 1 路径并打印关键状态。 |
 | scripts/run/run_bridge_budget_path_experiment.py | Bridge 路径脚本 | 在严重失配场景生成预算 0--4 的三策略绘图诊断，不替代 300 次正式 bridge 主表。 |
 | scripts/run/run_bridge_experiment.py | 阶段 11 脚本 | 运行正式严格条件边际 VoI 路径，写入直径、完成率、不一致诊断、JSON、图和表。 |

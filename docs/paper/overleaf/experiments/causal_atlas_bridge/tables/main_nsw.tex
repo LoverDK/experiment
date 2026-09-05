@@ -1,0 +1,19 @@
+% Paper-facing layout; numeric values are from committed NSW result records.
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\caption{NSW held-out local-contrast reconstruction. All-target MAE uses all 1,680 raw reconstructions; Released MAE uses released targets only. Inclusion refers to a noisy held-out local contrast, not a latent subgroup effect; monetary quantities are thousands of U.S. dollars.}
+\label{tab:v1-nsw}
+\begin{tabular}{lrrrrrrr}
+\toprule
+Method & All-target MAE & Released MAE & Median AE & Sign & Inclusion & Width & Rejection \\
+\midrule
+Causal ATLAS & 0.862 & 0.864 & 0.699 & 0.854 & 0.974 & 5.630 & 0.232 \\
+ATLAS, no rejection & 0.862 & 0.862 & 0.699 & 0.854 & 0.970 & 5.275 & 0.000 \\
+Semantic forced & 1.169 & 1.169 & 0.937 & 0.754 & 0.605 & 2.854 & 0.000 \\
+Nearest semantic & 1.242 & 1.242 & 1.031 & 0.780 & 0.992 & 8.311 & 0.000 \\
+Global mean & 1.679 & 1.679 & 1.349 & 0.784 & 0.446 & 2.475 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
