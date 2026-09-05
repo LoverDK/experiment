@@ -82,7 +82,10 @@ Live 2025. Build `1a072e2f107-e629bddfcc4c77f2` produced 53 pages at
   No compiler warning, error, overfull box, or underfull box was found.
 - `python scripts/build/verify_overleaf_revision.py` passed: protected text,
   all 23 assets, reference labels, shared-target statistics, and compiler log.
-- `python -m unittest discover -s tests -p test_paper_figures.py`: 6 tests passed.
+- `python -m unittest discover -s tests -v`: all 83 tests passed in 26.450s
+  in a clean detached worktree at `d4625a6`. This includes the six figure tests
+  and the complete repository-file-map check. The snapshot audit also passed
+  from that fresh checkout, and the checks left its tracked files unchanged.
 - Rendered PDF pages 16, 17, 19, 20, 21, 46, and 51 were inspected for figure
   labels, captions, table widths, and the relevant experimental text.
 
