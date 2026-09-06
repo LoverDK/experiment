@@ -2629,7 +2629,9 @@ Held-out objects overlap in their underlying units, so their estimated contrasts
 \paragraph{Disjoint-unit randomized reference.}
 The additional protocol fixes source and reference pools before constructing local objects. Within each original treatment arm, seed $2026090601$ assigns two thirds of individuals to the source pool and the remainder to the reference pool. The resulting pools have 296 and 149 individuals and no shared units. Thirty anchors are chosen by farthest-point coverage of standardized baseline covariates within the inner 95\% of covariate norm, without outcomes; the first 24 define source objects and the last six define targets. Each object uses 50 nearest neighbors from its own pool, with at least eight treated and eight control individuals. Object context is the mean neighborhood covariate vector; representation scaling uses source objects only. Target contrasts and their standard errors are hidden during prediction.
 
+\begin{sloppypar}
 The six randomized target contrasts are noisy references. We report the average signed prediction-minus-reference gap across all six raw predictions in Table~\ref{tab:ext-reference}. A stratified individual bootstrap independently resamples the source and reference pools within treatment arms and rebuilds every overlapping object jointly, with anchors fixed. Of 200 replicates using seed $2026090602$, 196 meet the arm minima; four failures are retained in the repository. Percentile intervals describe the fixed-design bootstrap distribution conditional on valid replicates. ATLAS releases one of the six original targets. The wide interval for its mean raw gap, $[-3.978,3.032]$ thousand dollars, leaves considerable uncertainty and does not establish equivalence to the randomized reference.
+\end{sloppypar}
 
 \input{experiments/causal_atlas_bridge/tables/app_nsw_reference.tex}
 
@@ -2734,4 +2736,3 @@ Building an atlas of social experiments to link studies, reconcile conflicts, an
 \end{thebibliography}
 
 \end{document}
-
