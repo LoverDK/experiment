@@ -191,6 +191,9 @@
 | scripts/build/build_paper_artifacts.py | 阶段 8 脚本 | 读取保存结果，生成论文写作稿、LaTeX 表格并刷新产物清单。 |
 | scripts/build/build_paper_figures.py | 论文图构建脚本 | 只读取既有 CSV/JSON，生成重新编排的 Figure 2--5、B.4/B.8 诊断图、兼容图和论文表，不重新运行仿真。 |
 | scripts/build/verify_overleaf_revision.py | 在线留档核验 | 比较保护段落、核验图表和引用、复算统计量并检查最终编译日志。 |
+| scripts/build/build_paired_comparison_table.py | 配对比较构建 | 从保存的共同目标误差生成附录配对均值差、Monte Carlo 标准误和区间，禁止重新抽样。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_paired_comparison.tex | 附录配对比较 | 共同 300 目标上四种基线相对 no-rejection ATLAS 的误差差值及 Monte Carlo 不确定性。 |
+| docs/paper/revision_evidence/paired_comparison_audit.json | 配对比较审计 | 保存源数据哈希、逐方法配对差值、标准误、区间及生成表哈希。 |
 | scripts/run/run_algorithm1.py | 算法快速入口 | 运行一条拒绝、部分识别、两轮条件边际 bridge 的完整 Algorithm 1 路径并打印关键状态。 |
 | scripts/run/run_bridge_budget_path_experiment.py | Bridge 路径脚本 | 在严重失配场景生成预算 0--4 的三策略绘图诊断，不替代 300 次正式 bridge 主表。 |
 | scripts/run/run_bridge_experiment.py | 阶段 11 脚本 | 运行正式严格条件边际 VoI 路径，写入直径、完成率、不一致诊断、JSON、图和表。 |

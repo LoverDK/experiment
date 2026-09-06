@@ -1,0 +1,55 @@
+{
+  "source": "results/certificate_diagnostics_summary.csv",
+  "source_sha256": "66920597c40d74750ef97cfb2ec205b13540ae9bb32201efec19b49df799025e",
+  "reference": "atlas_no_rejection",
+  "repetitions": 300,
+  "mcse_definition": "sample standard deviation of paired differences / sqrt(n)",
+  "normal_quantile": 1.9599639845400536,
+  "rows": [
+    {
+      "method": "semantic_forced",
+      "label": "Semantic forced",
+      "targets": 300,
+      "mean_paired_difference": 0.11055843442205947,
+      "mcse": 0.0113365832518711,
+      "normal_95_mc_interval": [
+        0.08833913954065215,
+        0.1327777293034668
+      ]
+    },
+    {
+      "method": "nearest_semantic",
+      "label": "Nearest semantic",
+      "targets": 300,
+      "mean_paired_difference": 0.4143333037421034,
+      "mcse": 0.025251551527388158,
+      "normal_95_mc_interval": [
+        0.3648411721946653,
+        0.46382543528954157
+      ]
+    },
+    {
+      "method": "global_mean",
+      "label": "Global mean",
+      "targets": 300,
+      "mean_paired_difference": 0.14293576710909126,
+      "mcse": 0.013597848929138375,
+      "normal_95_mc_interval": [
+        0.11628447294076351,
+        0.16958706127741902
+      ]
+    },
+    {
+      "method": "oracle_latent_support",
+      "label": "Oracle latent support$^{\\dagger}$",
+      "targets": 300,
+      "mean_paired_difference": -0.003716050549504438,
+      "mcse": 0.00369058506489543,
+      "normal_95_mc_interval": [
+        -0.010949464358580897,
+        0.003517363259572021
+      ]
+    }
+  ],
+  "table_sha256": "079757e98b5aeadec0de6b1a53ea090f2572ddac1924f2c12b23ca232d9b754e"
+}

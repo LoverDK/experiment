@@ -1,5 +1,5 @@
 {
-  "source_sha256": "78daca4fd1694783f389e85b3969b78d3138e61d0900fb8a6315ffa460e1b062",
+  "source_sha256": "7d78e2d885454107ee837605c31f1bf50a41653dea8c443a5a59589242126f14",
   "baseline_sha256": "ce49a9e1969771528ad3092a8177f87633f04b932a8ee431fbf9e1d0b9abe597",
   "text_hash_convention": "UTF-8, normalized LF line endings",
   "protected_sections_identical": {
@@ -38,12 +38,13 @@
     "experiments/causal_atlas_bridge/tables/app_minimax.tex": "63d765a7b55039ce7e502facfcc99c37924364389ce039f15f691311102743fc",
     "experiments/causal_atlas_bridge/tables/app_nsw_construction.tex": "c546d72f50c2fd51ea95bf65f57735173f067b162e93c86514da26a8b9f22d40",
     "experiments/causal_atlas_bridge/tables/app_nsw_seedwise.tex": "00ca0913c79df4260eef849235f5c703385fecdd93ea3af8a377ce9fa3339ca1",
+    "experiments/causal_atlas_bridge/tables/app_paired_comparison.tex": "079757e98b5aeadec0de6b1a53ea090f2572ddac1924f2c12b23ca232d9b754e",
     "experiments/causal_atlas_bridge/tables/app_partial_id_full.tex": "5d07010e37be8ada1b5caa86bfdda69d16145e675e2d5d8f1409ddf9166dbc56",
     "experiments/causal_atlas_bridge/tables/app_representation_grid.tex": "416a2560471f2c4011fa324e81ed5ea744edbff9ee9623d8872f7c8b3cbf903e",
     "experiments/causal_atlas_bridge/tables/app_risk_coverage.tex": "9d419855f462d19197932bca80bf3448c55577bd4edf032392921d992a15fac1",
     "experiments/causal_atlas_bridge/tables/main_nsw.tex": "c5320f568a8bcd728498684b12197c96eb0e4fdb4766e508579d4a9d2cf387ab",
     "experiments/causal_atlas_bridge/tables/main_partial_id.tex": "1843c08313fbb6ea020421be332ace3e360ab9ffaa73c6cf3880229a2c04e48e",
-    "experiments/causal_atlas_bridge/tables/main_synthetic.tex": "9ec165f78154ad0617ccdeb9a80534ba2f2b309488501c963c2fc83dff51cf32"
+    "experiments/causal_atlas_bridge/tables/main_synthetic.tex": "b8c665ecbde62b36dd7674f80382c9b7588d8d29b6ee98934ca466fb470878c7"
   },
   "undefined_references": [],
   "duplicate_labels": [],

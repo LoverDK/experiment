@@ -80,3 +80,6 @@ python scripts/build/verify_overleaf_revision.py
 核验最终源稿与修改前在线版本的理论段落、引用图表和标签，复算保存记录中的
 Wilson 区间与 MAE Monte Carlo SE，并检查最终 Overleaf 编译日志。
 审计结果写入 `docs/paper/revision_evidence/source_and_results_audit.json`。
+
+`python scripts/build/build_paired_comparison_table.py` 从现有共同目标记录
+生成附录 B.2 的配对误差比较表与独立数值审计，不重新运行实验。

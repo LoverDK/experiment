@@ -2475,6 +2475,11 @@ The two ablations isolate different parts of the composition rule.  Removing the
 The empty MAE cells in the radius-$0.40$ rows are complete rejection.  Increasing the hidden-moderator radius from $0.20$ to $0.40$ produces a release rate of zero for certified ATLAS while forced baselines continue to publish.  Increasing the sample size from 100 to 1,000 raises release from $0.230$ to $0.500$, while moving the semantic shift from zero to $0.25$ lowers release from $0.463$ to $0.283$ and raises released-target MAE from $0.111$ to $0.158$.  These responses separate sampling precision, representation mismatch, and declared moderator uncertainty.  The formal runner and the target-level certificate diagnostic are separately fixed protocols; the latter is the source of the common-target Table~\ref{tab:v1-main-synthetic} because it retains every target-level certificate component and the evaluation-only oracle.
 
 
+\paragraph{Paired comparison on common targets.}
+Table~\ref{tab:v1-app-paired-comparison} uses the saved target-level records underlying Table~\ref{tab:v1-main-synthetic}.  Semantic forced composition has mean absolute error $0.1106$ higher than no-rejection ATLAS, with a paired Monte Carlo SE of $0.0113$.  The oracle-minus-ATLAS difference is $-0.0037$, with a 95\% Monte Carlo interval $[-0.0109,0.0035]$.  This interval includes zero and does not establish equivalence to the oracle.  Pairing retains the common archive--target draw in each error difference; all methods in this comparison are evaluated on all 300 targets.
+
+\input{experiments/causal_atlas_bridge/tables/app_paired_comparison.tex}
+
 \subsection{Representation Sensitivity and One-Factor Robustness}
 \label{app:representation-sensitivity}
 \suppressfloats[t]

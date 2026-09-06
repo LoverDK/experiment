@@ -101,3 +101,26 @@ noisy held-out contrasts. Overlapping neighborhoods create dependence, and the
 protocol does not implement full shared-unit covariance correction. Reference
 inclusion is not causal-effect coverage. These revisions do not establish
 subgroup causal ground truth or external generalization.
+
+## Follow-up: table presentation of supplementary evidence
+
+Following the request to present additions as figures or tables, Appendix B.2
+now contains a paired-comparison table built from the existing 300 common
+targets. It reports comparator-minus-no-rejection-ATLAS mean absolute-error
+differences, paired Monte Carlo standard errors, and normal-approximation 95%
+Monte Carlo intervals. This uses shared target draws and includes all four
+comparators, including the evaluation-only oracle. The oracle difference
+interval contains zero; this is not evidence of equivalence.
+
+Main Table 1 now carries the release Wilson interval and released-MAE standard
+error in its note, with a cross-reference to the new paired table. The existing
+bridge cross-scenario and NSW construction tables already present the other
+supplementary results, so no duplicate figures were added. The experiment and
+appendix subsection order remains intact.
+
+`scripts/build/build_paired_comparison_table.py` builds the new table and
+`revision_evidence/paired_comparison_audit.json` directly from saved records.
+The standard errors were independently checked using the covariance identity
+for paired differences. No result CSV, protocol, seed, or theoretical text
+was changed. The online source was downloaded before editing and matched the
+previous committed source at `880059d` exactly.

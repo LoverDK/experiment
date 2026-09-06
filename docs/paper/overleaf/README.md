@@ -6,7 +6,7 @@ It is the authoritative delivery snapshot for this revision.
 
 Set `01_causal_atlas_bridge.tex` as the main document and select XeLaTeX.
 The project was verified with TeX Live 2025 on Overleaf. All six referenced
-figure PDFs and seventeen table inputs are included under
+figure PDFs and eighteen table inputs are included under
 `experiments/causal_atlas_bridge/figures/` and `tables/`.
 
 For an installation with the required LaTeX packages, compile from this
