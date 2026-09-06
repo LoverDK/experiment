@@ -1,0 +1,20 @@
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{Stronger summary-data baselines on 300 common targets per synthetic condition. Cells are all-target MAE (Monte Carlo SE).}
+\label{tab:ext-baselines}
+\begin{tabular}{lrrrr}
+\toprule
+Method & Nominal & Moderate & Severe & High noise \\
+\midrule
+ATLAS, no rejection & 0.139 (0.006) & 0.231 (0.009) & 0.707 (0.025) & 0.162 (0.007) \\
+Semantic forced & 0.249 (0.011) & 0.491 (0.015) & 1.133 (0.022) & 0.267 (0.011) \\
+Inverse-variance pooling & 0.285 (0.013) & 0.573 (0.015) & 1.260 (0.017) & 0.297 (0.014) \\
+Random-effects pooling & 0.282 (0.013) & 0.569 (0.015) & 1.256 (0.017) & 0.294 (0.013) \\
+Full-representation nearest & 0.456 (0.020) & 0.541 (0.022) & 0.793 (0.033) & 0.487 (0.022) \\
+Ridge meta-regression & 0.141 (0.006) & 0.199 (0.008) & 0.328 (0.016) & 0.172 (0.007) \\
+RBF kernel ridge & 0.120 (0.005) & 0.181 (0.008) & 0.396 (0.019) & 0.177 (0.008) \\
+\bottomrule
+\end{tabular}
+\par\smallskip\begin{minipage}{0.97\linewidth}\footnotesize All-target ATLAS uses the no-rejection point estimate. Every method uses the same draws; ridge and kernel tuning uses source outcomes only. Point-only baselines have no reported confidence interval.\end{minipage}
+\end{table}

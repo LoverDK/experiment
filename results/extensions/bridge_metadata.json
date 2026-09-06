@@ -1,0 +1,31 @@
+{
+  "command": [
+    "scripts/run/run_requested_extensions.py",
+    "bridge"
+  ],
+  "settings": {
+    "block": "bridge",
+    "repetitions": 100,
+    "bootstrap": 200,
+    "bridge_repetitions": 12
+  },
+  "python": "3.13.15",
+  "numpy": "2.5.2",
+  "base_commit": "7e16787041249c9ab94b990afd78303d47b8f98b",
+  "sources": {
+    "data/nsw_dw.dta": "d1bd2680a1c6f799f1c6d2455bf29633fdf19be01cb19490621c20a560b4e072",
+    "docs/paper/extension_protocol_v2.md": "be802ae9015d03470692fd44bfa23d4876b6a88083b7e3f53fbceb0ef0be2f09",
+    "scripts/run/run_requested_extensions.py": "e6be843a7b455c5ff517e76ddab6f23539987ef9fe71368298950c1126bd00bb",
+    "src/causal_atlas_sim/extension_baselines.py": "2a4920e1a18472991a57af53743ff10ab08d8b5c3ec8bdfdbaad55baac9d89b9",
+    "src/causal_atlas_sim/extension_bridge.py": "2394b7c68d0a8b99bc1747c79c81387b8a07709951c31503afd04772923dead8",
+    "src/causal_atlas_sim/extension_nsw.py": "3356cacddae85587a9c384345fabf19654b3664d46b8d499a6463a4462dabab5"
+  },
+  "outputs": {
+    "bridge_checks.csv": "3e3d18d424386c0d9592384d06daeef3ecdd4eb37b0db4a20fd474a5dfca3360",
+    "bridge_empty_intersections.csv": "1aeaeca9983ebeed2282495bde7a08bf1df7e5dff8c5677bf1b32912ed39ec8f",
+    "bridge_set_values.csv": "110f2eac8aa0e0e6fad0102884c2772ed16ae4e0e8c47167b3a148fa49eb2772",
+    "nsw_real_failures.csv": "338e61d2bd6428776ab12a661024af11b2ddfa8414a510d379294fdc8915f46a",
+    "nsw_real_records.csv": "bba0cf92d96678383be0b1530c4427a2eecee5abc9af87f7ec62bac4871d6f60",
+    "synthetic_baselines_records.csv": "e15e54291ff5694fca17a7e9479d720dc3b8b961e7be4e807955ce0cd5e6c1ed"
+  }
+}

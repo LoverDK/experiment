@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{Disjoint-unit NSW comparison: mean signed prediction-minus-randomized-reference gap across six targets, in thousands of dollars.}
+\label{tab:ext-reference}
+\begin{tabular}{lrr}
+\toprule
+Method & Mean gap & 95\% bootstrap interval \\
+\midrule
+ATLAS, no rejection & -0.670 & $[-3.978, 3.032]$ \\
+Semantic forced & -0.262 & $[-3.366, 3.056]$ \\
+Inverse-variance pooling & 0.136 & $[-3.396, 2.420]$ \\
+Random-effects pooling & 0.120 & $[-3.011, 2.518]$ \\
+Full-representation nearest & 0.305 & $[-4.971, 3.475]$ \\
+Ridge meta-regression & -0.977 & $[-4.293, 2.829]$ \\
+RBF kernel ridge & -1.065 & $[-4.752, 2.284]$ \\
+Unit-data ridge T-learner & -0.962 & $[-3.815, 1.712]$ \\
+\bottomrule
+\end{tabular}
+\par\smallskip\begin{minipage}{0.97\linewidth}\footnotesize Intervals use 196 valid stratified individual bootstrap replicates out of 200; four fail the minimum of eight units per arm. Source and reference individuals are disjoint, and overlapping local objects are rebuilt jointly. Gaps use all raw predictions. The real randomized reference is noisy; these intervals are descriptive bootstrap uncertainty under the fixed design.\end{minipage}
+\end{table}

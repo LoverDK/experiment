@@ -1,3 +1,9 @@
 # Preserve the exact downloaded paper artifacts and their audited hashes.
 docs/paper/overleaf/** -text
 docs/paper/revision_evidence/** -text
+
+results/extensions/** -text
+src/causal_atlas_sim/extension_*.py -text
+scripts/run/run_requested_extensions.py -text
+scripts/build/build_extension_artifacts.py -text
+docs/paper/extension_protocol_v2.md -text

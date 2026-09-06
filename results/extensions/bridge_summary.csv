@@ -1,0 +1,5 @@
+scenario,family,archives,monotone,mean_violating_edges,gamma,epsilon,eligible,passed,nonvacuous
+moderate,operational,12,0,41.166666666666664,,0.010453959876955918,0,0,0
+moderate,retained_certificates,12,12,0.0,0.999999999999984,0.011316344153560335,36,36,36
+severe,operational,12,0,24.666666666666668,,0.007690863119155717,0,0,0
+severe,retained_certificates,12,12,0.0,0.9999999999918816,0.014114473179410577,36,36,36

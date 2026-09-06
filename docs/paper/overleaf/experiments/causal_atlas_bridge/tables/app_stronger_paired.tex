@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{Paired all-target MAE differences for the fitted regressors, relative to no-rejection ATLAS. Negative differences favor the comparator.}
+\label{tab:ext-paired}
+\begin{tabular}{lrrrr}
+\toprule
+Condition & Comparator & Difference & MC SE & 95\% MC interval \\
+\midrule
+Nominal & Ridge meta-regression & 0.002 & 0.001 & $[-0.000, 0.005]$ \\
+Nominal & RBF kernel ridge & -0.019 & 0.004 & $[-0.027, -0.011]$ \\
+Moderate & Ridge meta-regression & -0.032 & 0.006 & $[-0.044, -0.019]$ \\
+Moderate & RBF kernel ridge & -0.049 & 0.007 & $[-0.063, -0.036]$ \\
+Severe & Ridge meta-regression & -0.380 & 0.025 & $[-0.428, -0.331]$ \\
+Severe & RBF kernel ridge & -0.312 & 0.019 & $[-0.350, -0.274]$ \\
+High Noise & Ridge meta-regression & 0.010 & 0.002 & $[0.006, 0.014]$ \\
+High Noise & RBF kernel ridge & 0.015 & 0.006 & $[0.002, 0.027]$ \\
+\bottomrule
+\end{tabular}
+
+\end{table}

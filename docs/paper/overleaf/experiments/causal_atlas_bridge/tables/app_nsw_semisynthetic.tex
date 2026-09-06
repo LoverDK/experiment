@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{NSW-covariate semi-synthetic validation against the exact target average effect. Cells are all-target MAE (Monte Carlo SE), in thousands of dollars.}
+\label{tab:ext-semi}
+\begin{tabular}{lrrr}
+\toprule
+Method & Constant & Smooth & Interaction \\
+\midrule
+ATLAS, no rejection & 0.504 (0.024) & 0.488 (0.023) & 0.493 (0.022) \\
+Semantic forced & 0.393 (0.027) & 0.457 (0.029) & 0.458 (0.024) \\
+Inverse-variance pooling & 0.393 (0.029) & 0.445 (0.029) & 0.500 (0.024) \\
+Random-effects pooling & 0.393 (0.029) & 0.445 (0.029) & 0.499 (0.024) \\
+Full-representation nearest & 0.752 (0.030) & 0.779 (0.028) & 0.751 (0.028) \\
+Ridge meta-regression & 0.520 (0.028) & 0.532 (0.029) & 0.519 (0.031) \\
+RBF kernel ridge & 0.542 (0.026) & 0.539 (0.027) & 0.556 (0.024) \\
+Unit-data ridge T-learner & 0.422 (0.022) & 0.426 (0.021) & 0.417 (0.021) \\
+\bottomrule
+\end{tabular}
+\par\smallskip\begin{minipage}{0.97\linewidth}\footnotesize Each surface has 100 independent assignment/outcome replicates and six overlapping targets. MC SE uses the 100 replicate means. The T-learner has source individual data; the other methods have archive summaries. ATLAS raw point estimates equal its no-rejection counterpart.\end{minipage}
+\end{table}

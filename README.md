@@ -204,3 +204,7 @@ SHA-256 清单位于 `results/`。
 `results/nsw_method_error_records.csv`
 以及 `results/figures/*_overview.{png,pdf}` 论文组合图。原论文实验图表的当前协议
 复现见 `docs/paper/original_experiment_artifacts.md`。
+
+## Requested experimental extensions (2, 3, 5)
+
+See [protocol v2](docs/paper/extension_protocol_v2.md) and [results and reproduction](docs/paper/extension_results_v2.md). Raw records, failure records and hashes are in `results/extensions/`; the builder generates the six new appendix tables and NSW validation figure.

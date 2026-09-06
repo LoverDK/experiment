@@ -57,3 +57,8 @@ logs/
 !results/tables/*.md
 !results/tables/*.tex
 !results/README.md
+
+# Requested extension v2 raw records and summaries.
+!results/extensions/
+!results/extensions/*.csv
+!results/extensions/*.json

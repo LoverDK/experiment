@@ -254,3 +254,40 @@
 | tests/test_risk_coverage.py | 风险--覆盖率测试 | 检验无拒绝端点、单调发布率和固定协议确定性。 |
 | tests/test_repository_file_map.py | 维护测试 | 检验本表覆盖全部受跟踪或待提交项目文件，防止未来更新遗漏对照说明。 |
 | tests/test_representation_sensitivity.py | 表示敏感性测试 | 检验二维网格、共享随机协议、隐藏偏移边界与确定性。 |
+| docs/paper/experiment_extension_plan_20260906.md | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| docs/paper/extension_protocol_v2.md | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| docs/paper/extension_results_v2.md | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/figures/extension_nsw_validation.pdf | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_bridge_conditions.tex | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_nsw_calibration.tex | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_nsw_reference.tex | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_nsw_semisynthetic.tex | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_stronger_baselines.tex | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_stronger_paired.tex | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/artifact_manifest.json | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/bridge_checks.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/bridge_empty_intersections.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/bridge_metadata.json | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/bridge_set_values.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/bridge_summary.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/nsw_calibration_summary.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/nsw_design.json | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/nsw_metadata.json | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/nsw_real_failures.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/nsw_real_records.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/nsw_real_summary.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/nsw_semisynthetic_failures.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/nsw_semisynthetic_records.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/nsw_semisynthetic_summary.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/synthetic_baselines_records.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/synthetic_metadata.json | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/synthetic_paired_summary.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/extensions/synthetic_summary.csv | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/figures/extension_nsw_validation.pdf | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| results/figures/extension_nsw_validation.png | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| scripts/build/build_extension_artifacts.py | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| scripts/run/run_requested_extensions.py | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| src/causal_atlas_sim/extension_baselines.py | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| src/causal_atlas_sim/extension_bridge.py | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| src/causal_atlas_sim/extension_nsw.py | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| tests/test_requested_extensions.py | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |

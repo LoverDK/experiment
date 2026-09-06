@@ -1,0 +1,17 @@
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{Finite-law bridge diagnostics: 12 archives per condition, 64 subsets per archive, and budgets 1--3.}
+\label{tab:ext-bridge}
+\begin{tabular}{lrrrrr}
+\toprule
+Condition / family & Monotone & Bad edges & $\gamma$ & $\epsilon$ & Checks \\
+\midrule
+Moderate / operational & 0/12 & 41.2 & -- & 0.0105 & -- \\
+Moderate / retained & 12/12 & 0.0 & 1.000 & 0.0113 & 36/36 \\
+Severe / operational & 0/12 & 24.7 & -- & 0.0077 & -- \\
+Severe / retained & 12/12 & 0.0 & 1.000 & 0.0141 & 36/36 \\
+\bottomrule
+\end{tabular}
+\par\smallskip\begin{minipage}{0.97\linewidth}\footnotesize Bad edges is the mean count of negative singleton gains out of 192 edges. $\epsilon$ is the mean across archives of the maximum planning/reference marginal discrepancy. Checks are reported only for monotone objectives with positive $\gamma$; all 72 eligible bounds are positive. Retained certificates form a diagnostic variant, not the operational adaptive policy. No empty intersections occurred in the sampled evaluations.\end{minipage}
+\end{table}
