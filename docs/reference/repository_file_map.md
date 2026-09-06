@@ -295,3 +295,8 @@
 | appendixB_current.txt | User working file | Existing untracked user file; retained unchanged and included here so the repository file-map test reflects the working tree. |
 | scripts/build/integrate_requested_extensions.py | Paper integration | Idempotent scoped generator for approved extension prose and inputs; theory protection assertions run before writing. |
 | docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_bridge_retained.tex | Appendix table | Generated retained-certificate diagnostic table from bridge extension records. |
+| data/external/hillstrom_provenance.json | Validation v3 | Prespecified validation, provenance or proof audit; see docs/paper/validation_v3_protocol.md. |
+| docs/paper/validation_v3_protocol.md | Validation v3 | Prespecified validation, provenance or proof audit; see docs/paper/validation_v3_protocol.md. |
+| scripts/run/run_validation_v3.py | Validation v3 | Prespecified validation, provenance or proof audit; see docs/paper/validation_v3_protocol.md. |
+| src/causal_atlas_sim/validation_v3.py | Validation v3 | Prespecified validation, provenance or proof audit; see docs/paper/validation_v3_protocol.md. |
+| tests/test_validation_v3.py | Validation v3 | Prespecified validation, provenance or proof audit; see docs/paper/validation_v3_protocol.md. |
