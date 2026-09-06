@@ -1,0 +1,9 @@
+replicate,anchor,k,reason
+1,random,35,arm_minimum
+4,random,35,arm_minimum
+5,farthest,35,arm_minimum
+5,random,35,arm_minimum
+10,random,35,arm_minimum
+13,random,35,arm_minimum
+15,random,35,arm_minimum
+17,random,35,arm_minimum

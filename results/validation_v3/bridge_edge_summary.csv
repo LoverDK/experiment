@@ -1,0 +1,9 @@
+draws,scenario,family,n_edges,minimum_gain,mean_negative_magnitude,negative_fraction,archives_with_negative
+2048,moderate,operational,2304,-0.3303445761739533,0.04398064384480197,0.2144097222222222,12
+2048,moderate,retained_certificates,2304,0.0,,0.0,0
+2048,severe,operational,2304,-0.2445447062034396,0.029147241147198556,0.1284722222222222,12
+2048,severe,retained_certificates,2304,0.0,,0.0,0
+8192,moderate,operational,2304,-0.3307919472856191,0.04393872441674271,0.2144097222222222,12
+8192,moderate,retained_certificates,2304,0.0,,0.0,0
+8192,severe,operational,2304,-0.2446111062097609,0.029075701404715833,0.1284722222222222,12
+8192,severe,retained_certificates,2304,0.0,,0.0,0

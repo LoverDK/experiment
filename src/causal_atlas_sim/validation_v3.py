@@ -165,7 +165,8 @@ def mechanism_benchmark():
                 g=transform(g,kind,noise='t3' if change=='t3' else 'normal',proxy=change=='proxy',omit=change=='omit',rng=np.random.default_rng(sd+1))
                 for v in predictor_rows(g):
                     rows.append(dict(surface=kind,change=change,replicate=r,seed=sd,**v,
-                        released=v['score']<=1.65,covered=v['error']<=v['native_radius']))
+                        width=2*v['native_radius'],released=v['score']<=1.65,
+                        covered=v['error']<=v['native_radius'] if np.isfinite(v['native_radius']) else np.nan))
             print('benchmark',kind,change,flush=True)
     save('mechanism_records',rows)
 
@@ -205,7 +206,7 @@ def fitted_aipw(x,a,y,tau,mode,propensity):
 
 
 def nuisance_experiment():
-    rows=[];effects=[];failures=[]
+    rows=[];effects=[];failures=[];partial_effects=[]
     for ni,n in enumerate((100,400)):
         for pi,prop in enumerate(('balanced','weak','logistic')):
             modes=('oracle','quadratic_known','linear_known') if prop!='logistic' else ('oracle','logistic_fitted','intercept_misspecified')
@@ -218,6 +219,7 @@ def nuisance_experiment():
                     a=rng.binomial(1,p,n);y=1+.8*x+1.2*x*x+a*e.true_effect+rng.normal(size=n)
                     data.append((x,a,y,p))
                 for mode in modes:
+                    pending_effects=[]
                     try:
                         archive=[]
                         for j,(e,(x,a,y,p)) in enumerate(zip(g.archive,data)):
@@ -226,7 +228,7 @@ def nuisance_experiment():
                             archive.append(replace(e,estimated_effect=est,standard_error_certificate=se,
                                 variance_proxy=float(score.var(ddof=1)),aipw_scores=score,x=x[:,None],
                                 treatment=a,observed_outcome=y,nuisance_bias_bound=0.))
-                            effects.append(dict(n=n,propensity=prop,method=mode,replicate=r,archive=j,
+                            pending_effects.append(dict(n=n,propensity=prop,method=mode,replicate=r,archive=j,
                                 error=est-e.true_effect,se=se,covered=abs(est-e.true_effect)<=Z*se))
                         fitted=fit_causal_atlas(archive,blind_target(g.target))
                         rows.append(dict(n=n,propensity=prop,method=mode,replicate=r,seed=sd,
@@ -234,11 +236,14 @@ def nuisance_experiment():
                             covered=fitted.interval_lower<=g.target.true_effect<=fitted.interval_upper,
                             width=fitted.interval_upper-fitted.interval_lower,
                             bias_bound_status='known_propensity_zero_mean' if prop!='logistic' else 'uncertified_zero_plugin'))
+                        effects.extend(pending_effects)
                     except ValueError as ex:
                         if str(ex)!='arm_minimum':raise
                         failures.append(dict(n=n,propensity=prop,method=mode,replicate=r,reason=str(ex)))
+                        partial_effects.extend(pending_effects)
             print('nuisance',n,prop,flush=True)
     save('nuisance_records',rows);save('nuisance_effect_records',effects);save('nuisance_failures',failures)
+    save('nuisance_failed_partial_effects',partial_effects)
 
 
 def dependence_experiment():

@@ -1,0 +1,8 @@
+{
+  "manifest_file_count": 55,
+  "all_files_exist": true,
+  "paper_source_hash": "c258cf09f0c7cd36737a40f5c2c822fcd17da6fc5d0cd66567af103ca41f9af1",
+  "appendix_A_hash": "86c9613be2c2dec724d355b0223f024a0666456e9afe70dcedec5d37affc4185",
+  "tests": "python -m unittest discover -s tests -v: 95 passed",
+  "theory_source_modified": false
+}

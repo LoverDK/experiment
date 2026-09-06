@@ -62,3 +62,9 @@ logs/
 !results/extensions/
 !results/extensions/*.csv
 !results/extensions/*.json
+
+# User-requested validation v3 keeps raw records and all failures auditable.
+!results/validation_v3/
+!results/validation_v3/*.csv
+!results/validation_v3/*.json
+!data/external/hillstrom.csv
