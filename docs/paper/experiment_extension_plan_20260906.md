@@ -1,3 +1,5 @@
+> Superseded by [extension_protocol_v2.md](extension_protocol_v2.md). Draft designs are excluded from final results.
+
 # Planned experimental extensions
 
 This document records the three extensions requested after the Overleaf revision.

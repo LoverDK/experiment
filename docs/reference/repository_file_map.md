@@ -291,3 +291,4 @@
 | src/causal_atlas_sim/extension_bridge.py | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
 | src/causal_atlas_sim/extension_nsw.py | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
 | tests/test_requested_extensions.py | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
+| docs/paper/extension_inclusion_assessment.md | Inclusion assessment | Evaluates evidential value, limitations and placement before Overleaf integration; records user-requested pause. |
