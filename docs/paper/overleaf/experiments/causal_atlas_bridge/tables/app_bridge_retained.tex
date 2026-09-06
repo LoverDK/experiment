@@ -1,0 +1,19 @@
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{Coefficient consistency check for the retained-certificate diagnostic variant. Values are means over 12 archives per condition; the bound is evaluated separately for each archive.}
+\label{tab:ext-retained}
+\begin{tabular}{lrrrrr}
+\toprule
+Condition & Budget & Greedy value & Optimum & Lower bound & Checks \\
+\midrule
+Moderate & 1 & 0.961 & 0.961 & 0.585 & 12/12 \\
+Moderate & 2 & 1.211 & 1.211 & 0.720 & 12/12 \\
+Moderate & 3 & 1.211 & 1.211 & 0.698 & 12/12 \\
+Severe & 1 & 3.755 & 3.755 & 2.345 & 12/12 \\
+Severe & 2 & 3.948 & 3.948 & 2.439 & 12/12 \\
+Severe & 3 & 3.949 & 3.949 & 2.411 & 12/12 \\
+\bottomrule
+\end{tabular}
+\par\smallskip\begin{minipage}{0.97\linewidth}\footnotesize This fixed-law variant keeps the original and candidate singleton certificates with one fixed Bonferroni allocation. Its sampled ratio is $\gamma=1$; the mean maximum marginal discrepancies are 0.0113 (moderate) and 0.0141 (severe). All displayed lower bounds are positive. These are internal checks against an enumerated Monte Carlo reference; they do not establish a guarantee for the operational adaptive policy.\end{minipage}
+\end{table}

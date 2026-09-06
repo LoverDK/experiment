@@ -154,6 +154,15 @@ def main():
             f'{r.epsilon:.4f}', '--' if not r.eligible else f'{r.passed}/{r.eligible}'] for _,r in bridge_summary.iterrows()],
           r'Bad edges is the mean count of negative singleton gains out of 192 edges. $\epsilon$ is the mean across archives of the maximum planning/reference marginal discrepancy. Checks are reported only for monotone objectives with positive $\gamma$; all 72 eligible bounds are positive. Retained certificates form a diagnostic variant, not the operational adaptive policy. No empty intersections occurred in the sampled evaluations.')
 
+    retained=bridge[bridge.family=='retained_certificates']
+    table('app_bridge_retained.tex','tab:ext-retained',
+          'Coefficient consistency check for the retained-certificate diagnostic variant. Values are means over 12 archives per condition; the bound is evaluated separately for each archive.',
+          ['Condition','Budget','Greedy value','Optimum','Lower bound','Checks'],
+          [[s.title(),str(b),f'{g.selected_value.mean():.3f}',f'{g.optimum.mean():.3f}',
+            f'{g.lower_bound.mean():.3f}',f'{int(g.bound_holds.eq(True).sum())}/{len(g)}']
+           for (s,b),g in retained.groupby(['scenario','budget'])],
+          r'This fixed-law variant keeps the original and candidate singleton certificates with one fixed Bonferroni allocation. Its sampled ratio is $\gamma=1$; the mean maximum marginal discrepancies are 0.0113 (moderate) and 0.0141 (severe). All displayed lower bounds are positive. These are internal checks against an enumerated Monte Carlo reference; they do not establish a guarantee for the operational adaptive policy.')
+
     apply_publication_style()
     fig,axes=plt.subplots(1,2,figsize=(11.5,4.5),gridspec_kw={'width_ratios':[1.08,1]})
     selected=['atlas_no_rejection','semantic_forced','ivw_meta','ridge_meta_regression','rbf_kernel_ridge','unit_ridge_t_learner']
@@ -180,7 +189,8 @@ def main():
                     ROOT/'scripts/run/run_requested_extensions.py',* (ROOT/'src/causal_atlas_sim').glob('extension_*.py'),
                     * (ASSETS/'tables').glob('app_*baseline*.tex'),*(ASSETS/'tables').glob('app_stronger_paired.tex'),
                     *(ASSETS/'tables').glob('app_nsw_*synthetic.tex'),*(ASSETS/'tables').glob('app_nsw_calibration.tex'),
-                    *(ASSETS/'tables').glob('app_nsw_reference.tex'),*(ASSETS/'tables').glob('app_bridge_conditions.tex'),*paths]
+                    *(ASSETS/'tables').glob('app_nsw_reference.tex'),*(ASSETS/'tables').glob('app_bridge_conditions.tex'),
+                    *(ASSETS/'tables').glob('app_bridge_retained.tex'),*paths]
     manifest={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
               for p in sorted(set(manifest_paths)) if p.is_file() and p.name!='artifact_manifest.json'}
     (OUT/'artifact_manifest.json').write_text(json.dumps({'sha256':manifest,'checks':{

@@ -292,3 +292,6 @@
 | src/causal_atlas_sim/extension_nsw.py | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
 | tests/test_requested_extensions.py | Extension v2 | Requested experiments: reproducible scripts, records, validation or generated paper asset; see docs/paper/extension_results_v2.md. |
 | docs/paper/extension_inclusion_assessment.md | Inclusion assessment | Evaluates evidential value, limitations and placement before Overleaf integration; records user-requested pause. |
+| appendixB_current.txt | User working file | Existing untracked user file; retained unchanged and included here so the repository file-map test reflects the working tree. |
+| scripts/build/integrate_requested_extensions.py | Paper integration | Idempotent scoped generator for approved extension prose and inputs; theory protection assertions run before writing. |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_bridge_retained.tex | Appendix table | Generated retained-certificate diagnostic table from bridge extension records. |
