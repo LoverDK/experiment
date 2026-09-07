@@ -1,0 +1,50 @@
+{
+  "base_commit": "cccf750",
+  "source": "docs/paper/overleaf/01_causal_atlas_bridge.tex",
+  "protected_normalized_sha256": {
+    "\\documentclass": "16f65dc191407e4b7a173a8f74ad865d682ebf076dbbc07c74cb9648a5db32c2",
+    "\\section{Discussion}": "bd51eb992b5cd0a7711b7f36d846aa4eb70d2628c2e51803cf9c7803872aebec"
+  },
+  "appendix_A_sha256": "86c9613be2c2dec724d355b0223f024a0666456e9afe70dcedec5d37affc4185",
+  "source_sha256": "9cf5a727e21bc2f745e7321498ca2affb3878d4f8ef395f74b39e8e7196522fc",
+  "dependencies": {
+    "docs/paper/appendix_B_template.tex": "b960ca7c2a24efca76110428a69b28781c0a313738ed613db74ff6a43dd56d32",
+    "results/formal_experiment_summary.csv": "57477cf1e94d707881566b35b4bcab78dab7cae5104eed67f1eedbabf5588f25",
+    "results/validation_v3/bridge_checks_8192.csv": "3ff74fd6284e6982adfa40a56572e6e1b14985993f556f37df14d5527f374657",
+    "results/validation_v3/constant_summary.csv": "9fbf399c780be7d6ab9b9bab8f2f5eb3562679b547f8e924e4ccb09d83c4d2e4",
+    "results/validation_v3/dependence_summary.csv": "af361e684fab467017d210b8012f5da58e70124025eaf994c0d184f7783a3029",
+    "results/validation_v3/hillstrom_summary.csv": "640d8a19dfa13547888d3c13f89ef9c07d9a71a06d143c6d7fe3a6e2776f3544",
+    "results/validation_v3/interval_summary.csv": "45b1ea6dd356b94e7822466274f2255635217dd3127403cac6cb732e0e09bc7c",
+    "results/validation_v3/mechanism_summary.csv": "7770155df5b75f8d0afeaa8e51e7470329f0256484b701bc2e2cf831cff30f0b",
+    "results/validation_v3/nsw_stability_summary.csv": "90228678a431f04c1f5bdbb4cadd8551bd4f9c86503194ac829c27b54a1d92cb",
+    "results/validation_v3/nuisance_effect_summary.csv": "085c0ebcb749a3b61f82cc638f896882622f871e95c668b79c859532b0d08a57",
+    "results/validation_v3/nuisance_summary.csv": "56a7d762e8a1d0e8ba31086d4680dcb86058661ecfb666228f66b612407028cc",
+    "results/validation_v3/selection_rank_bootstrap.csv": "dd8d5c8804c9c9b2ba039d8fd57c8e38461191faa4c662446ab5816692520b62",
+    "scripts/build/restructure_appendix_b.py": "02585d220811bcb094a507a3cc7e30f167143e94e70dab1d15ed5799cd77480c"
+  },
+  "generated_tables": {
+    "docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_surfaces.tex": "7931c383d9dcbd7089c285b5f70e6913c1fd5c96c9930e042849b98cb4c836ea",
+    "docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_nuisance.tex": "e24f55c30e467a23d2d5d6c65528d3a622eac577e30ccb95d4f087a8cd1c06e4",
+    "docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_dependence.tex": "dc0796ff48d368219ab5c18e83a9ad92c4945cff28335a09b17cd75c85c84f9f",
+    "docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_constants.tex": "90a427849250bfacdaebc23e530e24e40bc72ec18d06305124ff82e40655a7a6",
+    "docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_calibration.tex": "60e0bf60799c5adc5cfda3798e94c8fcd4a97d3e7a54a848c8b9d96a3c5fe2d8",
+    "docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_selection.tex": "6826df3b6807003567a79ec2ef746b3e139314a4db733f1b73337a857fee929a",
+    "docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_ablation.tex": "62b540f225460fd75bcd50ed42978bb3194d54c472d4d204ed6fecc2ac54c2f5",
+    "docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_nsw_stability.tex": "84cf241d98d4cf9d64590239a10f5af3ecbbce2e39f37c9ea704854278738b4c",
+    "docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_hillstrom_error.tex": "7665f35f95e6d045fb2314c7f2fecbeb50dc96eec1ba6ffa465decb0230e6c91",
+    "docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_hillstrom_interval.tex": "6c4a009a48c64625c950f269eb47be09e0c59e734c5d877d959d46217da17e35",
+    "docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_bridge_retained.tex": "3f471a63a777b2bf606284a4ed9134e8d4b790b316fa3b102c3434f004499f8c"
+  },
+  "appendix_subsections": [
+    "Experimental Protocols and Evaluation Quantities",
+    "Robustness and Failure Boundaries",
+    "Comparator and Selection Audit",
+    "Real-Data Construction and Stability",
+    "Scope and Stability of Bridge Evidence"
+  ],
+  "old_input_tables": 21,
+  "new_input_tables": 3,
+  "new_inline_tables": 12,
+  "new_figures": 0,
+  "note": "Only Appendix B and necessary experimental cross-references are revised. No experimental resampling or theory edits."
+}

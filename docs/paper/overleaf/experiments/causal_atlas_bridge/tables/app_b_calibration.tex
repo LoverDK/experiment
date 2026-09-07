@@ -1,0 +1,25 @@
+% Generated from committed CSV records by restructure_appendix_b.py.
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{ATLAS interval calibration and transfer at nominal 95\% confidence.}
+\label{tab:b-calibration}
+\begin{tabular}{lrrrr}
+\toprule
+Test scenario & Interval & True cov. & Ref. incl. & Width \\
+\midrule
+Nominal & Native & 1.000 & 1.000 & 3.307 \\
+Nominal & Matched history & 0.997 & 0.967 & 0.761 \\
+Moderate & Native & 1.000 & 1.000 & 3.836 \\
+Moderate & Matched history & 0.993 & 0.987 & 1.252 \\
+Moderate & Nominal history & 0.907 & 0.853 & 0.885 \\
+Severe & Native & 1.000 & 1.000 & 7.711 \\
+Severe & Matched history & 0.933 & 0.927 & 2.919 \\
+Severe & Nominal history & 0.633 & 0.633 & 1.766 \\
+High noise & Native & 1.000 & 1.000 & 3.715 \\
+High noise & Matched history & 1.000 & 0.947 & 1.518 \\
+High noise & Nominal history & 0.967 & 0.793 & 0.880 \\
+\bottomrule
+\end{tabular}
+\par\smallskip\begin{minipage}{0.97\linewidth}\footnotesize Each test scenario has 300 independent archives. Historical intervals use 150 independent noisy reference estimates from the stated calibration scenario. True coverage and noisy-reference inclusion are evaluated separately. Native intervals use Gaussian quantiles and approximation terms; historical intervals have additional data access.\end{minipage}
+\end{table}

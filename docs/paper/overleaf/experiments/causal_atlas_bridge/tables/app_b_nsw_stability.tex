@@ -1,0 +1,20 @@
+% Generated from committed CSV records by restructure_appendix_b.py.
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{NSW disjoint-unit design sensitivity for ATLAS.}
+\label{tab:b-nsw-stability}
+\begin{tabular}{lrrrrrr}
+\toprule
+Anchors & $k$ & Valid & MAE & Release & Ref. incl. & Width \\
+\midrule
+Farthest & 35 & 19/20 & 2.307 & 0.289 & 0.807 & 8.138 \\
+Farthest & 50 & 20/20 & 1.712 & 0.625 & 0.858 & 6.801 \\
+Farthest & 75 & 20/20 & 1.366 & 0.858 & 0.908 & 5.759 \\
+Random & 35 & 13/20 & 2.196 & 0.359 & 0.872 & 8.576 \\
+Random & 50 & 20/20 & 1.714 & 0.550 & 0.875 & 8.896 \\
+Random & 75 & 20/20 & 1.487 & 0.617 & 0.867 & 8.217 \\
+\bottomrule
+\end{tabular}
+\par\smallskip\begin{minipage}{0.97\linewidth}\footnotesize Errors and widths are in thousands of dollars. Statistics condition on valid designs; eight of 120 attempts fail arm minima. Splits reuse the same individuals, so they measure design sensitivity, not independent-sample uncertainty. Neighbor size changes the reference estimand as well as precision.\end{minipage}
+\end{table}

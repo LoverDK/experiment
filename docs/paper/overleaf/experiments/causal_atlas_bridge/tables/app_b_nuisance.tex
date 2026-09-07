@@ -1,0 +1,26 @@
+% Generated from committed CSV records by restructure_appendix_b.py.
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{Fitted nuisance functions: completion and experiment-level accuracy.}
+\label{tab:b-nuisance}
+\begin{tabular}{lrrrrr}
+\toprule
+$n$ & Assignment & Fit & Complete & RMSE & Cov. \\
+\midrule
+400 & Balanced & Oracle & 200/200 & 0.100 & 0.946 \\
+400 & Balanced & Linear & 200/200 & 0.107 & 0.943 \\
+400 & Balanced & Quadratic & 200/200 & 0.101 & 0.952 \\
+400 & Logistic & Oracle & 200/200 & 0.120 & 0.956 \\
+400 & Logistic & Logistic fit & 200/200 & 0.134 & 0.941 \\
+400 & Logistic & Intercept fit & 200/200 & 0.126 & 0.914 \\
+100 & Weak & Oracle & 200/200 & 0.344 & 0.950 \\
+100 & Weak & Linear & 30/200 & 0.516 & 0.896 \\
+100 & Weak & Quadratic & 2/200 & -- & -- \\
+400 & Weak & Oracle & 200/200 & 0.169 & 0.949 \\
+400 & Weak & Linear & 200/200 & 0.188 & 0.940 \\
+400 & Weak & Quadratic & 200/200 & 0.187 & 0.930 \\
+\bottomrule
+\end{tabular}
+\par\smallskip\begin{minipage}{0.97\linewidth}\footnotesize Coverage is for ordinary 95\% experiment-level intervals. Accuracy is conditional on a complete eight-experiment archive; partial failures are excluded from accuracy summaries and saved separately. The two surviving quadratic-fit archives at small n are too few for a stable performance summary. Balanced and weak assignment probabilities are 0.5 and 0.1; logistic assignment is expit(2X).\end{minipage}
+\end{table}

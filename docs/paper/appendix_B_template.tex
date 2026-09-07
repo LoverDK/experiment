@@ -1,0 +1,135 @@
+\section{Appendix: Experimental Details}
+\label{app:experiments}
+
+This appendix specifies the evaluation protocols, examines sensitivity to their assumptions, and records the scope of the synthetic and real-data evidence. Complete sweeps, failed runs, and target-level records are available in the experiment repository. The original and extended results use separate fixed protocols; comparisons within each table share the same evaluation draws.
+
+\subsection{Experimental Protocols and Evaluation Quantities}
+\label{app:synthetic-dgp}
+
+@@ORIGINAL_DGP@@
+
+\paragraph{Additional response surfaces.}
+The mechanism benchmark uses the original surface and four alternatives:
+\begin{align*}
+\mu_{\rm affine}(m)&=0.5+s_1+0.6s_2+0.8h-0.3q,\\
+\mu_{\rm oscillatory}(m)&=\sin(4s_1)+\cos(3s_2)+0.8hq,\\
+\mu_{\rm threshold}(m)&=1.5\,\mathbf{1}\{h>0\}-1.2\,\mathbf{1}\{s_1s_2>0.15\}+0.4q,\\
+\mu_{\rm Friedman}(m)&=\frac{\sqrt{x_1^2+\{x_2x_3-1/(x_2x_4)\}^2}}{500},
+\end{align*}
+where $x_1=50(s_1+1)$, $x_2=40\pi+260\pi(s_2+1)$, $x_3=(h+1)/2$, and $x_4=1+5(q+1)$. The last surface adapts Friedman's second regression function\footnote{J. H. Friedman (1991), \href{https://doi.org/10.1214/aos/1176347963}{Multivariate adaptive regression splines}, \emph{Annals of Statistics} 19(1), 1--67.} as a treatment-effect surface. It provides a published functional benchmark; the causal archive construction remains synthetic. The threshold surface violates smoothness. The original certificate constants are retained across these stress tests and have not been certified for the new surfaces.
+
+Each surface is crossed with nine settings: baseline, target shift $0.8$, 100 units per experiment, archive sizes 4 and 24, outcome noise SD 3, standardized $t_3$ summary error, replacement of the $h/q$ representation coordinates by irrelevant coordinates, and proxy half-width $0.5$. Each setting has 100 independent archive--target draws. The $t_3$ perturbation replaces summary estimation error using the stored standard error; it is a summary-level tail diagnostic. The other response changes shift the experiment-level effect while preserving the original estimation error.
+
+\paragraph{Fitted nuisance functions and dependent archives.}
+The unit-level nuisance experiment uses $X\sim\Unif[-1,1]$ and $Y=1+0.8X+1.2X^2+A\tau+\varepsilon$, with independent $\varepsilon\sim\Normal(0,1)$. Treatment probability is $0.5$, $0.1$, or $\operatorname{expit}(2X)$. Two alternating evaluation folds use outcome regressions fitted only on the other fold. We compare oracle functions, linear and quadratic outcome fits with known propensity, and fitted logistic or intercept-only propensities clipped to $[0.1,0.9]$. Each setting has 200 archives of eight experiments, with 100 or 400 units per experiment. A training arm needs at least one more observation than fitted coefficients. Failed archives are retained separately; main effect summaries require all eight experiments to complete. The fitted-propensity transport diagnostic uses a zero plug-in nuisance bound whose validity is not established for that setting.
+
+The dependence experiment uses Gaussian summary errors with marginal standard error $0.6$ and equicorrelation $0$, $0.3$, or $0.7$. On both constant and original effect surfaces, 300 archives per setting compare diagonal, known-covariance, and estimated-covariance intervals using the same point weights. The covariance estimate uses 40 independent calibration noise vectors. This separates noise misspecification from approximation error.
+
+\paragraph{Evaluation and reproducibility.}
+Synthetic truth is accessed only for evaluation. Historical calibration uses independent noisy target estimates from 150 calibration archives; each of four scenarios has 300 independent test archives. Native bias-aware intervals in the new comparison use Gaussian quantiles plus approximation terms. Their coverage is assessed empirically. Coverage in synthetic experiments refers to the latent effect; inclusion in NSW and Hillstrom refers to a noisy randomized contrast. MAE is all-target unless explicitly conditioned on release. Simulation Monte Carlo errors cluster by independent archive or assignment/outcome replicate. Repeated NSW splits measure design sensitivity within the same population. The fixed protocols, execution deviations, software versions, and source hashes are recorded in the repository at commit \texttt{cccf750}; no settings were tuned to reverse an unfavorable result.
+
+\subsection{Robustness and Failure Boundaries}
+\label{app:robustness}
+\label{app:representation-sensitivity}
+
+\paragraph{Effect surfaces and representation.}
+Table~\ref{tab:b-surfaces} gives baseline results on all five surfaces. Flexible regressors have smaller mean error on several nonlinear surfaces. On the oscillatory surface, ATLAS coverage is $0.90$ with the unchanged constants. In the original surface, replacing the moderator/context coordinates increases ATLAS MAE from $0.140$ to $0.340$; increasing proxy half-width to $0.5$ gives $0.279$. The original representation grid underlying Figure~\ref{fig:v1-composition} remains available with all 25 settings. The complete new benchmark contains 4,500 independent archives; its 45 surface--setting combinations are retained in the repository.
+\input{experiments/causal_atlas_bridge/tables/app_b_surfaces.tex}
+
+\paragraph{Nuisance fitting and overlap.}
+Table~\ref{tab:b-nuisance} reports experiment-level accuracy and archive completion. At $n=400$ under balanced randomization, quadratic fitting closely tracks the oracle. Under logistic assignment, an intercept-only propensity has coverage $0.914$, compared with $0.956$ for the oracle. At $n=100$ and propensity $0.1$, arm minima invalidate 170 of 200 linear-fit archives and 198 of 200 quadratic-fit archives. These failure counts are part of the result; two successful archives cannot support a stable accuracy assessment. At $n=400$, all 200 archives complete for both fits in that weak-overlap setting.
+\input{experiments/causal_atlas_bridge/tables/app_b_nuisance.tex}
+
+\paragraph{Correlation and statistical uncertainty.}
+Table~\ref{tab:b-dependence} uses a constant effect surface to isolate statistical uncertainty. At correlation $0.7$, diagonal intervals cover only $0.607$ of true effects; covariance correction restores empirical coverage near $0.95$ while increasing width. On the original surface, approximation terms are broad enough that all three complete intervals cover every simulated target. Statistical-component coverage is therefore saved separately. Known covariance is an oracle diagnostic; estimated covariance performance does not establish a matrix-valued uncertainty certificate.
+\input{experiments/causal_atlas_bridge/tables/app_b_dependence.tex}
+
+\paragraph{Scientific constants and historical calibration.}
+\label{app:certificate-calibration}
+The constant sensitivity experiment holds point weights fixed and jointly multiplies $L$, $H$, and the hidden-moderator bound by $0.1$, $0.25$, $0.5$, $1$, or $2$. Each of the nominal, severe-shift, and understated-proxy settings uses 300 archives. In the last setting actual proxy half-width is $0.5$ and the declared radius remains $0.2$. Table~\ref{tab:b-constants} retains every multiplier. Under severe shift, small constants release nearly all targets but sharply reduce coverage; the original constants give broad intervals and almost complete rejection. Joint scaling measures overall sensitivity and does not identify the separate contribution of each constant.
+\input{experiments/causal_atlas_bridge/tables/app_b_constants.tex}
+
+Table~\ref{tab:b-calibration} compares native bias-aware intervals with residual calibration. Within-scenario calibration reduces width substantially. Calibration learned under the nominal law loses coverage when transferred to shifted targets, reaching $0.633$ under severe shift. The residuals compare predictions with independent noisy estimates, so their calibration target differs from the latent causal effect. Additional historical outcomes and distributional stability are material requirements of this procedure.
+\input{experiments/causal_atlas_bridge/tables/app_b_calibration.tex}
+
+The original radius--realized-error diagnostic has Spearman correlation $0.272$ across 300 targets, with no observed error exceeding its certificate radius. Figure~\ref{fig:v1-calibration} already reports the threshold frontier, interval-width grid, and component decomposition; their full records are retained without repeating these displays here. These empirical checks do not establish conditional coverage after release.
+
+\paragraph{Partial identification and lower-bound checks.}
+\label{app:partial-identification}
+The partial-identification protocol uses seeds $20260911$--$20260913$, 100 targets per seed, shifts $0$, $0.25$, $0.60$, and $0.80$, and at most four singleton archive certificates. Duplicate certificates are removed and the error probability is divided across the distinct retained weights. Empty intersections are recorded as inconsistent certificates and never assigned zero diameter. The principal results appear in Table~\ref{tab:v1-partial-id}. Across the four settings, intersection reduces width relative to the single support-optimized interval by $2.74\%$, $5.14\%$, $11.43\%$, and $11.25\%$; every reported intersection is nonempty and contains the simulated truth.
+
+\label{app:minimax-check}
+The separate two-point numerical illustration uses archive standard errors $0.35$ and $1.20$, hull distances $0$, $0.25$, $0.60$, and $1.00$, and 300 repetitions per setting. At zero hull distance, the representative estimator's empirical worst-case MAE rises from $0.099$ to $0.339$ with the standard error. Full results remain in the repository. This illustrates the restricted submodels used in Theorem~\ref{thm:minimax}; it provides no matching optimality claim for the complete algorithm.
+
+\subsection{Comparator and Selection Audit}
+\label{app:comparators}
+\label{app:formal-ablations}
+
+\paragraph{Information access and tuning.}
+All summary-data comparators use the same source effects, standard errors, and full observed representation. Inverse-variance pooling uses weights proportional to $s_i^{-2}$; the earlier all-target comparison also includes DerSimonian--Laird random-effects pooling. Full-representation nearest neighbor uses the closest source object. Ridge and RBF kernel ridge use an unpenalized intercept and source-standardized coordinates. Regularization is chosen from $\{0.01,0.1,1,10,100\}$ by source-only leave-one-out smoother error; RBF bandwidth multipliers are $\{0.5,1,2\}$ times the median nonzero source distance. Source preprocessing is held fixed in these deletion-residual calculations. Target outcomes never enter tuning.
+
+\paragraph{Equal release fractions.}
+The new comparison ranks ATLAS, nearest-neighbor, and inverse-variance predictions by their certificate scores. Regression scores use the source LOO residual RMS multiplied by $\sqrt{1+d^2}$, where $d$ is the nearest-source distance. These regression scores are heuristic. All methods retain the lowest-scoring $25\%$, $50\%$, $75\%$, or $100\%$ of the same 300 targets per scenario. Equal fractions can select different targets, so this evaluates the risk of each selection policy. Historical score thresholds are also evaluated and saved for prospective use.
+
+Table~\ref{tab:b-selection} reports the $50\%$ operating point and paired uncertainty for both regressors. Each of 1,000 paired bootstrap resamples recomputes the rankings before calculating error differences. Under moderate shift, ATLAS has lower selected-target error than both regressors; under severe shift the ordering reverses. Nominal and high-noise pairwise intervals include zero. These are individual Monte Carlo comparisons without a multiple-comparison adjustment. The other operating points are available as a complete numerical frontier.
+\input{experiments/causal_atlas_bridge/tables/app_b_selection.tex}
+
+\paragraph{All-target prediction and component ablations.}
+Table~\ref{tab:v1-app-paired-comparison} gives the paired error differences underlying the shared-target comparison in Table~\ref{tab:v1-main-synthetic}. Its Monte Carlo intervals preserve the pairing of each comparator with no-rejection ATLAS.
+\input{experiments/causal_atlas_bridge/tables/app_paired_comparison.tex}
+
+The earlier all-target comparison in Table~\ref{tab:ext-baselines} uses its own fixed seeds and evaluates every method on every target. It supplies the common-target point-error results cited in the main text. Equal-release results use new draws and a different selection estimand; their absolute numbers need not match this table.
+\input{experiments/causal_atlas_bridge/tables/app_stronger_baselines.tex}
+
+Table~\ref{tab:b-ablation} retains the three composition variants needed to isolate variance regularization and candidate truncation. The formal-stage protocol pools 100 targets for each seed $20260811$--$20260813$. Removing the variance penalty has little effect in this homoskedastic design, while retaining only four candidates lowers release and increases error. Equal hidden radii make the hidden penalty constant over the simplex in this setting, so deleting that term would not be an informative weight ablation. The complete six-scenario formal benchmark remains archived.
+\input{experiments/causal_atlas_bridge/tables/app_b_ablation.tex}
+
+The native and historically calibrated intervals in Table~\ref{tab:b-calibration} use different information. Historical calibration has 150 additional noisy reference outcomes per scenario. Its smaller width is therefore assessed together with its extra data requirement and the transfer failure in Appendix~\ref{app:robustness}.
+
+\subsection{Real-Data Construction and Stability}
+\label{app:nsw-details}
+\label{app:real-audit}
+
+\paragraph{NSW source and original reconstruction.}
+The Dehejia--Wahba randomized sample contains 445 individuals, with 185 treated and 260 controls. Earnings in 1978 are divided by 1000. Standardized covariates are age, education, Black and Hispanic indicators, marital status, no-degree status, and 1974/1975 earnings. The restricted representation uses the first six; the enriched representation adds prior earnings, local overlap, and neighborhood radius. The original construction forms 50-neighbor objects, prunes at the 95th percentile of center norm or radius, and retains 112 objects by farthest-point coverage. Three seeds and 20 splits per seed hold out 28 objects, giving 1,680 predictions per method. Held-out contrasts and their standard errors are hidden during prediction. Overlapping objects induce dependent contrasts; this reconstruction protocol is descriptive.
+
+\paragraph{Disjoint-unit reference and individual bootstrap.}
+Seed $2026090601$ splits each treatment arm into source and reference pools of 296 and 149 individuals. Thirty outcome-blind farthest-point anchors define 24 source and six target objects using 50 neighbors from their own pools, with at least eight observations per treatment arm. Object context is the mean baseline covariate vector; object representation scaling uses source objects only. A treatment-stratified individual bootstrap independently resamples the two pools and rebuilds overlapping objects jointly with anchors fixed. Of 200 replicates, 196 meet arm minima. ATLAS releases one original target; its all-target mean prediction-minus-reference gap has percentile interval $[-3.978,3.032]$ thousand dollars. This fixed-design comparison is imprecise and does not establish equivalence to the reference.
+
+\paragraph{Neighborhood and anchor sensitivity.}
+The new stability check uses 20 treatment-stratified disjoint-unit splits, neighborhoods of 35, 50, or 75, and farthest-point or seeded random anchors. Baseline covariates are standardized on the source pool; anchor selection may use target baseline covariates but no target outcomes. Table~\ref{tab:b-nsw-stability} reports all six design settings, including eight failures among 120 attempted designs. Larger neighborhoods change the estimand, sampling precision, and smoothing as well as prediction difficulty. The split variation describes one fixed population and is not uncertainty from independent trials.
+\input{experiments/causal_atlas_bridge/tables/app_b_nsw_stability.tex}
+
+\paragraph{Known-truth NSW-covariate extension.}
+@@NSW_SEMISYNTHETIC_PROTOCOL@@
+
+The summary-data methods follow Appendix~\ref{app:comparators}. A ridge T-learner fits separate outcome regressions to source individuals with source-only tuning, then averages fitted treatment effects over target covariates. Table~\ref{tab:ext-semi} explicitly identifies its additional information access. Its mean error is lower than ATLAS on each of the three surfaces. ATLAS releases $0.915$--$0.947$ of targets, with released-target coverage $0.995$--$0.998$ and width $4.248$--$4.373$ thousand dollars. These empirical intervals are conservative; the scientific constants have not been certified for these surfaces, and source neighborhoods remain correlated.
+\input{experiments/causal_atlas_bridge/tables/app_nsw_semisynthetic.tex}
+
+\paragraph{Hillstrom randomized email trial.}
+The second dataset contains 64,000 randomized customers in men's-email, women's-email, and no-email arms.\footnote{K. Hillstrom, ``The MineThatData E-Mail Analytics And Data Mining Challenge'' (2008), original study description at \href{https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html}{MineThatData}. The verified data mirror and checksums are recorded in the repository.} We use the 42,613 customers in the men's-email and no-email arms. Visit is the primary outcome and conversion is secondary; both effects are measured in percentage points. Twenty-four cells are prespecified by recency bins 1--4, 5--8, and 9--12 months, prior men's/women's purchase indicators, and new-customer status. Eighteen are nonempty and all are retained. Each target is an entire held-out cell; the remaining cells provide source contrasts and Welch standard errors. Context uses mean recency, log-transformed purchase history, and the three indicators. Scaling, prediction, and tuning use source cells only. This evaluates subgroup transfer within a second randomized trial; it does not constitute an archive of independently run studies.
+
+Table~\ref{tab:b-hillstrom-error} reports both outcomes on all held-out cells. ATLAS has larger visit error than ridge and RBF, and smaller conversion error. The primary outcome is retained regardless of this ordering. Table~\ref{tab:b-hillstrom-interval} varies the NSW workflow's effect-scale constant by factors $0.5$, $1$, and $2$; these are sensitivity settings with no new scientific certification. Increasing the factor improves visit reference inclusion while reducing release.
+\input{experiments/causal_atlas_bridge/tables/app_b_hillstrom_error.tex}
+\input{experiments/causal_atlas_bridge/tables/app_b_hillstrom_interval.tex}
+
+For empirical residual intervals, each outer target has 17 source cells. Inner LOO prediction refits preprocessing using the remaining 16, and calibration uses the 17 absolute residuals against the held-out source contrasts. The nominal $95\%$ finite-sample rank is $\lceil18\times0.95\rceil=18$, exceeding the number of residuals; the reported interval is therefore infinite. At $90\%$, ATLAS visit inclusion is $0.944$ with width $9.440$; ridge and RBF have the same inclusion with widths $8.299$ and $8.188$. Source LOO residual calibration is an empirical diagnostic with no asserted split-conformal or latent-effect coverage guarantee. Both finite and infinite intervals are retained in the results.
+
+\subsection{Scope and Stability of Bridge Evidence}
+\label{app:bridge-design}
+
+\paragraph{Operational policy evaluation.}
+The original policy comparison uses seeds $20261111$--$20261113$, a 12-candidate library, budget four, bridge standard error $0.10$, a planning error setting $0.01$, three-point Gauss--Hermite quadrature, and 80 weight iterations per planning evaluation. At each step the planner evaluates the expected PI-diameter decrease conditional on the current archive. Causal greedy uses all four observed coordinates, semantic greedy uses $(s_1,s_2)$, and random selection is uniform. Future bridge outcomes and latent mechanisms are hidden during planning. Planning and evaluation inconsistencies are recorded separately and empty intersections never receive zero diameter.
+
+The formal comparison has 300 repetitions per policy and scenario. Its causal-greedy diameter reductions are $31.1\%$, $45.4\%$, $66.2\%$, and $73.0\%$ across the four support conditions. The focused trajectories in Figure~\ref{fig:v1-support-bridge} use 90 paths per policy. The separate exhaustive benchmark has 30 repetitions and enumerates 12, 66, and 220 subsets after bridge outcomes are observed for budgets 1, 2, and 3. That ex-post comparison is evaluation-only and uses a different information set from the planner.
+
+\paragraph{Retained-certificate fixed-law diagnostic.}
+We retain a fixed family of original archive certificates and one singleton certificate per candidate bridge, with a common Bonferroni allocation over the complete family. This defines a separate diagnostic objective without modifying Algorithm~\ref{alg:atlas}. For 12 archives in each of the moderate and severe settings, candidates $0,1,4,5,8,9$ define all 64 subsets. Independent normal bridge estimates have initial archive-only predictive means and candidate standard errors. Reference and planning evaluations use 8,192 and 128 separate joint draws, respectively, with common outcome vectors across subsets within each sample.
+
+The reference ratio $\gamma$ is the minimum, capped at one, over 665 strict subset extensions with positive joint gain. The discrepancy $\epsilon$ is the largest absolute planning-versus-reference marginal difference over all 192 edges. Table~\ref{tab:ext-retained} compares the reference greedy value with the best fixed set at each budget and with $(1-e^{-\gamma})F_B^\star-2B\epsilon/\gamma$. All 72 checks have $\gamma=1$, positive lower bounds, and no empty intersections.
+\input{experiments/causal_atlas_bridge/tables/app_b_bridge_retained.tex}
+
+Increasing the reference sample from 2,048 to 8,192 draws preserves every marginal sign in this retained-certificate variant; the maximum marginal change is $0.00749$. The samples share random-stream prefixes, so this measures integration sensitivity. The ratio and discrepancy are obtained from a completed Monte Carlo enumeration. These checks concern the fixed-law, fixed-certificate objective and do not establish a prospective error certificate or the assumptions required for the operational adaptive policy.
+
+\paragraph{Reproducibility.}
+The repository \url{https://github.com/LoverDK/experiment} retains all original and new tables, including results omitted from the printed appendix. The protocol, deviations, target-level records, and failures for the new experiments are under the validation-v3 archive. The paper tables are built from saved results without resampling. Synthetic truth, noisy randomized references, and fixed-law bridge values remain distinct evaluation quantities throughout.

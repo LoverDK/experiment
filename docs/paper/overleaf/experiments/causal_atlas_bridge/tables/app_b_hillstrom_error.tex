@@ -1,0 +1,19 @@
+% Generated from committed CSV records by restructure_appendix_b.py.
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{Hillstrom all-cell prediction error against randomized references.}
+\label{tab:b-hillstrom-error}
+\begin{tabular}{lrr}
+\toprule
+Method & Visit MAE & Conversion MAE \\
+\midrule
+ATLAS & 2.036 & 0.529 \\
+IVW & 2.793 & 0.624 \\
+Nearest & 1.843 & 0.622 \\
+Ridge & 1.632 & 0.797 \\
+RBF & 1.758 & 0.670 \\
+\bottomrule
+\end{tabular}
+\par\smallskip\begin{minipage}{0.97\linewidth}\footnotesize MAE is in percentage points across all 18 held-out cells, without rejection. Visit is the primary outcome. Both outcomes use source-only preprocessing and tuning; subgroup references have sampling noise.\end{minipage}
+\end{table}

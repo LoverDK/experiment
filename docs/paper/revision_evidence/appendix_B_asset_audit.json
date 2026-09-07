@@ -1,0 +1,78 @@
+{
+  "scope": "Current Overleaf 01 only; no files deleted; other documents and build pipelines are outside this cleanup scope.",
+  "source_sha256": "9cf5a727e21bc2f745e7321498ca2affb3878d4f8ef395f74b39e8e7196522fc",
+  "online_source_equals_local": true,
+  "theory_and_appendix_A_unchanged_from_online_backup": true,
+  "compile": {
+    "errors": 0,
+    "warnings": 0,
+    "typesetting_messages": 0,
+    "pages": 54
+  },
+  "folders": {
+    "figures": {
+      "keep": [
+        "figure2_synthetic_validation.pdf",
+        "figure3_selective_uncertainty.pdf",
+        "figure4_rejection_bridge.pdf",
+        "figure5_nsw.pdf"
+      ],
+      "not_referenced": [
+        "appendix_certificate_diagnostic.pdf",
+        "appendix_nsw_certificate_diagnostic.pdf",
+        "extension_nsw_validation.pdf",
+        "figure2_composability.pdf",
+        "figure3_selective_uncertainty_v2.pdf",
+        "figure3_uncertainty.pdf",
+        "legacy_layout_nsw_validation.pdf",
+        "legacy_layout_nsw_validation.png",
+        "legacy_layout_synthetic_validation.pdf",
+        "legacy_layout_synthetic_validation.png",
+        "real_nsw_archive_validation.pdf",
+        "real_nsw_archive_validation.png",
+        "synthetic_atlas_validation.pdf",
+        "synthetic_atlas_validation.png",
+        "v1_figure5_nsw.pdf"
+      ]
+    },
+    "tables": {
+      "keep": [
+        "app_nsw_semisynthetic.tex",
+        "app_paired_comparison.tex",
+        "app_stronger_baselines.tex",
+        "main_nsw.tex",
+        "main_partial_id.tex",
+        "main_synthetic.tex"
+      ],
+      "not_referenced": [
+        "app_bridge_all_scenarios.tex",
+        "app_bridge_optimality.tex",
+        "app_bridge_retained.tex",
+        "app_calibration_levels.tex",
+        "app_certificate_components.tex",
+        "app_failure_boundary.tex",
+        "app_formal_nominal.tex",
+        "app_formal_stress_a.tex",
+        "app_formal_stress_b.tex",
+        "app_minimax.tex",
+        "app_nsw_calibration.tex",
+        "app_nsw_construction.tex",
+        "app_nsw_reference.tex",
+        "app_nsw_seedwise.tex",
+        "app_one_factor_sweeps.tex",
+        "app_partial_id_full.tex",
+        "app_representation_grid.tex",
+        "app_risk_coverage.tex",
+        "app_stronger_paired.tex",
+        "bridge_metrics.tex",
+        "main_synthetic_table.tex",
+        "nsw_local_contrasts.csv",
+        "real_metrics.csv",
+        "real_metrics.tex",
+        "synthetic_metrics.csv",
+        "synthetic_metrics.tex",
+        "synthetic_sensitivity.csv"
+      ]
+    }
+  }
+}
