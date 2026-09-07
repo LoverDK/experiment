@@ -38,6 +38,7 @@
 | docs/algorithm1_alignment.md | 算法对照镜像 | Algorithm 1 的统一入口、代码分支和论文步骤映射；与 docs/reference/algorithm1_alignment.md 保持内容一致。 |
 | docs/bridge_experiment.md | Bridge 实验说明镜像 | Bridge value、三种策略、预算路径和不一致诊断说明；与 docs/stages/bridge_experiment.md 对应。 |
 | docs/paper/final_experiment_report.md | 阶段 7 产物 | 汇总全部合成仿真实验的中文报告，由 scripts/build/build_final_report.py 生成。 |
+| docs/paper/experiment_workflow_summary.md | 当前实验总索引 | 按当前五板块附录汇总原始阶段、v2、v3 的入口、参数、流程、结果、论文资产、复现依赖和留痕边界。 |
 | docs/paper/main_text_gap_catalog/01_foundational_checks.md | 正文遗漏目录 | 对照 DGP 假设校验、早期 oracle Monte Carlo 和方法演示，判断是否仍应进入正文。 |
 | docs/paper/main_text_gap_catalog/02_synthetic_sweeps_and_ablations.md | 正文遗漏目录 | 整理合成扫描、正式多种子压力场景、消融、表示网格，并修正选择效应与表示效应的解释。 |
 | docs/paper/main_text_gap_catalog/03_certificate_diagnostics.md | 正文遗漏目录 | 整理证书分量、异质隐藏半径和完整校准政策，给出正文候选文本与附录边界。 |
@@ -52,7 +53,7 @@
 | docs/paper/overleaf_revision_20260906.md | 在线修订记录 | 记录修改范围、在线基线恢复、图表修正、编译诊断和验证证据。 |
 | docs/paper/overleaf/README.md | 最终稿入口 | 说明独立编译设置、图表路径和验证材料位置。 |
 | docs/paper/overleaf/01_causal_atlas_bridge.tex | 最终论文源稿 | 与在线 01 源稿一致；从在线基线合并实验修订，理论和证明保持原文。 |
-| docs/paper/overleaf/01_causal_atlas_bridge.pdf | 最终论文 PDF | Overleaf XeLaTeX 编译的 53 页论文，零错误和警告。 |
+| docs/paper/overleaf/01_causal_atlas_bridge.pdf | 历史论文 PDF | 较早在线编译的 PDF 留档；当前五板块附录版本以 01 源稿与 appendix_B_overleaf_compile_dom.txt 为准。 |
 | docs/paper/overleaf/experiments/causal_atlas_bridge/figures/figure2_synthetic_validation.pdf | 正文 Figure 2 | 正式合成比较图的在线留档，与 results/figures/ 同名文件一致。 |
 | docs/paper/overleaf/experiments/causal_atlas_bridge/figures/figure3_selective_uncertainty.pdf | 正文 Figure 3 | 选择性发布和不确定性图，标签间距与面板标题已核验。 |
 | docs/paper/overleaf/experiments/causal_atlas_bridge/figures/figure4_rejection_bridge.pdf | 正文 Figure 4 | 部分识别与 bridge 图，横轴名称和实际 hull-distance 数据一致。 |
@@ -353,3 +354,23 @@
 | scripts/run/audit_proof_counterexamples.py | Validation v3 | Reproducible experiment record, report, provenance or proof-audit artifact; see docs/paper/validation_v3_protocol.md. |
 | results/validation_v3/artifact_manifest.json | Validation v3 | Reproducible experiment record, report, provenance or proof-audit artifact; see docs/paper/validation_v3_protocol.md. |
 | results/validation_v3/verification.json | Validation v3 | Reproducible experiment record, report, provenance or proof-audit artifact; see docs/paper/validation_v3_protocol.md. |
+| docs/paper/appendix_B_template.tex | 附录重构模板 | 当前五板块附录的文字与表格占位，由 restructure_appendix_b.py 读取。 |
+| scripts/build/restructure_appendix_b.py | 附录构建 | 从固定 CSV 和模板生成 11 张表并内嵌到 01，保留理论和附录 A，输出哈希清单。 |
+| scripts/build/audit_appendix_b_assets.py | 附录资产审计 | 从保存的线上目录、编译日志及当前源稿生成依赖审计和清理清单；不触发在线编译。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_ablation.tex | 当前附录 B.3 | 正式名义场景三种组合消融；生成后内嵌到 01。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_bridge_retained.tex | 当前附录 B.5 | 8192 draws 的 retained-certificates 检查；生成后内嵌到 01。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_calibration.tex | 当前附录 B.2 | 历史校准与分布偏移下的覆盖、宽度；生成后内嵌到 01。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_constants.tex | 当前附录 B.2 | 科学常数联合倍数敏感性；生成后内嵌到 01。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_dependence.tex | 当前附录 B.2 | 常数曲面中的协方差处理诊断；生成后内嵌到 01。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_hillstrom_error.tex | 当前附录 B.4 | Hillstrom 两结局的五方法全目标误差；生成后内嵌到 01。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_hillstrom_interval.tex | 当前附录 B.4 | Hillstrom 原生区间常数敏感性；生成后内嵌到 01。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_nsw_stability.tex | 当前附录 B.4 | NSW 六种锚点/邻域设计的有效次数和性能；生成后内嵌到 01。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_nuisance.tex | 当前附录 B.2 | 拟合 nuisance 的完整档案次数、单实验 RMSE 与覆盖；生成后内嵌到 01。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_selection.tex | 当前附录 B.3 | 50% 释放下五方法误差及重新排序的配对 bootstrap；生成后内嵌到 01。 |
+| docs/paper/overleaf/experiments/causal_atlas_bridge/tables/app_b_surfaces.tex | 当前附录 B.2 | 五种曲面的基准方法比较；生成后内嵌到 01。 |
+| docs/paper/revision_evidence/01_before_appendix_B_online.tex | 附录修改前备份 | 保存在线 01 原稿，用于核对理论与附录 A 未变。 |
+| docs/paper/revision_evidence/appendix_B_restructure.json | 附录构建证据 | 输入 CSV、脚本、模板、生成表和最终源稿哈希及保护段落检查。 |
+| docs/paper/revision_evidence/appendix_B_overleaf_inventory.json | 线上文件树快照 | 附录重构完成时观察到的 figures/tables 文件清单，不自动随用户清理更新。 |
+| docs/paper/revision_evidence/appendix_B_overleaf_compile_dom.txt | 线上编译证据 | 五板块附录稿的 54 页编译日志及 0 errors/warnings/typesetting 计数。 |
+| docs/paper/revision_evidence/appendix_B_asset_audit.json | 资产审计结果 | 01 当前引用与快照中未引用文件的机器可读对应。 |
+| docs/paper/revision_evidence/appendix_B_cleanup.md | 资产清理说明 | 01 的保留和未引用文件名单、修改范围及证据入口。 |

@@ -26,6 +26,9 @@ NSW 真实数据分析。当前 12 个阶段是项目开发与验证阶段，不
 更细的运行顺序见 [`scripts/README.md`](scripts/README.md)，结果分区见
 [`results/README.md`](results/README.md)，文档导航见 [`docs/README.md`](docs/README.md)。
 
+当前 01 子论文的完整实验流程、数据与结果路径、正文图表及五板块附录对应关系，见
+[`实验汇总与复现流程`](docs/paper/experiment_workflow_summary.md)。该文档同时说明原始阶段、v2、v3 的执行依赖及历史流程边界。
+
 ## Algorithm 1 主流程
 
 1. 按式 (4.2) 对 archive 实验效应去偏，保存公开表示、设计与假设档案、AIPW

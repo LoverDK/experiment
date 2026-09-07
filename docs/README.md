@@ -8,6 +8,7 @@
 
 ## `paper/`：面向论文写作
 
+- [experiment_workflow_summary.md](paper/experiment_workflow_summary.md)：当前 01 论文按五板块附录整理的完整实验路径、流程、运行顺序、结果与图表映射；整合原始阶段、v2 与 v3，并标注历史命令的适用范围。
 - `overleaf/`：已在 Overleaf 编译的 01 论文最终源稿、PDF 和全部引用图表。
 - `overleaf_revision_20260906.md`：本次修改范围、在线版本来源、编译与核验记录。
 - `revision_evidence/`：修改前在线源稿、最终编译日志和理论及数值一致性审计。
