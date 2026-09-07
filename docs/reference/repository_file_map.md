@@ -39,6 +39,22 @@
 | docs/bridge_experiment.md | Bridge 实验说明镜像 | Bridge value、三种策略、预算路径和不一致诊断说明；与 docs/stages/bridge_experiment.md 对应。 |
 | docs/paper/final_experiment_report.md | 阶段 7 产物 | 汇总全部合成仿真实验的中文报告，由 scripts/build/build_final_report.py 生成。 |
 | docs/paper/experiment_workflow_summary.md | 当前实验总索引 | 按当前五板块附录汇总原始阶段、v2、v3 的入口、参数、流程、结果、论文资产、复现依赖和留痕边界。 |
+| docs/paper/experiment_code_walkthrough/README.md | 实验代码导读入口 | 面向 Python 初学者的正文和附录 B 代码阅读顺序、论文位置到源码的映射及使用边界。 |
+| docs/paper/experiment_code_walkthrough/00_python_and_repository_basics.md | 代码导读基础 | 解释导读所需的 Python、路径、对象、数组、循环、随机种子和 CSV 基础。 |
+| docs/paper/experiment_code_walkthrough/01_synthetic_data.md | 代码导读数据章 | 对照 `dgp.py` 逐步说明合成 archive、AIPW、真值和假设构造。 |
+| docs/paper/experiment_code_walkthrough/02_atlas_core.md | 代码导读方法章 | 对照 `methods.py` 说明候选检索、权重、五项证书和接受分支。 |
+| docs/paper/experiment_code_walkthrough/03_main_synthetic_experiments.md | 代码导读正文合成章 | 说明主扫描、正式多种子实验、证书诊断、风险、校准和表示敏感性。 |
+| docs/paper/experiment_code_walkthrough/04_partial_identification_and_bridge.md | 代码导读 PI 与 bridge 章 | 说明 Algorithm 1、部分识别、minimax、bridge 选择和事后穷举。 |
+| docs/paper/experiment_code_walkthrough/05_nsw_real_and_semisynthetic.md | 代码导读 NSW 章 | 说明原始 NSW、独立源/参考池和已知真值半合成协议。 |
+| docs/paper/experiment_code_walkthrough/06_baselines_and_selection.md | 代码导读比较章 | 说明强基线、source LOO、信息边界和 v3 选择性发布审计。 |
+| docs/paper/experiment_code_walkthrough/07_robustness_and_failure_boundaries.md | 代码导读稳健性章 | 说明机制、nuisance、依赖和常数敏感性实验及失败记录。 |
+| docs/paper/experiment_code_walkthrough/08_real_data_and_bridge_stability.md | 代码导读稳定性章 | 说明 NSW/Hillstrom 稳定性和 bridge 积分敏感性。 |
+| docs/paper/experiment_code_walkthrough/09_results_figures_tables_paper.md | 代码导读资产章 | 说明保存记录如何聚合为图表、附录表和本地 Overleaf 资产。 |
+| docs/paper/experiment_code_walkthrough/10_running_and_debugging.md | 代码导读运行章 | 给出教学脚本、正式命令、输出保护和调试路径。 |
+| docs/paper/experiment_code_walkthrough/11_source_inventory.md | 代码导读源码索引 | 按 runner、核心模块、v2/v3 block 和构建器导航所有实验源码。 |
+| docs/paper/experiment_code_walkthrough/verification.md | 代码导读验证记录 | 记录教学脚本、路径、语法和工作区边界检查；不替代论文规模复现。 |
+| docs/paper/experiment_code_walkthrough/examples/inspect_one_archive.py | 代码导读教学脚本 | 只读地生成一个 archive，逐步核对 AIPW、ATLAS 权重、证书和部分识别端点。 |
+| docs/paper/experiment_code_walkthrough/examples/trace_saved_results.py | 代码导读教学脚本 | 只读保存 CSV，重算代表性的正文与附录 B 汇总统计量。 |
 | docs/paper/main_text_gap_catalog/01_foundational_checks.md | 正文遗漏目录 | 对照 DGP 假设校验、早期 oracle Monte Carlo 和方法演示，判断是否仍应进入正文。 |
 | docs/paper/main_text_gap_catalog/02_synthetic_sweeps_and_ablations.md | 正文遗漏目录 | 整理合成扫描、正式多种子压力场景、消融、表示网格，并修正选择效应与表示效应的解释。 |
 | docs/paper/main_text_gap_catalog/03_certificate_diagnostics.md | 正文遗漏目录 | 整理证书分量、异质隐藏半径和完整校准政策，给出正文候选文本与附录边界。 |

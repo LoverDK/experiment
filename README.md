@@ -211,3 +211,5 @@ SHA-256 清单位于 `results/`。
 ## Requested experimental extensions (2, 3, 5)
 
 See [protocol v2](docs/paper/extension_protocol_v2.md) and [results and reproduction](docs/paper/extension_results_v2.md). Raw records, failure records and hashes are in `results/extensions/`; the builder generates the six new appendix tables and NSW validation figure.
+
+For a source-level, beginner-oriented walkthrough of every main-text and Appendix B experiment, see [experiment_code_walkthrough](docs/paper/experiment_code_walkthrough/README.md). It follows each experiment from its runner through the calculation and saved CSV to the paper asset, and includes two read-only checking scripts.
