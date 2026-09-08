@@ -53,6 +53,10 @@
 | docs/paper/experiment_code_walkthrough/10_running_and_debugging.md | 代码导读运行章 | 给出教学脚本、正式命令、输出保护和调试路径。 |
 | docs/paper/experiment_code_walkthrough/11_source_inventory.md | 代码导读源码索引 | 按 runner、核心模块、v2/v3 block 和构建器导航所有实验源码。 |
 | docs/paper/experiment_code_walkthrough/verification.md | 代码导读验证记录 | 记录教学脚本、路径、语法和工作区边界检查；不替代论文规模复现。 |
+| docs/paper/experiment_code_walkthrough/experiment_map.md | 实验结构图说明 | 解释实验地图中研究问题、实验块、正文图表、附录表和结论作用的关系。 |
+| docs/paper/experiment_code_walkthrough/figures/causal_atlas_experiment_map.png | 实验结构图 | 实验部分与附录 B 的图表关系总览，面向阅读和答辩说明。 |
+| docs/paper/experiment_code_walkthrough/figures/causal_atlas_experiment_map.pdf | 实验结构图矢量版 | 与 PNG 内容一致的可缩放版本，用于打印或文档嵌入。 |
+| scripts/build/build_experiment_map.py | 实验结构图构建器 | 使用 Matplotlib 生成实验地图的 PNG 和 PDF；只画结构关系，不读取或改写实验结果。 |
 | docs/paper/experiment_code_walkthrough/examples/inspect_one_archive.py | 代码导读教学脚本 | 只读地生成一个 archive，逐步核对 AIPW、ATLAS 权重、证书和部分识别端点。 |
 | docs/paper/experiment_code_walkthrough/examples/trace_saved_results.py | 代码导读教学脚本 | 只读保存 CSV，重算代表性的正文与附录 B 汇总统计量。 |
 | docs/paper/main_text_gap_catalog/01_foundational_checks.md | 正文遗漏目录 | 对照 DGP 假设校验、早期 oracle Monte Carlo 和方法演示，判断是否仍应进入正文。 |
