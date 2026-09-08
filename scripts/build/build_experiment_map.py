@@ -69,13 +69,13 @@ def main():
     for y, text in blocks:
         box(ax, 0.235, y, 0.31, 0.095, text, TEAL_LIGHT, TEAL, size=7.4, bold=True)
 
-    assets = [(0.825, "FIG 2  Synthetic validation\nTable 1  Main synthetic\napp_formal_nominal / stress_a / stress_b\napp_representation_grid"),
+    assets = [(0.825, "FIG 2  Synthetic validation\nFIG 6  Synthetic certificate diagnostic\nTable 1  Main synthetic\napp_formal_nominal / stress_a / stress_b\napp_representation_grid"),
               (0.715, "FIG 3  Selective uncertainty\napp_risk_coverage\napp_calibration_levels\napp_certificate_components\napp_failure_boundary"),
-              (0.605, "FIG 4  Rejection and bridge\nTable 2  Main partial ID\napp_partial_id_full\napp_minimax\napp_bridge_all_scenarios / optimality"),
+              (0.605, "FIG 4  Rejection and bridge\nTable 2  Main partial ID\napp_partial_id_full\napp_minimax\napp_bridge_all_scenarios / optimality\napp_bridge_conditions"),
               (0.495, "app_b_surfaces\napp_b_nuisance\napp_b_dependence\napp_b_constants\napp_b_calibration"),
               (0.385, "app_b_selection\napp_b_ablation\napp_paired_comparison\napp_stronger_baselines\napp_stronger_paired"),
               (0.275, "FIG 5  NSW reconstruction\nTable 3  Main NSW\napp_nsw_construction / seedwise\napp_nsw_reference / calibration\napp_nsw_semisynthetic"),
-              (0.165, "app_b_nsw_stability\napp_b_hillstrom_error\napp_b_hillstrom_interval\nextension_nsw_validation.pdf"),
+              (0.165, "FIG 7  NSW certificate diagnostic\napp_b_nsw_stability\napp_b_hillstrom_error\napp_b_hillstrom_interval\nextension_nsw_validation.pdf"),
               (0.055, "app_bridge_retained\napp_b_bridge_retained\nbridge_checks_8192\noperational monotonicity stays in repository")]
     for y, text in assets:
         box(ax, 0.565, y, 0.28, 0.095, text, GOLD_LIGHT, GOLD, size=7.15)
