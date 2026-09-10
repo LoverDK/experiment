@@ -53,6 +53,7 @@
 | docs/paper/experiment_code_walkthrough/10_running_and_debugging.md | 代码导读运行章 | 给出教学脚本、正式命令、输出保护和调试路径。 |
 | docs/paper/experiment_code_walkthrough/11_source_inventory.md | 代码导读源码索引 | 按 runner、核心模块、v2/v3 block 和构建器导航所有实验源码。 |
 | docs/paper/experiment_code_walkthrough/verification.md | 代码导读验证记录 | 记录教学脚本、路径、语法和工作区边界检查；不替代论文规模复现。 |
+| docs/paper/experiment_code_walkthrough/12_end_to_end_reproduction.md | 端到端实验复现手册 | 按 1、2、3 顺序说明从环境准备、运行正文和附录实验，到汇总图表、重建表格和核对论文结论的完整流程。 |
 | docs/paper/experiment_code_walkthrough/experiment_map.md | 实验结构图说明 | 解释实验地图中研究问题、实验块、正文图表、附录表和结论作用的关系。 |
 | docs/paper/experiment_code_walkthrough/figures/causal_atlas_experiment_map.png | 实验结构图 | 实验部分与附录 B 的图表关系总览，面向阅读和答辩说明。 |
 | docs/paper/experiment_code_walkthrough/figures/causal_atlas_experiment_map.pdf | 实验结构图矢量版 | 与 PNG 内容一致的可缩放版本，用于打印或文档嵌入。 |

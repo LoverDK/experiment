@@ -46,3 +46,5 @@
 实验路径总表仍可在[原工作流汇总](../experiment_workflow_summary.md)查阅。它适合查命令和资产，本目录用于理解代码。建议第一次按 0 到 10 顺序阅读，以后从上面的论文映射表跳转。
 
 实验结构总图见[实验地图](experiment_map.md)，它把每个实验小块、正文图表、附录表和结论作用放在同一张图中。
+
+完整端到端复现流程见 [12_end_to_end_reproduction.md](12_end_to_end_reproduction.md)：按 1、2、3 顺序从环境准备、实验运行到图表和论文结论验收。

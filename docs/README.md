@@ -28,3 +28,5 @@
 - `repository_file_map.md`：所有受 Git 跟踪文件的职责、输入输出和维护关系。
 
 仓库总体入口和完整命令在根目录 `README.md`；脚本分区见 `scripts/README.md`。
+
+- [experiment_code_walkthrough/12_end_to_end_reproduction.md](paper/experiment_code_walkthrough/12_end_to_end_reproduction.md)：按 1、2、3 顺序从零重跑正文与附录 B，并重建图表、表格和文字结论。
